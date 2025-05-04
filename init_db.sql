@@ -1,6 +1,7 @@
 drop table if exists playlist_contents;
 drop table if exists playlists;
 drop table if exists songs;
+drop table if exists genres;
 drop table if exists users;
 
 create table users
@@ -12,6 +13,20 @@ create table users
     surname  varchar(32) not null,
     primary key (id)
 );
+
+create table genres
+(
+    name varchar(32),
+    primary key (name)
+);
+
+#source: https://en.wikipedia.org/wiki/List_of_music_genres_and_styles
+load data local infile 'docs/genres.csv'
+    into table genres
+    fields terminated by ','
+    enclosed by ','
+    lines terminated by '\n'
+    (name);
 
 create table songs
 (
@@ -25,23 +40,27 @@ create table songs
     genre       varchar(64) not null,
     file        varchar(64) not null,
     primary key (id),
-    foreign key (user_id) references users (id)
-    #TODO constraint del genere
+    foreign key (user_id) references users (id),
+    foreign key (genre) references genres (name)
 );
 
 create table playlists
 (
-    id int auto_increment,
+    id    int auto_increment,
     title varchar(64) not null,
-    date date not null,
+    date  date        not null,
     primary key (id)
 );
 
 create table playlist_contents
 (
     playlist int,
-    song int,
+    song     int,
     primary key (playlist, song),
-    foreign key (playlist) references playlists(id),
-    foreign key (song) references  songs(id)
+    foreign key (playlist) references playlists (id),
+    foreign key (song) references songs (id)
 );
+
+insert into users (username, password, name, surname)
+values ('mssuperlol', 'pass', 'Michele', 'Sangaletti'),
+       ('john', 'word', 'John', 'DarkSouls');
