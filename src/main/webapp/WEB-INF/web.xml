@@ -3,4 +3,24 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
+    <display-name>TIW-projectManagementNo</display-name>
+    <context-param>
+        <param-name>dbUrl</param-name>
+        <param-value>jdbc:mysql://localhost:3306/tiw_project</param-value>
+    </context-param>
+    <context-param>
+        <param-name>mssuperlol</param-name>
+        <param-value>root</param-value>
+    </context-param>
+    <context-param>
+        <param-name>bruh</param-name>
+        <param-value>tiw_2025</param-value>
+    </context-param>
+    <context-param>
+        <param-name>dbDriver</param-name>
+        <param-value>com.mariadb.jdbc.Driver</param-value>
+    </context-param>
+    <welcome-file-list>
+        <welcome-file>login.html</welcome-file>
+    </welcome-file-list>
 </web-app>
