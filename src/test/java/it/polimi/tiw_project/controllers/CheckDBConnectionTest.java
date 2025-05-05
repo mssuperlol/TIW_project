@@ -1,0 +1,32 @@
+package it.polimi.tiw_project.controllers;
+
+import org.junit.jupiter.api.Test;
+
+import java.sql.*;
+
+class CheckDBConnectionTest {
+    @Test
+    void testCheckDBConnection() {
+        final String DATABASE = "tiw_project";
+        final String USER = "mssuperlol";
+        final String PASSWORD = "bruh";
+        Connection connection = null;
+
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            System.out.println("Driver loaded");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Driver not found");
+            e.printStackTrace();
+        }
+        try {
+            connection = DriverManager.getConnection
+                    ("jdbc:mariadb://localhost:3306/" + DATABASE, USER, PASSWORD);
+            System.out.println("Database connection successful");
+            connection.close();
+        } catch (Exception e) {
+            System.err.println("Connection failed");
+            e.printStackTrace();
+        }
+    }
+}
