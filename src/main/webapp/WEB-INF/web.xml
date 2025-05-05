@@ -6,19 +6,19 @@
     <display-name>TIW-projectManagementNo</display-name>
     <context-param>
         <param-name>dbUrl</param-name>
-        <param-value>jdbc:mysql://localhost:3306/tiw_project</param-value>
+        <param-value>jdbc:mariadb://localhost:3306/tiw_project</param-value>
     </context-param>
     <context-param>
-        <param-name>mssuperlol</param-name>
-        <param-value>root</param-value>
+        <param-name>dbUser</param-name>
+        <param-value>mssuperlol</param-value>
     </context-param>
     <context-param>
-        <param-name>bruh</param-name>
-        <param-value>tiw_2025</param-value>
+        <param-name>dbPassword</param-name>
+        <param-value>bruh</param-value>
     </context-param>
     <context-param>
         <param-name>dbDriver</param-name>
-        <param-value>com.mariadb.jdbc.Driver</param-value>
+        <param-value>org.mariadb.jdbc.Driver</param-value>
     </context-param>
     <welcome-file-list>
         <welcome-file>login.html</welcome-file>
