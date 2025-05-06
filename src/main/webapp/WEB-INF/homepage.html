@@ -8,6 +8,6 @@
 <form action="Logout" method="post">
     <input type="submit" value="Logout">
 </form>
-<h1>Welcome back <span th:text="${session.user.getUsername()}">user</span></h1>
+<h1>Welcome back <span th:text="${session.user.getName()}">Name</span> <span th:text="${session.user.getSurname()}">Surname</span></h1>
 </body>
 </html>
