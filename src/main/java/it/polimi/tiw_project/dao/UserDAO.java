@@ -14,6 +14,13 @@ public class UserDAO {
         this.connection = connection;
     }
 
+    /**
+     * Checks whether a user with the given username and password is present in the database
+     * @param username to check
+     * @param password to check
+     * @return user information if found, null otherwise
+     * @throws SQLException
+     */
     public User checkLogin(String username, String password) throws SQLException {
         String query = "SELECT id, username, name, surname " +
                 "FROM users " +
