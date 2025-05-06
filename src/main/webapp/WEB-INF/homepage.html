@@ -28,7 +28,9 @@
     </tbody>
 </table>
 
-<table align="center">
+<br>
+
+<table>
     <tbody>
     <tr>
         <td>
@@ -54,9 +56,13 @@
                     </tr>
                     <tr>
                         <td>Genere:</td>
-                        <td><select>
-                            <option th:each="g : ${genres}" th:value="${g}" th:text="${g}"></option>
-                        </select></td>
+                        <td>
+                            <label>
+                                <select>
+                                    <option th:each="g : ${genres}" th:value="${g}" th:text="${g}"></option>
+                                </select>
+                            </label>
+                        </td>
                     </tr>
                     <tr>
                         <td>File musicale:</td>
