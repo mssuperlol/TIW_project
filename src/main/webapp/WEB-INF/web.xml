@@ -20,6 +20,10 @@
         <param-name>dbDriver</param-name>
         <param-value>org.mariadb.jdbc.Driver</param-value>
     </context-param>
+    <context-param>
+        <param-name>musicPath</param-name>
+        <param-value>/home/mssuperlol/Documents/TIW_project_resources/</param-value>
+    </context-param>
     <welcome-file-list>
         <welcome-file>login.html</welcome-file>
     </welcome-file-list>
