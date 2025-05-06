@@ -8,6 +8,86 @@
 <form action="Logout" method="post">
     <input type="submit" value="Logout">
 </form>
-<h1>Welcome back <span th:text="${session.user.getName()}">Name</span> <span th:text="${session.user.getSurname()}">Surname</span></h1>
+<h1>Welcome back <span th:text="${session.user.getName()}">Name</span> <span th:text="${session.user.getSurname()}">Surname</span>
+</h1>
+
+<!--playlists table-->
+<table border="1">
+    <thead>
+    <tr>
+        <th>Nome</th>
+        <th>Data</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="p : ${playlists}">
+        <!--TODO make the name of the playlist a button that brings up the respective playlist page-->
+        <td th:text="${p.getName()}"></td>
+        <td th:text="${p.getDate()}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<table align="center">
+    <tbody>
+    <tr>
+        <td>
+            <!--form to upload new song-->
+            <form>
+                <table align="center">
+                    <tbody>
+                    <tr>
+                        <td>Titolo:</td>
+                        <td><label><input type="text" name="title"></label></td>
+                    </tr>
+                    <tr>
+                        <td>Album:</td>
+                        <td><label><input type="text" name="album_title"></label></td>
+                    </tr>
+                    <tr>
+                        <td>Inteprete:</td>
+                        <td><label><input type="text" name="performer"></label></td>
+                    </tr>
+                    <tr>
+                        <td>Anno:</td>
+                        <td><label><input type="number" name="year"></label></td>
+                    </tr>
+                    <tr>
+                        <td>Genere:</td>
+                        <td><select>
+                            <option th:each="g : ${genres}" th:value="${g}" th:text="${g}"></option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>File musicale:</td>
+                        <td><label><input type="file" accept=".mp3" name="music_file_name"></label></td>
+                    </tr>
+                    <tr>
+                        <td>Immagine:</td>
+                        <td><label><input type="file" accept="image/*" name="image_file_name"></label></td>
+                    </tr>
+                    <tr>
+                        <td><input type="submit" value="Carica brano ->"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </td>
+        <!--form to create new playlist-->
+        <td>
+            <form>
+                <table align="center">
+                    <tbody>
+                    <tr>
+                        <td>Prova</td>
+                        <td>Another one</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
