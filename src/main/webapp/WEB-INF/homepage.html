@@ -5,6 +5,9 @@
     <title>Homepage</title>
 </head>
 <body>
-
+<form action="Logout" method="post">
+    <input type="submit" value="Logout">
+</form>
+<h1>Welcome back <span th:text="${session.user.getUsername()}">user</span></h1>
 </body>
 </html>
