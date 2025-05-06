@@ -119,3 +119,5 @@ Legenda:
 - #set_colour(color.olive, [Componenti])
 - #set_colour(blue, [Eventi])
 - #set_colour(color.maroon, [Azioni])
+
+#figure(image("IFML Diagram HTML.png", width: 100%))
