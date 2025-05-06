@@ -30,18 +30,19 @@ load data local infile 'docs/genres.csv'
 
 create table songs
 (
-    id          int auto_increment,
-    user_id     int         not null,
-    title       varchar(64) not null,
-    image       varchar(64) not null,
-    album_title varchar(64) not null,
-    performer   varchar(64) not null, #interprete
-    year        int         not null,
-    genre       varchar(64) not null,
-    file        varchar(64) not null,
+    id              int auto_increment,
+    user_id         int         not null,
+    title           varchar(64) not null,
+    image_file_name varchar(64) not null,
+    album_title     varchar(64) not null,
+    performer       varchar(64) not null, #interprete
+    year            int         not null,
+    genre           varchar(64) not null,
+    music_file_name varchar(64) not null,
     primary key (id),
     foreign key (user_id) references users (id),
-    foreign key (genre) references genres (name)
+    foreign key (genre) references genres (name),
+    unique (user_id, music_file_name)
 );
 
 create table playlists
@@ -64,3 +65,22 @@ create table playlist_contents
 insert into users (username, password, name, surname)
 values ('mssuperlol', 'pass', 'Michele', 'Sangaletti'),
        ('john', 'word', 'John', 'DarkSouls');
+
+insert into songs (user_id, title, image_file_name, album_title, performer, year, genre, music_file_name)
+values ('1', 'Lovesick - 80,000 Lightyears', 'Omori_Portrait.png', 'OMORI OST', 'Omocat', '2020', 'Electronic',
+        'OMORI OST - 025 Lovesick - 80,000 Lightyears.mp3'),
+       ('1', 'Three Bar Logos', 'Omori_Portrait.png', 'OMORI OST', 'Omocat', '2020', 'Electronic',
+        'OMORI OST - 027 Three Bar Logos.mp3'),
+       ('1', 'Stardust Diving', 'Omori_Portrait.png', 'OMORI OST', 'Omocat', '2020', 'Electronic',
+        'OMORI OST - 032 Stardust Diving.mp3'),
+       ('1', 'You Were Wrong. Go Back', 'Omori_Portrait.png', 'OMORI OST', 'Omocat', '2020', 'Electronic',
+        'OMORI OST - 040 You Were Wrong. Go Back..mp3');
+
+insert into playlists (title, date)
+values ('Videogames OST', '2023/01/01');
+
+insert into playlist_contents (playlist, song)
+values (1, 1),
+       (1, 2),
+       (1, 3),
+       (1, 4);
