@@ -1,56 +1,111 @@
 package it.polimi.tiw_project.controllers;
 
 import it.polimi.tiw_project.beans.User;
+import it.polimi.tiw_project.dao.SongDAO;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.UnavailableException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
+import jakarta.servlet.http.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
+@MultipartConfig
 @WebServlet("/UploadSong")
 public class UploadSong extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private Connection connection = null;
     String folderPath;
 
     @Override
     public void init() throws ServletException {
-        folderPath = getServletContext().getInitParameter("folderPath");
+        folderPath = getServletContext().getInitParameter("musicPath");
+        try {
+            ServletContext context = getServletContext();
+            String driver = context.getInitParameter("dbDriver");
+            String url = context.getInitParameter("dbUrl");
+            String user = context.getInitParameter("dbUser");
+            String password = context.getInitParameter("dbPassword");
+            Class.forName(driver);
+
+            connection = DriverManager.getConnection(url, user, password);
+        } catch (ClassNotFoundException e) {
+            throw new UnavailableException("Can't load database driver");
+        } catch (SQLException e) {
+            throw new UnavailableException("Couldn't get db connection");
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User user = (User) request.getAttribute("user");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         if (user == null) {
             response.sendRedirect(getServletContext().getContextPath() + "/login.html");
             return;
         }
 
-        Part filePart = request.getPart("file");
-        if (filePart == null || filePart.getSize() == 0) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing file");
+        Part imageFilePart = request.getPart("image_file");
+        if (imageFilePart == null || imageFilePart.getSize() == 0) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing image file");
             return;
         }
 
-        //TODO fix the control to allow more file types
-        if (!filePart.getContentType().equals(".mp3")) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "File format not permitted");
+        if (!imageFilePart.getContentType().startsWith("image")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Image: file format not permitted");
             return;
         }
 
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        Part musicFilePart = request.getPart("music_file");
+        if (musicFilePart == null || musicFilePart.getSize() == 0) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing music file");
+            return;
+        }
+
+        if (!musicFilePart.getContentType().startsWith("audio")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Music: file format not permitted");
+            return;
+        }
+
+        SongDAO songDAO = new SongDAO(connection);
+        int userID = user.getId();
+        String title = request.getParameter("title");
+        String imageFileName = Paths.get(imageFilePart.getSubmittedFileName()).getFileName().toString();
+        String albumTitle = request.getParameter("album_title");
+        String performer = request.getParameter("performer");
+        int year = Integer.parseInt(request.getParameter("year"));
+        String genre = request.getParameter("genre");
+        String musicFileName = Paths.get(musicFilePart.getSubmittedFileName()).getFileName().toString();
+
         //saves the file to /home/mssuperlol/Documents/TIW_project_resources/ID/
-        String outputPath = folderPath + user.getId() + File.separator + fileName;
+        String outputPath = folderPath + user.getId() + File.separator + imageFileName;
         File outputFile = new File(outputPath);
+        try (InputStream fileContent = imageFilePart.getInputStream()) {
+            Files.copy(fileContent, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
 
-        try (InputStream fileContent = filePart.getInputStream()) {
+        outputPath = folderPath + user.getId() + File.separator + musicFileName;
+        outputFile = new File(outputPath);
+        try (InputStream fileContent = musicFilePart.getInputStream()) {
             Files.copy(fileContent, outputFile.toPath());
         }
+
+        //update the db
+        try {
+            songDAO.insertSong(userID, title, imageFileName, albumTitle, performer, year, genre, musicFileName);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        response.sendRedirect(getServletContext().getContextPath() + "/Homepage");
     }
 }
