@@ -5,7 +5,7 @@
     <title>Homepage</title>
 </head>
 <body>
-<form action="Logout" method="post">
+<form action="Logout" method="get">
     <input type="submit" value="Logout">
 </form>
 <h1>Welcome back <span th:text="${session.user.getName()}">Name</span> <span th:text="${session.user.getSurname()}">Surname</span>
@@ -35,20 +35,20 @@
     <tr>
         <td>
             <!--form to upload new song-->
-            <form>
+            <form action="UploadSong" method="post" enctype="multipart/form-data">
                 <table align="center">
                     <tbody>
                     <tr>
                         <td>Titolo:</td>
-                        <td><label><input type="text" name="title"></label></td>
+                        <td><label><input type="text" name="title" maxlength="64"></label></td>
                     </tr>
                     <tr>
                         <td>Album:</td>
-                        <td><label><input type="text" name="album_title"></label></td>
+                        <td><label><input type="text" name="album_title" maxlength="64"></label></td>
                     </tr>
                     <tr>
                         <td>Inteprete:</td>
-                        <td><label><input type="text" name="performer"></label></td>
+                        <td><label><input type="text" name="performer" maxlength="64"></label></td>
                     </tr>
                     <tr>
                         <td>Anno:</td>
@@ -58,7 +58,7 @@
                         <td>Genere:</td>
                         <td>
                             <label>
-                                <select>
+                                <select name="genre">
                                     <option th:each="g : ${genres}" th:value="${g}" th:text="${g}"></option>
                                 </select>
                             </label>
@@ -66,11 +66,11 @@
                     </tr>
                     <tr>
                         <td>File musicale:</td>
-                        <td><label><input type="file" accept=".mp3" name="music_file_name"></label></td>
+                        <td><label><input type="file" accept=".mp3, .ogg, .wav" name="music_file"></label></td>
                     </tr>
                     <tr>
                         <td>Immagine:</td>
-                        <td><label><input type="file" accept="image/*" name="image_file_name"></label></td>
+                        <td><label><input type="file" accept="image/*" name="image_file"></label></td>
                     </tr>
                     <tr>
                         <td><input type="submit" value="Carica brano ->"></td>
