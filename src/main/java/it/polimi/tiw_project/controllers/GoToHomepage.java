@@ -71,8 +71,8 @@ public class GoToHomepage extends HttpServlet {
         User user = (User) session.getAttribute("user");
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
         GenreDAO genreDAO = new GenreDAO(connection);
-        List<Playlist> playlists = null;
-        List<String> genres = null;
+        List<Playlist> playlists;
+        List<String> genres;
 
         try {
             playlists = playlistDAO.getPlaylists(user.getId());
