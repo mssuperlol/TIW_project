@@ -18,6 +18,7 @@ public class SongDAO {
 
     /**
      * Gets all the songs associated with the given user id
+     *
      * @param userId user id
      * @return a list containing all the songs associated with id, or null if no songs were found
      * @throws SQLException
@@ -38,6 +39,7 @@ public class SongDAO {
 
     /**
      * Gets all the songs associated with the given playlist id
+     *
      * @param playlistId playlist id
      * @return a list containing all the songs associated with id, or null if no songs were found
      * @throws SQLException
@@ -58,6 +60,7 @@ public class SongDAO {
 
     /**
      * Extracts songs from a given resultSet
+     *
      * @param resultSet
      * @return list of all songs from resultSet, or null if no songs were found
      * @throws SQLException
@@ -83,5 +86,33 @@ public class SongDAO {
             songs.add(song);
         }
         return songs;
+    }
+
+    /**
+     * Adds a song to the songs database
+     * @param userId
+     * @param title
+     * @param imageFileName
+     * @param albumTitle
+     * @param performer
+     * @param year
+     * @param genre
+     * @param musicFileName
+     * @throws SQLException
+     */
+    public void insertSong(int userId, String title, String imageFileName, String albumTitle, String performer, int year, String genre, String musicFileName) throws SQLException {
+        String query = "INSERT into songs(user_id, title, image_file_name, album_title, performer, year, genre, music_file_name) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setString(2, title);
+            statement.setString(3, imageFileName);
+            statement.setString(4, albumTitle);
+            statement.setString(5, performer);
+            statement.setInt(6, year);
+            statement.setString(7, genre);
+            statement.setString(8, musicFileName);
+            statement.executeUpdate();
+        }
     }
 }
