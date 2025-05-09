@@ -30,8 +30,8 @@ Creata il: <span th:text="${playlist.getDate}">data</span><br>
         <td>
             <table border="1">
                 <tbody>
-                <tr th:each="s : ${songs}">
-                    <td>
+                <tr>
+                    <td th:each="s : ${songs}">
                         <!--TODO: cliccare il titolo ti manda alla pagina player & mostrare l'immagine della canzone-->
                         <span th:text="${s.getTitle()}">Titolo</span>
                     </td>
