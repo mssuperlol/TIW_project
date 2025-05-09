@@ -106,7 +106,7 @@ public class GoToPlaylist extends HttpServlet {
 
         List<Song> currSongs = new ArrayList<>();
 
-        for (int i = 0; i + songId * 5 < currPlaylist.getSongs().size(); i++) {
+        for (int i = 0; i + songId * 5 < currPlaylist.getSongs().size() && i < 5; i++) {
             currSongs.add(currPlaylist.getSongs().get(i + songId * 5));
         }
 
