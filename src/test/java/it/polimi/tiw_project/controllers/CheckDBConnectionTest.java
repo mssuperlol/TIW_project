@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class CheckDBConnectionTest {
     @Test
     void testCheckDBConnection() {
@@ -18,6 +20,7 @@ class CheckDBConnectionTest {
         } catch (ClassNotFoundException e) {
             System.err.println("Driver not found");
             e.printStackTrace();
+            fail();
         }
         try {
             connection = DriverManager.getConnection
@@ -27,6 +30,9 @@ class CheckDBConnectionTest {
         } catch (Exception e) {
             System.err.println("Connection failed");
             e.printStackTrace();
+            fail();
         }
+
+        assertNotNull(connection);
     }
 }
