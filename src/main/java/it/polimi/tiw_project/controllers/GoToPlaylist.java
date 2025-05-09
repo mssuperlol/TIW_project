@@ -70,7 +70,7 @@ public class GoToPlaylist extends HttpServlet {
         }
 
         User user = (User) session.getAttribute("user");
-        int playlistId, songId;
+        int playlistId, songsIndex;
 
         try {
             playlistId = Integer.parseInt(request.getParameter("playlistId"));
@@ -79,13 +79,13 @@ public class GoToPlaylist extends HttpServlet {
             return;
         }
         try {
-            songId = Integer.parseInt(request.getParameter("songId"));
+            songsIndex = Integer.parseInt(request.getParameter("songsIndex"));
         } catch (NumberFormatException e) {
-            songId = 0;
+            songsIndex = 0;
         }
 
 
-        if (playlistId <= 0 || songId < 0) {
+        if (playlistId <= 0 || songsIndex < 0) {
             response.sendRedirect(homePath);
             return;
         }
@@ -104,19 +104,19 @@ public class GoToPlaylist extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        if (songId * 5 > currPlaylist.getSongs().size()) {
+        if (songsIndex * 5 > currPlaylist.getSongs().size()) {
             response.sendRedirect(homePath);
             return;
         }
 
         boolean songsBefore, songsAfter;
 
-        if (songId != 0) {
+        if (songsIndex != 0) {
             songsBefore = true;
         } else {
             songsBefore = false;
         }
-        if ((songId + 1) * 5 < currPlaylist.getSongs().size()) {
+        if ((songsIndex + 1) * 5 < currPlaylist.getSongs().size()) {
             songsAfter = true;
         } else {
             songsAfter = false;
@@ -124,8 +124,8 @@ public class GoToPlaylist extends HttpServlet {
 
         List<Song> currSongs = new ArrayList<>();
 
-        for (int i = 0; i + songId * 5 < currPlaylist.getSongs().size() && i < 5; i++) {
-            currSongs.add(currPlaylist.getSongs().get(i + songId * 5));
+        for (int i = 0; i + songsIndex * 5 < currPlaylist.getSongs().size() && i < 5; i++) {
+            currSongs.add(currPlaylist.getSongs().get(i + songsIndex * 5));
         }
 
         String path = "/WEB-INF/playlist.html";
@@ -136,7 +136,7 @@ public class GoToPlaylist extends HttpServlet {
         webC.setVariable("songsBefore", songsBefore);
         webC.setVariable("songsAfter", songsAfter);
         webC.setVariable("playlistId", playlistId);
-        webC.setVariable("songId", songId);
+        webC.setVariable("songsIndex", songsIndex);
         templateEngine.process(path, webC, response.getWriter());
     }
 

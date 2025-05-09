@@ -26,7 +26,7 @@
         <tbody>
         <tr th:each="p : ${playlists}">
             <td>
-                <a href="playlist.html" th:href="@{/Playlist(playlistId = ${p.id}, songId = 0)}">
+                <a href="playlist.html" th:href="@{/Playlist(playlistId = ${p.id}, songsIndex = 0)}">
                     <span th:text="${p.getName()}">Nome Playlist</span>
                 </a>
             </td>
