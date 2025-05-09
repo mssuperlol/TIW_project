@@ -18,6 +18,7 @@ public class PlaylistDAO {
 
     /**
      * Gets all the playlists created by the given user
+     *
      * @param userId id of the user
      * @return a list of playlists, with the songs attribute as null
      * @throws SQLException
@@ -52,6 +53,7 @@ public class PlaylistDAO {
 
     /**
      * Given a playlist ID, returns all the information of that playlist and a list its songs
+     *
      * @param playlistId ID of the playlist
      * @return Playlist object with all the information
      * @throws SQLException
@@ -65,7 +67,7 @@ public class PlaylistDAO {
             statement.setInt(1, playlistId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (!resultSet.isBeforeFirst()) {
+                if (!resultSet.isBeforeFirst() || !resultSet.next()) {
                     return null;
                 }
 
@@ -75,6 +77,31 @@ public class PlaylistDAO {
                 playlist.setDate(resultSet.getDate("date"));
                 playlist.setSongs(new SongDAO(connection).getAllSongsFromPlaylist(playlistId));
                 return playlist;
+            }
+        }
+    }
+
+    /**
+     * Returns the user id of the playlist.
+     *
+     * @param playlistId id of the playlist
+     * @return user id; if not found, returns -1
+     * @throws SQLException
+     */
+    public int getUserId(int playlistId) throws SQLException {
+        String query = "SELECT s.user_id " +
+                "FROM playlists AS p JOIN playlist_contents AS c ON p.id = c.playlist JOIN songs AS s ON c.song = s.id " +
+                "WHERE p.id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, playlistId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.isBeforeFirst() || !resultSet.next()) {
+                    return -1;
+                }
+
+                return resultSet.getInt("user_id");
             }
         }
     }
