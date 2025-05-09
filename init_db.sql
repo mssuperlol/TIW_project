@@ -31,14 +31,14 @@ load data local infile 'docs/genres.csv'
 create table songs
 (
     id              int auto_increment,
-    user_id         int         not null,
-    title           varchar(64) not null,
-    image_file_name varchar(64) not null,
-    album_title     varchar(64) not null,
-    performer       varchar(64) not null, #interprete
-    year            int         not null,
-    genre           varchar(64) not null,
-    music_file_name varchar(64) not null,
+    user_id         int          not null,
+    title           varchar(64)  not null,
+    image_file_name varchar(64)  not null,
+    album_title     varchar(64)  not null,
+    performer       varchar(64)  not null, #interprete
+    year            int          not null,
+    genre           varchar(64)  not null,
+    music_file_name varchar(128) not null,
     primary key (id),
     foreign key (user_id) references users (id),
     foreign key (genre) references genres (name),
@@ -74,7 +74,25 @@ values ('1', 'Lovesick - 80,000 Lightyears', 'Omori_Portrait.png', 'OMORI OST', 
        ('1', 'Stardust Diving', 'Omori_Portrait.png', 'OMORI OST', 'Omocat', '2020', 'Electronic',
         'OMORI OST - 032 Stardust Diving.mp3'),
        ('1', 'You Were Wrong. Go Back', 'Omori_Portrait.png', 'OMORI OST', 'Omocat', '2020', 'Electronic',
-        'OMORI OST - 040 You Were Wrong. Go Back..mp3');
+        'OMORI OST - 040 You Were Wrong. Go Back..mp3'),
+       ('1', 'Locked Girl ~ The Girls Secret Room', 'Touhou.jpg', 'Touhou 6 OST', 'Zun', '2002', 'Electronic',
+        'EoSD Stage 4 Boss - Patchouli Knowledges Theme - Locked Girl ~ The Girls Secret Room.mp3'),
+       ('1', 'A Stroll Through Nostalgia', 'Phyrnna.jpg', 'Epic Battle Fantasy 4 OST', 'Phyrnna', '2013', 'Electronic',
+        'Phyrnna - A Stroll Through Nostalgia (Ending Version).mp3'),
+       ('1', 'Shizuka', 'Crosscode.jpg', 'Crosscode OST', 'Deniz Akbulut', '2018', 'Electronic',
+        'Shizuka ~ CrossCode (Original Game Soundtrack).mp3'),
+       ('1', 'The Leopard''s Bane', 'Phyrnna.png', 'Epic Battel Fantasy 5 OST', 'Phyrnna', '2018', 'Electronic',
+        'The Leopard''s Bane.mp3'),
+       ('1', 'BAD Apple!!', 'Th04cover.jpg', 'Touhou 4 OST', 'Zun', '1998', 'Electronic',
+        'Touhou 4 - Music #07 - BAD Apple!!.mp3'),
+       ('1', 'Ornstein and Smough', 'Dark Souls.jpg', 'Dark Souls OST', 'Motoi Sakuraba', '2011', 'Electronic',
+        'Ornstein and Smough - Dark Souls Soundtrack 15.mp3'),
+       ('1', 'Windy and Ripply', 'Sonic_Adventure.png', 'Sonic Adventure OST', 'Jun Senoue', '1998', 'Electronic',
+        'Windy and Ripply (Emerald Coast) - Sonic Adventure [OST].mp3'),
+       ('1', 'Command 2', 'Systemshock2box.jpg', 'System Shock 2 OST', 'Josh Randall', '1999', 'Electronic',
+        'System Shock 2 OST Command 2.mp3'),
+       ('1', 'Intro', 'Sysshock.jpg', 'System Shock OST', 'Greg LoPiccolo', '1994', 'Electronic',
+        'System Shock Soundtrack - 00 - Intro.mp3');
 
 insert into playlists (title, date)
 values ('Videogames OST', '2023/01/01');
@@ -83,4 +101,13 @@ insert into playlist_contents (playlist, song)
 values (1, 1),
        (1, 2),
        (1, 3),
-       (1, 4);
+       (1, 4),
+       (1, 5),
+       (1, 6),
+       (1, 7),
+       (1, 8),
+       (1, 9),
+       (1, 10),
+       (1, 11),
+       (1, 12),
+       (1, 13);
