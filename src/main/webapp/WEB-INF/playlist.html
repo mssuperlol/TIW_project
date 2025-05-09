@@ -22,7 +22,8 @@ Creata il: <span th:text="${playlist.getDate}">data</span><br>
     <tr>
         <td>
             <div th:if="${songsBefore}">
-                <a href="playlist.html" th:href="@{/Playlist(playlistId = ${playlistId}, songId = ${songId} - 1)}">
+                <a href="playlist.html"
+                   th:href="@{/Playlist(playlistId = ${playlistId}, songsIndex = ${songsIndex} - 1)}">
                     <- Precedenti
                 </a>
             </div>
@@ -31,9 +32,9 @@ Creata il: <span th:text="${playlist.getDate}">data</span><br>
             <table border="1">
                 <tbody>
                 <tr>
-                    <td th:each="s : ${songs}">
-                        <!--TODO: cliccare il titolo ti manda alla pagina player & mostrare l'immagine della canzone-->
-                        <span th:text="${s.getTitle()}">Titolo</span>
+                    <td th:each="s : ${songs}" align="center">
+                        <a href="song.html" th:href="@{/Song(playlistId = ${playlistId}, songsIndex = ${songsIndex}, songId = ${s.getId()})}"><span th:text="${s.getTitle()}">Titolo</span></a><br>
+                        <img th:src="@{/GetFile(filename=${s.getImage_file_name()})}" alt="Immagine della canzone corrente" height=200 width=200>
                     </td>
                 </tr>
                 </tbody>
@@ -41,7 +42,8 @@ Creata il: <span th:text="${playlist.getDate}">data</span><br>
         </td>
         <td>
             <div th:if="${songsAfter}">
-                <a href="playlist.html" th:href="@{/Playlist(playlistId = ${playlistId}, songId = ${songId} + 1)}">
+                <a href="playlist.html"
+                   th:href="@{/Playlist(playlistId = ${playlistId}, songsIndex = ${songsIndex} + 1)}">
                     Successive ->
                 </a>
             </div>
