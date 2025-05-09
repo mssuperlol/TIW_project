@@ -24,7 +24,7 @@ public class SongDAO {
      * @throws SQLException
      */
     public List<Song> getAllSongs(int userId) throws SQLException {
-        String query = "SELECT id, title, image_file_name, album_title, performer, year, genre, music_file_name " +
+        String query = "SELECT * " +
                 "FROM songs " +
                 "WHERE user_id = ?";
 
@@ -45,7 +45,7 @@ public class SongDAO {
      * @throws SQLException
      */
     public List<Song> getAllSongsFromPlaylist(int playlistId) throws SQLException {
-        String query = "SELECT id, title, image_file_name, album_title, performer, year, genre, music_file_name " +
+        String query = "SELECT * " +
                 "FROM songs JOIN playlist_contents ON songs.id = playlist_contents.song " +
                 "WHERE playlist_contents.playlist = ?";
 
@@ -71,25 +71,17 @@ public class SongDAO {
         }
 
         List<Song> songs = new ArrayList<>();
+
         while (resultSet.next()) {
-            Song song = new Song();
-
-            song.setId(resultSet.getInt("id"));
-            song.setTitle(resultSet.getString("title"));
-            song.setImage_file_name(resultSet.getString("image_file_name"));
-            song.setAlbum_title(resultSet.getString("album_title"));
-            song.setPerformer(resultSet.getString("performer"));
-            song.setYear(resultSet.getInt("year"));
-            song.setGenre(resultSet.getString("genre"));
-            song.setMusic_file_name(resultSet.getString("music_file_name"));
-
-            songs.add(song);
+            songs.add(getSongFromResultSet(resultSet));
         }
+
         return songs;
     }
 
     /**
      * Adds a song to the songs database
+     *
      * @param userId
      * @param title
      * @param imageFileName
@@ -114,5 +106,46 @@ public class SongDAO {
             statement.setString(8, musicFileName);
             statement.executeUpdate();
         }
+    }
+
+    /**
+     * Gets Song object from given songId
+     * @param songId id of the song
+     * @return Song object with all data; null if not found
+     * @throws SQLException
+     */
+    public Song getSong(int songId) throws SQLException {
+        String query = "SELECT * FROM songs WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, songId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return getSongFromResultSet(resultSet);
+                } else {
+                    return null;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+    private Song getSongFromResultSet(ResultSet resultSet) throws SQLException {
+        Song song = new Song();
+        song.setId(resultSet.getInt("id"));
+        song.setUser_id(resultSet.getInt("user_id"));
+        song.setTitle(resultSet.getString("title"));
+        song.setImage_file_name(resultSet.getString("image_file_name"));
+        song.setAlbum_title(resultSet.getString("album_title"));
+        song.setPerformer(resultSet.getString("performer"));
+        song.setYear(resultSet.getInt("year"));
+        song.setGenre(resultSet.getString("genre"));
+        song.setMusic_file_name(resultSet.getString("music_file_name"));
+        return song;
     }
 }
