@@ -12,21 +12,29 @@
 </h1>
 
 <!--playlists table-->
-<table border="1">
-    <thead>
-    <tr>
-        <th>Nome</th>
-        <th>Data</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="p : ${playlists}">
-        <!--TODO make the name of the playlist a button that brings up the respective playlist page-->
-        <td th:text="${p.getName()}"></td>
-        <td th:text="${p.getDate()}"></td>
-    </tr>
-    </tbody>
-</table>
+<div th:if="${#lists.isEmpty(playlists)}">
+    Nessuna playlist trovata. Per creare una nuova playlist, usa il form sotto.<br>
+</div>
+<div th:if="${not #lists.isEmpty(playlists)}">
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Data</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${playlists}">
+            <td>
+                <a href="playlist.html" th:href="@{/Playlist(playlistId = ${p.id}, songId = 0)}">
+                    <span th:text="${p.getName()}">Nome Playlist</span>
+                </a>
+            </td>
+            <td th:text="${p.getDate()}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 <br>
 
@@ -44,7 +52,7 @@
                     </tr>
                     <tr>
                         <td>Album:</td>
-                        <td><label><input type="text" name="album_title" maxlength="64"required></label></td>
+                        <td><label><input type="text" name="album_title" maxlength="64" required></label></td>
                     </tr>
                     <tr>
                         <td>Inteprete:</td>
