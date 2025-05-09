@@ -27,6 +27,7 @@ public class PlaylistDAO {
         String query = "SELECT p.id, p.title, p.date " +
                 "FROM playlists as p join playlist_contents as c on p.id = c.playlist join songs as s on c.song = s.id " +
                 "WHERE s.user_id = ? " +
+                "GROUP BY p.id, p.date " +
                 "ORDER BY p.date DESC";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
