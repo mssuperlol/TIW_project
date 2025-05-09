@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Playlist</title>
+</head>
+<body>
+<form action="Homepage" method="get">
+    <input type="submit" value="Homepage">
+</form>
+<br>
+<form action="Logout" method="get">
+    <input type="submit" value="Logout">
+</form>
+<h1><span th:text="${playlist.getName()}">Playlist</span></h1><br>
+Creata il: <span th:text="${playlist.getDate}">data</span><br>
+
+<br>
+
+<table align="center">
+    <tbody>
+    <tr>
+        <td>
+            <div th:if="${songsBefore}">
+                <a href="playlist.html" th:href="@{/Playlist(playlistId = ${playlistId}, songId = ${songId} - 1)}">
+                    <- Precedenti
+                </a>
+            </div>
+        </td>
+        <td>
+            <table border="1">
+                <tbody>
+                <tr th:each="s : ${songs}">
+                    <td>
+                        <!--TODO: cliccare il titolo ti manda alla pagina player & mostrare l'immagine della canzone-->
+                        <span th:text="${s.getTitle()}">Titolo</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+        <td>
+            <div th:if="${songsAfter}">
+                <a href="playlist.html" th:href="@{/Playlist(playlistId = ${playlistId}, songId = ${songId} + 1)}">
+                    Successive ->
+                </a>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
