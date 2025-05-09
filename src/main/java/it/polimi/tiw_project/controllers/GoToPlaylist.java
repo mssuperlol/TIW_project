@@ -61,6 +61,7 @@ public class GoToPlaylist extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String loginPath = getServletContext().getContextPath() + "/login.html";
+        String homePath = getServletContext().getContextPath() + "/Homepage";
         HttpSession session = request.getSession();
 
         if (session.isNew() || session.getAttribute("user") == null) {
@@ -69,11 +70,23 @@ public class GoToPlaylist extends HttpServlet {
         }
 
         User user = (User) session.getAttribute("user");
-        int playlistId = Integer.parseInt(request.getParameter("playlistId"));
-        int songId = Integer.parseInt(request.getParameter("songId"));
+        int playlistId, songId;
+
+        try {
+            playlistId = Integer.parseInt(request.getParameter("playlistId"));
+        } catch (NumberFormatException e) {
+            response.sendRedirect(homePath);
+            return;
+        }
+        try {
+            songId = Integer.parseInt(request.getParameter("songId"));
+        } catch (NumberFormatException e) {
+            songId = 0;
+        }
+
 
         if (playlistId <= 0 || songId < 0) {
-            response.sendRedirect(loginPath);
+            response.sendRedirect(homePath);
             return;
         }
 
@@ -82,13 +95,18 @@ public class GoToPlaylist extends HttpServlet {
 
         try {
             if (playlistDAO.getUserId(playlistId) != user.getId()) {
-                response.sendRedirect(loginPath);
+                response.sendRedirect(homePath);
                 return;
             }
 
             currPlaylist = playlistDAO.getFullPlaylist(playlistId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+
+        if (songId * 5 > currPlaylist.getSongs().size()) {
+            response.sendRedirect(homePath);
+            return;
         }
 
         boolean songsBefore, songsAfter;
