@@ -94,12 +94,11 @@ public class GoToPlaylist extends HttpServlet {
         Playlist currPlaylist;
 
         try {
-            if (playlistDAO.getUserId(playlistId) != user.getId()) {
+            currPlaylist = playlistDAO.getFullPlaylist(playlistId);
+            if (currPlaylist.getUserId() != user.getId()) {
                 response.sendRedirect(homePath);
                 return;
             }
-
-            currPlaylist = playlistDAO.getFullPlaylist(playlistId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

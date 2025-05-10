@@ -2,11 +2,9 @@ package it.polimi.tiw_project.dao;
 
 import it.polimi.tiw_project.beans.Playlist;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class PlaylistDAO {
@@ -24,11 +22,10 @@ public class PlaylistDAO {
      * @throws SQLException
      */
     public List<Playlist> getPlaylists(int userId) throws SQLException {
-        String query = "SELECT p.id, p.title, p.date " +
-                "FROM playlists as p join playlist_contents as c on p.id = c.playlist join songs as s on c.song = s.id " +
-                "WHERE s.user_id = ? " +
-                "GROUP BY p.id, p.date " +
-                "ORDER BY p.date DESC";
+        String query = "SELECT id, title, date " +
+                "FROM playlists " +
+                "WHERE user_id = ? " +
+                "GROUP BY id, date ";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
@@ -60,7 +57,7 @@ public class PlaylistDAO {
      * @throws SQLException
      */
     public Playlist getFullPlaylist(int playlistId) throws SQLException {
-        String query = "SELECT id, title, date " +
+        String query = "SELECT * " +
                 "FROM playlists " +
                 "WHERE id = ?";
 
@@ -74,6 +71,7 @@ public class PlaylistDAO {
 
                 Playlist playlist = new Playlist();
                 playlist.setId(resultSet.getInt("id"));
+                playlist.setUserId(resultSet.getInt("user_id"));
                 playlist.setName(resultSet.getString("title"));
                 playlist.setDate(resultSet.getDate("date"));
                 playlist.setSongs(new SongDAO(connection).getAllSongsFromPlaylist(playlistId));
@@ -82,28 +80,19 @@ public class PlaylistDAO {
         }
     }
 
-    /**
-     * Returns the user id of the playlist.
-     *
-     * @param playlistId id of the playlist
-     * @return user id; if not found, returns -1
-     * @throws SQLException
-     */
-    public int getUserId(int playlistId) throws SQLException {
-        String query = "SELECT s.user_id " +
-                "FROM playlists AS p JOIN playlist_contents AS c ON p.id = c.playlist JOIN songs AS s ON c.song = s.id " +
-                "WHERE p.id = ?";
+    public void insertPlaylist(int userId, String title, List<Integer> songsId) throws SQLException {
+        String query = "INSERT INTO playlists (user_id, title, date) VALUES (?, ?, ?)";
+        Calendar today = Calendar.getInstance();
+//        today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, playlistId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (!resultSet.isBeforeFirst() || !resultSet.next()) {
-                    return -1;
-                }
-
-                return resultSet.getInt("user_id");
-            }
+            statement.setInt(1, userId);
+            statement.setString(2, title);
+            statement.setDate(3, new Date(today.getTime().getTime()));
+            statement.executeUpdate();
         }
+    }
+
+    public void addSongsToPlaylist(int playlistId, List<Integer> songsId) throws SQLException {
     }
 }

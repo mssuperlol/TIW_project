@@ -47,10 +47,12 @@ create table songs
 
 create table playlists
 (
-    id    int auto_increment,
-    title varchar(64) not null,
-    date  date        not null,
-    primary key (id)
+    id      int auto_increment,
+    user_id int         not null,
+    title   varchar(64) not null,
+    date    date        not null,
+    primary key (id),
+    unique (user_id, title)
 );
 
 create table playlist_contents
@@ -81,7 +83,7 @@ values ('1', 'Lovesick - 80,000 Lightyears', 'Omori_Portrait.png', 'OMORI OST', 
         'Phyrnna - A Stroll Through Nostalgia (Ending Version).mp3'),
        ('1', 'Shizuka', 'Crosscode.jpg', 'Crosscode OST', 'Deniz Akbulut', '2018', 'Electronic',
         'Shizuka ~ CrossCode (Original Game Soundtrack).mp3'),
-       ('1', 'The Leopard''s Bane', 'Phyrnna.jpg', 'Epic Battel Fantasy 5 OST', 'Phyrnna', '2018', 'Electronic',
+       ('1', 'The Leopard''s Bane', 'Phyrnna.jpg', 'Epic Battle Fantasy 5 OST', 'Phyrnna', '2018', 'Electronic',
         'The Leopard''s Bane.mp3'),
        ('1', 'BAD Apple!!', 'Th04cover.jpg', 'Touhou 4 OST', 'Zun', '1998', 'Electronic',
         'Touhou 4 - Music #07 - BAD Apple!!.mp3'),
@@ -94,8 +96,8 @@ values ('1', 'Lovesick - 80,000 Lightyears', 'Omori_Portrait.png', 'OMORI OST', 
        ('1', 'Intro', 'Sysshock.jpg', 'System Shock OST', 'Greg LoPiccolo', '1994', 'Electronic',
         'System Shock Soundtrack - 00 - Intro.mp3');
 
-insert into playlists (title, date)
-values ('Videogames OST', '2023/01/01');
+insert into playlists (user_id, title, date)
+values (1, 'Videogames OST', '2023/01/01');
 
 insert into playlist_contents (playlist, song)
 values (1, 1),
