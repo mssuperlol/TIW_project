@@ -23,7 +23,7 @@ public class SongDAO {
      * @return a list containing all the songs associated with id, or null if no songs were found
      * @throws SQLException
      */
-    public List<Song> getAllSongs(int userId) throws SQLException {
+    public List<Song> getAllSongsFromUserId(int userId) throws SQLException {
         String query = "SELECT * " +
                 "FROM songs " +
                 "WHERE user_id = ?";
