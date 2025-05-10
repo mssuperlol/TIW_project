@@ -82,28 +82,37 @@ public class UploadSong extends HttpServlet {
         String imageFileName = Paths.get(imageFilePart.getSubmittedFileName()).getFileName().toString();
         String albumTitle = request.getParameter("album_title");
         String performer = request.getParameter("performer");
-        int year = Integer.parseInt(request.getParameter("year"));
+        int year;
         String genre = request.getParameter("genre");
         String musicFileName = Paths.get(musicFilePart.getSubmittedFileName()).getFileName().toString();
 
-        //saves the file to /home/mssuperlol/Documents/TIW_project_resources/ID/
-        String outputPath = folderPath + user.getId() + File.separator + imageFileName;
-        File outputFile = new File(outputPath);
-        try (InputStream fileContent = imageFilePart.getInputStream()) {
-            Files.copy(fileContent, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        outputPath = folderPath + user.getId() + File.separator + musicFileName;
-        outputFile = new File(outputPath);
-        try (InputStream fileContent = musicFilePart.getInputStream()) {
-            Files.copy(fileContent, outputFile.toPath());
-        }
-
-        //update the db
         try {
-            songDAO.insertSong(userID, title, imageFileName, albumTitle, performer, year, genre, musicFileName);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            year = Integer.parseInt(request.getParameter("year"));
+        } catch (NumberFormatException e) {
+            response.sendRedirect(getServletContext().getContextPath() + "/Homepage");
+            return;
+        }
+
+        if (title != null && albumTitle != null && performer != null && genre != null) {
+            //saves the files to /home/mssuperlol/Documents/TIW_project_resources/ID/
+            String outputPath = folderPath + user.getId() + File.separator + imageFileName;
+            File outputFile = new File(outputPath);
+            try (InputStream fileContent = imageFilePart.getInputStream()) {
+                Files.copy(fileContent, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            outputPath = folderPath + user.getId() + File.separator + musicFileName;
+            outputFile = new File(outputPath);
+            try (InputStream fileContent = musicFilePart.getInputStream()) {
+                Files.copy(fileContent, outputFile.toPath());
+            }
+
+            //update the db
+            try {
+                songDAO.insertSong(userID, title, imageFileName, albumTitle, performer, year, genre, musicFileName);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         response.sendRedirect(getServletContext().getContextPath() + "/Homepage");

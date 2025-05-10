@@ -49,7 +49,7 @@ public class AddSongs extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         if (user == null) {
@@ -59,11 +59,22 @@ public class AddSongs extends HttpServlet {
 
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
         SongDAO songDAO = new SongDAO(connection);
-        int userId = user.getId(), playlistId = Integer.parseInt(request.getParameter("playlistId"));
-        List<Integer> songs = new ArrayList<>();
-        List<Integer> userSongsId;
+        int userId = user.getId(), playlistId;
+        List<Integer> songs = new ArrayList<>(), userSongsId;
 
         try {
+            playlistId = Integer.parseInt(request.getParameter("playlistId"));
+        } catch (NumberFormatException e) {
+            response.sendRedirect(getServletContext().getContextPath() + "/Homepage");
+            return;
+        }
+
+        try {
+            if (userId != playlistDAO.getFullPlaylist(playlistId).getUserId()) {
+                response.sendRedirect(getServletContext().getContextPath() + "/Homepage");
+                return;
+            }
+
             userSongsId = songDAO.getAllSongsFromUserId(userId).stream()
                     .map(Song::getId)
                     .collect(Collectors.toList());
@@ -73,7 +84,7 @@ public class AddSongs extends HttpServlet {
 
         for (Integer songId : userSongsId) {
             String currSongId = request.getParameter("songId" + songId.toString());
-            if(currSongId != null) {
+            if (currSongId != null) {
                 songs.add(songId);
             }
         }

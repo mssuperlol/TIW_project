@@ -57,8 +57,12 @@ public class CreatePlaylist extends HttpServlet {
         SongDAO songDAO = new SongDAO(connection);
         int userId = user.getId();
         String title = request.getParameter("title");
-        List<Integer> songs = new ArrayList<>();
-        List<Integer> userSongsId;
+        List<Integer> songs = new ArrayList<>(), userSongsId;
+
+        if (title == null) {
+            response.sendRedirect(getServletContext().getContextPath() + "/Homepage");
+            return;
+        }
 
         try {
             userSongsId = songDAO.getAllSongsFromUserId(userId).stream()
@@ -70,7 +74,7 @@ public class CreatePlaylist extends HttpServlet {
 
         for (Integer songId : userSongsId) {
             String currSongId = request.getParameter("songId" + songId.toString());
-            if(currSongId != null) {
+            if (currSongId != null) {
                 songs.add(songId);
             }
         }
