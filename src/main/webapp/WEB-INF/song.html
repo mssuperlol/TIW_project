@@ -16,8 +16,9 @@
 <!--song info-->
 <span th:text="${song.getTitle()}">Titolo</span><br>
 <img th:src="@{/GetFile(filename=${song.getImage_file_name()})}" alt="Foto della canzone corrente" height=200 width=200><br>
-<!--TODO fix audio not showing up-->
-<audio th:src="@{/GetFile(filename=${song.getMusic_file_name()})}">Something went wrong :(</audio>
+<audio controls>
+    <source th:src="@{/GetFile(filename=${song.getMusic_file_name()})}" type="audio/mpeg">
+</audio>
 <br>
 Titolo dell'album: <span th:text="${song.getAlbum_title()}">album</span><br>
 Interprete: <span th:text="${song.getPerformer()}">interprete</span><br>
