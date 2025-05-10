@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.nio.file.Files;
 
 @WebServlet("/GetFile/*")
@@ -37,7 +36,6 @@ public class GetFile extends HttpServlet {
         String filename = request.getParameter("filename");
 
         File file = new File(folderPath + user.getId() + File.separator, filename);
-//        System.out.println(filename);
 
         if (!file.exists() || file.isDirectory()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "File not present");

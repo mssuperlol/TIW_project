@@ -20,7 +20,7 @@ public class Logout extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
 
-        if(session != null) {
+        if (session != null) {
             session.invalidate();
         }
 

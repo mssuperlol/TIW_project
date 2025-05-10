@@ -16,6 +16,7 @@ public class UserDAO {
 
     /**
      * Checks whether a user with the given username and password is present in the database
+     *
      * @param username to check
      * @param password to check
      * @return user information if found, null otherwise

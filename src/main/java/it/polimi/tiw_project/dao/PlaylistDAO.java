@@ -82,8 +82,9 @@ public class PlaylistDAO {
 
     /**
      * Creates a new playlist with the given infos and today as date
-     * @param userId id of the user
-     * @param title title of the playlist
+     *
+     * @param userId  id of the user
+     * @param title   title of the playlist
      * @param songsId List of songs id to add to playlist_contents. If songsId is null or empty, doesn't update playlist_contents
      * @throws SQLException
      */
@@ -105,8 +106,9 @@ public class PlaylistDAO {
 
     /**
      * Adds the couple (playlistId, songId) to playlist_contents for every id in the list
+     *
      * @param playlistId id of the playlist
-     * @param songsId list of songs id to add to the playlist
+     * @param songsId    list of songs id to add to the playlist
      * @throws SQLException
      */
     public void addSongsToPlaylist(int playlistId, List<Integer> songsId) throws SQLException {
@@ -123,8 +125,9 @@ public class PlaylistDAO {
 
     /**
      * Returns the id of the playlist given the user id and title
+     *
      * @param userId id of the user
-     * @param title title of the playlist
+     * @param title  title of the playlist
      * @return id of the playlist
      * @throws SQLException
      */
