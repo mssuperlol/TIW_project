@@ -45,6 +45,11 @@
             <!--form to upload new song-->
             <form action="UploadSong" method="post" enctype="multipart/form-data">
                 <table align="center">
+                    <thead>
+                    <tr>
+                        Aggiungi canzone
+                    </tr>
+                    </thead>
                     <tbody>
                     <tr>
                         <td>Titolo:</td>
@@ -89,12 +94,30 @@
         </td>
         <!--form to create new playlist-->
         <td>
-            <form>
+            <form action="CreatePlaylist" method="post">
                 <table align="center">
+                    <thead>
+                    <tr>
+                        Crea playlist
+                    </tr>
+                    </thead>
                     <tbody>
                     <tr>
-                        <td>Prova</td>
-                        <td>Another one</td>
+                        <td>Titolo:</td>
+                        <td><label>
+                            <input type="text" name="title" maxlength="64" required>
+                        </label></td>
+                    </tr>
+                    <tr th:each="s : ${songs}">
+                        <td>
+                            <span th:text="${s.getTitle()}">Canzone</span>
+                        </td>
+                        <td><label>
+                            <input type="checkbox" th:name="'songId' + ${s.getId()}">
+                        </label></td>
+                    </tr>
+                    <tr>
+                        <td><input type="submit" value="Crea playlist ->"></td>
                     </tr>
                     </tbody>
                 </table>

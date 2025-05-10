@@ -1,9 +1,11 @@
 package it.polimi.tiw_project.controllers;
 
 import it.polimi.tiw_project.beans.Playlist;
+import it.polimi.tiw_project.beans.Song;
 import it.polimi.tiw_project.beans.User;
 import it.polimi.tiw_project.dao.GenreDAO;
 import it.polimi.tiw_project.dao.PlaylistDAO;
+import it.polimi.tiw_project.dao.SongDAO;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebServlet;
@@ -71,12 +73,15 @@ public class GoToHomepage extends HttpServlet {
         User user = (User) session.getAttribute("user");
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
         GenreDAO genreDAO = new GenreDAO(connection);
+        SongDAO songDAO = new SongDAO(connection);
         List<Playlist> playlists;
         List<String> genres;
+        List<Song> songs;
 
         try {
             playlists = playlistDAO.getPlaylists(user.getId());
             genres = genreDAO.getGenres();
+            songs = songDAO.getAllSongsFromUserId(user.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -86,6 +91,7 @@ public class GoToHomepage extends HttpServlet {
         WebContext webC = new WebContext(webApplication.buildExchange(request, response), request.getLocale());
         webC.setVariable("playlists", playlists);
         webC.setVariable("genres", genres);
+        webC.setVariable("songs", songs);
         templateEngine.process(path, webC, response.getWriter());
     }
 
