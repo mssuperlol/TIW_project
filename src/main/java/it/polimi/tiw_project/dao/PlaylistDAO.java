@@ -80,10 +80,16 @@ public class PlaylistDAO {
         }
     }
 
+    /**
+     * Creates a new playlist with the given infos and today as date
+     * @param userId id of the user
+     * @param title title of the playlist
+     * @param songsId List of songs id to add to playlist_contents. If songsId is null or empty, doesn't update playlist_contents
+     * @throws SQLException
+     */
     public void insertPlaylist(int userId, String title, List<Integer> songsId) throws SQLException {
         String query = "INSERT INTO playlists (user_id, title, date) VALUES (?, ?, ?)";
         Calendar today = Calendar.getInstance();
-//        today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
@@ -91,8 +97,52 @@ public class PlaylistDAO {
             statement.setDate(3, new Date(today.getTime().getTime()));
             statement.executeUpdate();
         }
+
+        if (songsId != null && !songsId.isEmpty()) {
+            addSongsToPlaylist(getPlaylistId(userId, title), songsId);
+        }
     }
 
+    /**
+     * Adds the couple (playlistId, songId) to playlist_contents for every id in the list
+     * @param playlistId id of the playlist
+     * @param songsId list of songs id to add to the playlist
+     * @throws SQLException
+     */
     public void addSongsToPlaylist(int playlistId, List<Integer> songsId) throws SQLException {
+        String query = "INSERT INTO playlist_contents (playlist, song) VALUES (?, ?)";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            for (Integer songId : songsId) {
+                statement.setInt(1, playlistId);
+                statement.setInt(2, songId);
+                statement.executeUpdate();
+            }
+        }
+    }
+
+    /**
+     * Returns the id of the playlist given the user id and title
+     * @param userId id of the user
+     * @param title title of the playlist
+     * @return id of the playlist
+     * @throws SQLException
+     */
+    public int getPlaylistId(int userId, String title) throws SQLException {
+        String query = "SELECT id " +
+                "FROM playlists " +
+                "WHERE user_id = ? AND title = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setString(2, title);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.isBeforeFirst() || !resultSet.next()) {
+                    return -1;
+                }
+                return resultSet.getInt("id");
+            }
+        }
     }
 }
