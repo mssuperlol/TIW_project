@@ -4,6 +4,7 @@ import it.polimi.tiw_project.beans.Playlist;
 import it.polimi.tiw_project.beans.Song;
 import it.polimi.tiw_project.beans.User;
 import it.polimi.tiw_project.dao.PlaylistDAO;
+import it.polimi.tiw_project.dao.SongDAO;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebServlet;
@@ -127,6 +128,15 @@ public class GoToPlaylist extends HttpServlet {
             currSongs.add(currPlaylist.getSongs().get(i + songsIndex * 5));
         }
 
+        SongDAO songDAO = new SongDAO(connection);
+        List<Song> otherSongs;
+
+        try {
+            otherSongs = songDAO.getSongsNotInPlaylist(user.getId(), playlistId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         String path = "/WEB-INF/playlist.html";
         JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
         WebContext webC = new WebContext(webApplication.buildExchange(request, response), request.getLocale());
@@ -136,6 +146,7 @@ public class GoToPlaylist extends HttpServlet {
         webC.setVariable("songsAfter", songsAfter);
         webC.setVariable("playlistId", playlistId);
         webC.setVariable("songsIndex", songsIndex);
+        webC.setVariable("otherSongs", otherSongs);
         templateEngine.process(path, webC, response.getWriter());
     }
 

@@ -16,40 +16,84 @@
 Creata il: <span th:text="${playlist.getDate}">data</span><br>
 
 <br>
+<div th:if="${#lists.isEmpty(songs)}">
+    La playlist <span th:text="${playlist.getName()}">corrente</span> non ha nessun brano associato. Usa il form sotto
+    per aggiungerne.<br>
+</div>
+<div th:if="${not #lists.isEmpty(songs)}">
+    <table align="center">
+        <tbody>
+        <tr>
+            <td>
+                <div th:if="${songsBefore}">
+                    <a href="playlist.html"
+                       th:href="@{/Playlist(playlistId = ${playlistId}, songsIndex = ${songsIndex} - 1)}">
+                        <- Precedenti
+                    </a>
+                </div>
+            </td>
+            <td>
+                <table border="1">
+                    <tbody>
+                    <tr>
+                        <td th:each="s : ${songs}" align="center">
+                            <a href="song.html"
+                               th:href="@{/Song(playlistId = ${playlistId}, songsIndex = ${songsIndex}, songId = ${s.getId()})}"><span
+                                    th:text="${s.getTitle()}">Titolo</span></a><br>
+                            <img th:src="@{/GetFile(filename=${s.getImage_file_name()})}"
+                                 alt="Immagine della canzone corrente" height=200 width=200>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <div th:if="${songsAfter}">
+                    <a href="playlist.html"
+                       th:href="@{/Playlist(playlistId = ${playlistId}, songsIndex = ${songsIndex} + 1)}">
+                        Successive ->
+                    </a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
-<table align="center">
-    <tbody>
-    <tr>
-        <td>
-            <div th:if="${songsBefore}">
-                <a href="playlist.html"
-                   th:href="@{/Playlist(playlistId = ${playlistId}, songsIndex = ${songsIndex} - 1)}">
-                    <- Precedenti
-                </a>
-            </div>
-        </td>
-        <td>
-            <table border="1">
-                <tbody>
-                <tr>
-                    <td th:each="s : ${songs}" align="center">
-                        <a href="song.html" th:href="@{/Song(playlistId = ${playlistId}, songsIndex = ${songsIndex}, songId = ${s.getId()})}"><span th:text="${s.getTitle()}">Titolo</span></a><br>
-                        <img th:src="@{/GetFile(filename=${s.getImage_file_name()})}" alt="Immagine della canzone corrente" height=200 width=200>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-        <td>
-            <div th:if="${songsAfter}">
-                <a href="playlist.html"
-                   th:href="@{/Playlist(playlistId = ${playlistId}, songsIndex = ${songsIndex} + 1)}">
-                    Successive ->
-                </a>
-            </div>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<br>
+
+<div th:if="${#lists.isEmpty(otherSongs)}">
+    Tutte le tue canzoni sono già presenti nella playlist <span th:text="${playlist.getName()}">corrente</span>. Per
+    aggiungerne altre, carica altri brani dalla homepage.
+</div>
+<div th:if="${not #lists.isEmpty(otherSongs)}">
+    <form action="AddSongs" method="post">
+        <table>
+            <thead>
+            <tr>
+                Aggiungi canzoni
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td hidden="hidden"><label hidden="hidden">
+                    <input type="number" name="playlistId" th:value="${playlistId}">
+                </label></td>
+            </tr>
+            <tr th:each="s : ${otherSongs}">
+                <td>
+                    <span th:text="${s.getTitle()}">Canzone</span>
+                </td>
+                <td><label>
+                    <input type="checkbox" th:name="'songId' + ${s.getId()}">
+                </label></td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Aggiungi canzoni ->"></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
 </body>
 </html>
