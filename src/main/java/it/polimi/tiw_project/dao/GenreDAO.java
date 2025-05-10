@@ -14,6 +14,12 @@ public class GenreDAO {
         this.connection = connection;
     }
 
+    /**
+     * Gets all the genres
+     *
+     * @return a List of the genres as strings
+     * @throws SQLException
+     */
     public List<String> getGenres() throws SQLException {
         String query = "SELECT name FROM genres";
 
