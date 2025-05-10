@@ -32,7 +32,7 @@ public class SongDAO {
             statement.setInt(1, userId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                return getSongsFromResultSet(resultSet);
+                return getSongListFromResultSet(resultSet);
             }
         }
     }
@@ -53,7 +53,7 @@ public class SongDAO {
             statement.setInt(1, playlistId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                return getSongsFromResultSet(resultSet);
+                return getSongListFromResultSet(resultSet);
             }
         }
     }
@@ -65,7 +65,7 @@ public class SongDAO {
      * @return list of all songs from resultSet, or null if no songs were found
      * @throws SQLException
      */
-    private List<Song> getSongsFromResultSet(ResultSet resultSet) throws SQLException {
+    private List<Song> getSongListFromResultSet(ResultSet resultSet) throws SQLException {
         if (!resultSet.isBeforeFirst()) {
             return null;
         }
@@ -110,6 +110,7 @@ public class SongDAO {
 
     /**
      * Gets Song object from given songId
+     *
      * @param songId id of the song
      * @return Song object with all data; null if not found
      * @throws SQLException
@@ -126,6 +127,31 @@ public class SongDAO {
                 } else {
                     return null;
                 }
+            }
+        }
+    }
+
+    /**
+     * @param userId     id of the user
+     * @param playlistId id of the playlist to exclude
+     * @return a list of Song that were uploaded by the given user that are not already part of the given playlist
+     * @throws SQLException
+     */
+    public List<Song> getSongsNotInPlaylist(int userId, int playlistId) throws SQLException {
+        String query = "SELECT * " +
+                "FROM songs " +
+                "WHERE user_id = ? AND id NOT IN( " +
+                "   SELECT song " +
+                "   FROM playlist_contents " +
+                "   WHERE playlist = ?" +
+                ") ";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setInt(2, playlistId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return getSongListFromResultSet(resultSet);
             }
         }
     }
