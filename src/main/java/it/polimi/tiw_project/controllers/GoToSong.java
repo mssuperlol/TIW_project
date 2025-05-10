@@ -84,8 +84,6 @@ public class GoToSong extends HttpServlet {
 
         try {
             currSong = songDAO.getSong(songId);
-            System.out.println(currSong);
-            System.out.println(currSong.getUser_id() + " " + user.getId());
 
             if (currSong == null || currSong.getUser_id() != user.getId()) {
                 response.sendRedirect(homePath);
