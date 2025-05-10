@@ -97,7 +97,9 @@ values ('1', 'Lovesick - 80,000 Lightyears', 'Omori_Portrait.png', 'OMORI OST', 
         'System Shock Soundtrack - 00 - Intro.mp3');
 
 insert into playlists (user_id, title, date)
-values (1, 'Videogames OST', '2023/01/01');
+values (1, 'Videogames OST', '2025/02/13'),
+       (1, 'Omori OST', '2023/01/01'),
+       (2, 'Empty', '2025/01/01');
 
 insert into playlist_contents (playlist, song)
 values (1, 1),
@@ -112,4 +114,8 @@ values (1, 1),
        (1, 10),
        (1, 11),
        (1, 12),
-       (1, 13);
+       (1, 13),
+       (2, 1),
+       (2, 2),
+       (2, 3),
+       (2, 4);
