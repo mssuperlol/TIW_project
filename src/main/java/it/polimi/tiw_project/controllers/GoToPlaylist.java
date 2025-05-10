@@ -30,6 +30,7 @@ public class GoToPlaylist extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
     private Connection connection = null;
+    private static int VISIBLE_SONGS = 5;
 
     public GoToPlaylist() {
         super();
@@ -104,7 +105,7 @@ public class GoToPlaylist extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        if (songsIndex * 5 > currPlaylist.getSongs().size()) {
+        if (songsIndex * VISIBLE_SONGS > currPlaylist.getSongs().size()) {
             response.sendRedirect(homePath);
             return;
         }
@@ -116,7 +117,7 @@ public class GoToPlaylist extends HttpServlet {
         } else {
             songsBefore = false;
         }
-        if ((songsIndex + 1) * 5 < currPlaylist.getSongs().size()) {
+        if ((songsIndex + 1) * VISIBLE_SONGS < currPlaylist.getSongs().size()) {
             songsAfter = true;
         } else {
             songsAfter = false;
@@ -124,8 +125,8 @@ public class GoToPlaylist extends HttpServlet {
 
         List<Song> currSongs = new ArrayList<>();
 
-        for (int i = 0; i + songsIndex * 5 < currPlaylist.getSongs().size() && i < 5; i++) {
-            currSongs.add(currPlaylist.getSongs().get(i + songsIndex * 5));
+        for (int i = 0; i + songsIndex * VISIBLE_SONGS < currPlaylist.getSongs().size() && i < VISIBLE_SONGS; i++) {
+            currSongs.add(currPlaylist.getSongs().get(i + songsIndex * VISIBLE_SONGS));
         }
 
         SongDAO songDAO = new SongDAO(connection);
