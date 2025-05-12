@@ -1,6 +1,7 @@
 package it.polimi.tiw_project.dao;
 
 import it.polimi.tiw_project.beans.Playlist;
+import it.polimi.tiw_project.beans.Song;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ public class PlaylistDAO {
         String query = "SELECT id, title, date " +
                 "FROM playlists " +
                 "WHERE user_id = ? " +
-                "GROUP BY id, date ";
+                "GROUP BY id, date " +
+                "ORDER BY title, date DESC ";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
@@ -74,7 +76,13 @@ public class PlaylistDAO {
                 playlist.setUserId(resultSet.getInt("user_id"));
                 playlist.setName(resultSet.getString("title"));
                 playlist.setDate(resultSet.getDate("date"));
-                playlist.setSongs(new SongDAO(connection).getAllSongsFromPlaylist(playlistId));
+                List<Song> songsList = new SongDAO(connection).getAllSongsFromPlaylist(playlistId);
+                if (songsList == null) {
+                    playlist.setSongs(new ArrayList<>());
+                } else {
+                    playlist.setSongs(songsList);
+                }
+
                 return playlist;
             }
         }
