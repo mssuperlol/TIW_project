@@ -97,13 +97,11 @@ public class PlaylistDAO {
      * @throws SQLException
      */
     public void insertPlaylist(int userId, String title, List<Integer> songsId) throws SQLException {
-        String query = "INSERT INTO playlists (user_id, title, date) VALUES (?, ?, ?)";
-        Calendar today = Calendar.getInstance();
+        String query = "INSERT INTO playlists (user_id, title) VALUES (?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
             statement.setString(2, title);
-            statement.setDate(3, new Date(today.getTime().getTime()));
             statement.executeUpdate();
         }
 
