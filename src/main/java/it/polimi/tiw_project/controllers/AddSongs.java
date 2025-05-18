@@ -4,9 +4,8 @@ import it.polimi.tiw_project.beans.Song;
 import it.polimi.tiw_project.beans.User;
 import it.polimi.tiw_project.dao.PlaylistDAO;
 import it.polimi.tiw_project.dao.SongDAO;
-import jakarta.servlet.ServletContext;
+import it.polimi.tiw_project.utils.DBConnectionHandler;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +30,7 @@ public class AddSongs extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        try {
-            ServletContext context = getServletContext();
-            String driver = context.getInitParameter("dbDriver");
-            String url = context.getInitParameter("dbUrl");
-            String user = context.getInitParameter("dbUser");
-            String password = context.getInitParameter("dbPassword");
-            Class.forName(driver);
-
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException e) {
-            throw new UnavailableException("Can't load database driver");
-        } catch (SQLException e) {
-            throw new UnavailableException("Couldn't get db connection");
-        }
+        connection = DBConnectionHandler.getConnection(this.getServletContext());
     }
 
     @Override

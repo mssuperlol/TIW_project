@@ -2,6 +2,7 @@ package it.polimi.tiw_project.controllers;
 
 import it.polimi.tiw_project.beans.User;
 import it.polimi.tiw_project.dao.UserDAO;
+import it.polimi.tiw_project.utils.DBConnectionHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
@@ -26,20 +27,7 @@ public class CheckLogin extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        try {
-            ServletContext context = getServletContext();
-            String driver = context.getInitParameter("dbDriver");
-            String url = context.getInitParameter("dbUrl");
-            String user = context.getInitParameter("dbUser");
-            String password = context.getInitParameter("dbPassword");
-            Class.forName(driver);
-
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException e) {
-            throw new UnavailableException("Can't load database driver");
-        } catch (SQLException e) {
-            throw new UnavailableException("Couldn't get db connection");
-        }
+        connection = DBConnectionHandler.getConnection(this.getServletContext());
     }
 
     @Override

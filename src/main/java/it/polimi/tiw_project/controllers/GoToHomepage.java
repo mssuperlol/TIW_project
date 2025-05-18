@@ -6,6 +6,7 @@ import it.polimi.tiw_project.beans.User;
 import it.polimi.tiw_project.dao.GenreDAO;
 import it.polimi.tiw_project.dao.PlaylistDAO;
 import it.polimi.tiw_project.dao.SongDAO;
+import it.polimi.tiw_project.utils.DBConnectionHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebServlet;
@@ -44,20 +45,7 @@ public class GoToHomepage extends HttpServlet {
         this.templateEngine = new TemplateEngine();
         this.templateEngine.setTemplateResolver(templateResolver);
         templateResolver.setSuffix(".html");
-
-        try {
-            ServletContext context = getServletContext();
-            String driver = context.getInitParameter("dbDriver");
-            String url = context.getInitParameter("dbUrl");
-            String user = context.getInitParameter("dbUser");
-            String password = context.getInitParameter("dbPassword");
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException e) {
-            throw new UnavailableException("Can't load database driver");
-        } catch (SQLException e) {
-            throw new UnavailableException("Couldn't get db connection");
-        }
+        connection = DBConnectionHandler.getConnection(this.getServletContext());
     }
 
     @Override
