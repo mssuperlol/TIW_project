@@ -50,6 +50,7 @@ public class GoToPlaylist extends HttpServlet {
         connection = DBConnectionHandler.getConnection(this.getServletContext());
     }
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String loginPath = getServletContext().getContextPath() + "/login.html";
         String homePath = getServletContext().getContextPath() + "/Homepage";
