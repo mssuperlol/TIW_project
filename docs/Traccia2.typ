@@ -1,3 +1,5 @@
+#import "@preview/chronos:0.2.1": *
+
 #set text(lang: "it")
 
 #set page(
@@ -10,11 +12,11 @@
   text(colour)[#name]
 }
 
-Progetto di Tecnologie Informatiche per il Web
-
-Michele Sangaletti
-
-//TODO formattazione e info tipo codice persona, ...
+#align(horizon + center)[
+  = Progetto di Tecnologie Informatiche per il Web
+  \
+  Michele Sangaletti
+]
 
 #pagebreak()
 
@@ -22,7 +24,7 @@ Michele Sangaletti
 
 #pagebreak()
 
-= Esercizio 2: playlist musicale
+= Traccia 2: playlist musicale
 
 == Versione HTML pura
 
@@ -134,3 +136,144 @@ Legenda:
 === Diagramma IFL
 
 #figure(image("IFML Diagram HTML.png", width: 100%))
+
+=== Sequence diagram
+
+*Login*
+
+#figure(
+  diagram({
+    _par("a", display-name: "login.html")
+    _par("b", display-name: "CheckLogin")
+    _par("c", display-name: "UserDao")
+    _par("d", display-name: "Session")
+    _par("e", display-name: "GotToHomepage")
+
+    _seq(
+      "a",
+      "b",
+      comment: [doPost\
+        username, password],
+      enable-dst: true,
+    )
+    _seq("b", "c", comment: "new UserDao()", enable-dst: true)
+    _seq("c", "b", comment: "checkLogin", disable-src: true)
+    _seq("b", "a", comment: [[`user == null`] redirect])
+    _seq("b", "d", comment: [[`user != null`] `setAttribute("user", user)`])
+    _seq("b", "e", comment: [[`user != null`] redirect], disable-src: true)
+  }),
+)
+
+*Controllare l'user*
+
+#figure(
+  diagram({
+    _par("a", display-name: "GoToHomepage")
+    _par("b", display-name: "Request")
+    _par("c", display-name: "Session")
+    _par("d", display-name: "login.html")
+
+    _seq("[", "a", comment: "doGet/doPost", enable-dst: true)
+    _seq("a", "b", comment: [`getSession()`], enable-dst: true)
+    _seq("b", "a", comment: "Session", disable-src: true)
+    _seq("a", "c", comment: [[`!session.isNew()`] `getAttribute(user)`], enable-dst: true)
+    _seq("c", "a", comment: "user", disable-src: true)
+    _seq("a", "d", comment: [`[session.isNew() || user == null]` redirect])
+    _seq("a", "]", comment: [[`user != null`] `methodY()`/forward/redirect], disable-src: true)
+  }),
+)
+
+*Tornare/andare alla homepage*
+
+#figure(
+  diagram({
+    _par("a", display-name: "GoToHomepage")
+    _par("b", display-name: "PlaylistDao")
+    _par("c", display-name: "GenreDao")
+    _par("d", display-name: "SongDao")
+    _par("e", display-name: "Context")
+    _par("f", display-name: "TemplateEngine")
+
+    _seq("[", "a", comment: "Redirect", enable-dst: true)
+    _seq("a", "b", comment: [`new PlaylistDao()`], enable-dst: true)
+    _seq("a", "b", comment: [`getPlaylists(session.user.getId())`])
+    _seq("b", "a", comment: "playlists", disable-src: true)
+    _seq("a", "c", comment: [`new GenreDao()`], enable-dst: true)
+    _seq("a", "c", comment: [`getGenres()`])
+    _seq("c", "a", comment: "genres", disable-src: true)
+    _seq("a", "d", comment: [`new SongDao()`], enable-dst: true)
+    _seq("a", "d", comment: [`getAllSongsFromUserID(session.user.getId())`])
+    _seq("d", "a", comment: "songs", disable-src: true)
+    _seq("a", "e", comment: [`setVariable(playlists)`], enable-dst: true)
+    _seq("a", "e", comment: [`setVariable(genres)`])
+    _seq("a", "e", comment: [`setVariable(songs)`], disable-dst: true)
+    _seq("a", "f", comment: [`process("/WEB-INF/homepage.html", Context, ...)`], disable-src: true)
+  }),
+)
+
+*Logout*
+
+#figure(
+  diagram({
+    _par("a", display-name: "Logout")
+    _par("b", display-name: "Session")
+    _par("c", display-name: "login.html")
+
+    _seq("[", "a", comment: "doGet/doPost", enable-dst: true)
+    _seq("a", "b", comment: [[`session != null`] `invalidate`])
+    _seq("a", "c", comment: "redirect", disable-src: true)
+  }),
+)
+
+*Caricare una canzone*
+
+#figure(
+  diagram({
+    _par("a", display-name: "UploadSong")
+    _par("b", display-name: "SongDao")
+    _par("c", display-name: "GoToHomepage")
+    _par("d", display-name: "localStorage")
+
+    _seq("[", "a", comment: "doPost", enable-dst: true)
+    _note(
+      "left",
+      [/UploadSong
+        - title;
+        - album;
+        - performer;
+        - year;
+        - genre;
+        - music_file;
+        - image_file.
+        From: homepage.html],
+      pos: "a",
+    )
+    _seq("a", "a", comment: [check file\ format])
+    _seq("a", "b", comment: [`new SongDao()`], enable-dst: true)
+    _seq("a", "c", comment: [[`title == null || albumTitle == null ||`\ `performer == null || genre == null`]\ `redirect`])
+    _seq("a", "d", comment: [`Files.copy(image_file,`\ `ServletContext.musicPath + image_file_name)`], enable-dst: true)
+    _seq("a", "d", comment: [`Files.copy(music_file,`\ `ServletContext.musicPath + music_file_name)`], disable-dst: true)
+    _seq("a", "b", comment: [`insertSong(session.user.getId(),`\ `title, imageFileName, albumTitle,`\ `performer, year, genre,`\ `musicFileName)`], disable-dst: true)
+    _seq("a", "c", comment: [`redirect`], disable-src: true)
+  }),
+)
+
+*Creare una playlist*
+
+#figure(diagram({ }))
+
+*Recuperare un file*
+
+#figure(diagram({ }))
+
+*Andare alla pagina della playlist*
+
+#figure(diagram({ }))
+
+*Aggiungere canzoni alla playlist*
+
+#figure(diagram({ }))
+
+*Andare alla pagina della canzone*
+
+#figure(diagram({ }))
