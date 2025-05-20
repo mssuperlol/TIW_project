@@ -5,9 +5,7 @@ import it.polimi.tiw_project.beans.User;
 import it.polimi.tiw_project.dao.PlaylistDAO;
 import it.polimi.tiw_project.dao.SongDAO;
 import it.polimi.tiw_project.utils.DBConnectionHandler;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +14,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +55,8 @@ public class CreatePlaylist extends HttpServlet {
                     .collect(Collectors.toList());
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            userSongsId = new ArrayList<>();
         }
 
         for (Integer songId : userSongsId) {
