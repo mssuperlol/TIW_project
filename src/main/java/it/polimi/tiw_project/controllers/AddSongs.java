@@ -55,14 +55,12 @@ public class AddSongs extends HttpServlet {
         }
 
         try {
-            if (userId != playlistDAO.getFullPlaylist(playlistId).getUserId()) {
+            if (userId != playlistDAO.getUserId(playlistId)) {
                 response.sendRedirect(getServletContext().getContextPath() + "/Homepage");
                 return;
             }
 
-            userSongsId = songDAO.getAllSongsFromUserId(userId).stream()
-                    .map(Song::getId)
-                    .collect(Collectors.toList());
+            userSongsId = songDAO.getSongsIdFromUserId(userId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
