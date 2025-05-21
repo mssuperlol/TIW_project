@@ -14,7 +14,7 @@
 
 #align(horizon + center)[
   = Progetto di Tecnologie Informatiche per il Web
-  \
+  #v(1em)
   Michele Sangaletti
 ]
 
@@ -133,6 +133,10 @@ Legenda:
 - #set_colour(blue, [Eventi])
 - #set_colour(color.maroon, [Azioni])
 
+=== Aggiunta alle specifiche
+
+blabla
+
 === Diagramma IFL
 
 #figure(image("IFML Diagram HTML.png", width: 100%))
@@ -142,177 +146,325 @@ Legenda:
 *Login*
 
 #figure(
-  diagram({
-    _par("a", display-name: "login.html")
-    _par("b", display-name: "CheckLogin")
-    _par("c", display-name: "UserDao")
-    _par("d", display-name: "Session")
-    _par("e", display-name: "GotToHomepage")
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "login.html")
+      _par("b", display-name: "CheckLogin")
+      _par("c", display-name: "UserDao")
+      _par("d", display-name: "Session")
+      _par("e", display-name: "GotToHomepage")
 
-    _seq(
-      "a",
-      "b",
-      comment: [doPost\
-        username, password],
-      enable-dst: true,
-    )
-    _seq("b", "c", comment: "new UserDao()", enable-dst: true)
-    _seq("c", "b", comment: "checkLogin", disable-src: true)
-    _seq("b", "a", comment: [[`user == null`] redirect])
-    _seq("b", "d", comment: [[`user != null`] `setAttribute("user", user)`])
-    _seq("b", "e", comment: [[`user != null`] redirect], disable-src: true)
-  }),
+      _seq(
+        "a",
+        "b",
+        comment: [doPost\
+          username, password],
+        enable-dst: true,
+      )
+      _seq("b", "c", comment: "new UserDao()", enable-dst: true)
+      _seq("c", "b", comment: "checkLogin", disable-src: true)
+      _seq("b", "a", comment: [[`user == null`] redirect])
+      _seq("b", "d", comment: [[`user != null`] `setAttribute("user", user)`])
+      _seq("b", "e", comment: [[`user != null`] redirect], disable-src: true)
+    }),
+  ),
 )
 
 *Controllare l'user*
 
 #figure(
-  diagram({
-    _par("a", display-name: "GoToHomepage")
-    _par("b", display-name: "Request")
-    _par("c", display-name: "Session")
-    _par("d", display-name: "login.html")
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "/...")
+      _par("b", display-name: "Request")
+      _par("c", display-name: "Session")
+      _par("d", display-name: "login.html")
 
-    _seq("[", "a", comment: "doGet/doPost", enable-dst: true)
-    _seq("a", "b", comment: [`getSession()`], enable-dst: true)
-    _seq("b", "a", comment: "Session", disable-src: true)
-    _seq("a", "c", comment: [[`!session.isNew()`] `getAttribute(user)`], enable-dst: true)
-    _seq("c", "a", comment: "user", disable-src: true)
-    _seq("a", "d", comment: [`[session.isNew() || user == null]` redirect])
-    _seq("a", "]", comment: [[`user != null`] `methodY()`/forward/redirect], disable-src: true)
-  }),
+      _seq("[", "a", comment: "doGet/doPost", enable-dst: true)
+      _seq("a", "b", comment: [`getSession()`], enable-dst: true)
+      _seq("b", "a", comment: "Session", disable-src: true)
+      _seq("a", "c", comment: [[`!session.isNew()`] `getAttribute(user)`], enable-dst: true)
+      _seq("c", "a", comment: "user", disable-src: true)
+      _seq("a", "d", comment: [`[session.isNew() || user == null]` redirect])
+      _seq("a", "]", comment: [[`user != null`] `methodY()`/forward/redirect], disable-src: true)
+    }),
+  ),
 )
 
 *Tornare/andare alla homepage*
 
 #figure(
-  diagram({
-    _par("a", display-name: "GoToHomepage")
-    _par("b", display-name: "PlaylistDao")
-    _par("c", display-name: "GenreDao")
-    _par("d", display-name: "SongDao")
-    _par("e", display-name: "Context")
-    _par("f", display-name: "TemplateEngine")
+  scale(
+    90%,
+    diagram({
+      _par("a", display-name: "GoToHomepage")
+      _par("b", display-name: "PlaylistDao")
+      _par("c", display-name: "GenreDao")
+      _par("d", display-name: "SongDao")
+      _par("e", display-name: "Context")
+      _par("f", display-name: "TemplateEngine")
 
-    _seq("[", "a", comment: "Redirect", enable-dst: true)
-    _seq("a", "b", comment: [`new PlaylistDao()`], enable-dst: true)
-    _seq("a", "b", comment: [`getPlaylists(session.user.getId())`])
-    _seq("b", "a", comment: "playlists", disable-src: true)
-    _seq("a", "c", comment: [`new GenreDao()`], enable-dst: true)
-    _seq("a", "c", comment: [`getGenres()`])
-    _seq("c", "a", comment: "genres", disable-src: true)
-    _seq("a", "d", comment: [`new SongDao()`], enable-dst: true)
-    _seq("a", "d", comment: [`getAllSongsFromUserID(session.user.getId())`])
-    _seq("d", "a", comment: "songs", disable-src: true)
-    _seq("a", "e", comment: [`setVariable(playlists)`], enable-dst: true)
-    _seq("a", "e", comment: [`setVariable(genres)`])
-    _seq("a", "e", comment: [`setVariable(songs)`], disable-dst: true)
-    _seq("a", "f", comment: [`process("/WEB-INF/homepage.html", Context, ...)`], disable-src: true)
-  }),
+      _seq("[", "a", comment: "Redirect", enable-dst: true)
+      _seq("a", "b", comment: [`new PlaylistDao()`], enable-dst: true)
+      _seq("a", "b", comment: [`getPlaylists(session.user.getId())`])
+      _seq("b", "a", comment: "playlists", disable-src: true)
+      _seq("a", "c", comment: [`new GenreDao()`], enable-dst: true)
+      _seq("a", "c", comment: [`getGenres()`])
+      _seq("c", "a", comment: "genres", disable-src: true)
+      _seq("a", "d", comment: [`new SongDao()`], enable-dst: true)
+      _seq("a", "d", comment: [`getAllSongsFromUserID(session.user.getId())`])
+      _seq("d", "a", comment: "songs", disable-src: true)
+      _seq("a", "e", comment: [`setVariable(playlists)`], enable-dst: true)
+      _seq("a", "e", comment: [`setVariable(genres)`])
+      _seq("a", "e", comment: [`setVariable(songs)`], disable-dst: true)
+      _seq("a", "f", comment: [`process("homepage.html", Context, ...)`], disable-src: true)
+    }),
+  ),
 )
 
 *Logout*
 
 #figure(
-  diagram({
-    _par("a", display-name: "Logout")
-    _par("b", display-name: "Session")
-    _par("c", display-name: "login.html")
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "Logout")
+      _par("b", display-name: "Session")
+      _par("c", display-name: "login.html")
 
-    _seq("[", "a", comment: "doGet/doPost", enable-dst: true)
-    _seq("a", "b", comment: [[`session != null`] `invalidate`])
-    _seq("a", "c", comment: "redirect", disable-src: true)
-  }),
+      _seq("[", "a", comment: "doGet/doPost", enable-dst: true)
+      _seq("a", "b", comment: [[`session != null`] `invalidate`])
+      _seq("a", "c", comment: "redirect", disable-src: true)
+    }),
+  ),
 )
 
 *Caricare una canzone*
 
 #figure(
-  diagram({
-    _par("a", display-name: "UploadSong")
-    _par("b", display-name: "SongDao")
-    _par("c", display-name: "homepage.html")
-    _par("d", display-name: "localStorage")
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "UploadSong")
+      _par("b", display-name: "SongDao")
+      _par("c", display-name: "homepage.html")
+      _par("d", display-name: "localStorage")
 
-    _seq("[", "a", comment: "doPost", enable-dst: true)
-    _note(
-      "left",
-      [/UploadSong
-        - title;
-        - album;
-        - performer;
-        - year;
-        - genre;
-        - music_file;
-        - image_file.
-        From: homepage.html],
-      pos: "a",
-    )
-    _seq("a", "a", comment: [check file\ format])
-    _seq("a", "b", comment: [`new SongDao()`], enable-dst: true)
-    _seq(
-      "a",
-      "c",
-      comment: [[`title == null || albumTitle == null ||`\ `performer == null || genre == null`]\ `redirect`],
-    )
-    _seq("a", "d", comment: [`Files.copy(image_file,`\ `ServletContext.musicPath + image_file_name)`], enable-dst: true)
-    _seq(
-      "a",
-      "d",
-      comment: [`Files.copy(music_file,`\ `ServletContext.musicPath + music_file_name)`],
-      disable-dst: true,
-    )
-    _seq(
-      "a",
-      "b",
-      comment: [`insertSong(session.user.getId(),`\ `title, imageFileName, albumTitle,`\ `performer, year, genre,`\ `musicFileName)`],
-      disable-dst: true,
-    )
-    _seq("a", "c", comment: [`redirect`], disable-src: true)
-  }),
+      _seq("[", "a", comment: "doPost", enable-dst: true)
+      _note(
+        "left",
+        [\ /UploadSong
+          - title;
+          - album;
+          - performer;
+          - year;
+          - genre;
+          - music_file;
+          - image_file.
+          From: homepage.html],
+        pos: "a",
+      )
+      _seq("a", "a", comment: [check file\ format])
+      _seq("a", "b", comment: [`new SongDao()`], enable-dst: true)
+      _seq(
+        "a",
+        "c",
+        comment: [[`title == null || albumTitle == null ||`\ `performer == null || genre == null`]\ `redirect`],
+      )
+      _seq(
+        "a",
+        "d",
+        comment: [`Files.copy(image_file,`\ `ServletContext.musicPath + image_file_name)`],
+        enable-dst: true,
+      )
+      _seq(
+        "a",
+        "d",
+        comment: [`Files.copy(music_file,`\ `ServletContext.musicPath + music_file_name)`],
+        disable-dst: true,
+      )
+      _seq(
+        "a",
+        "b",
+        comment: [`insertSong(session.user.getId(),`\ `title, imageFileName, albumTitle,`\ `performer, year, genre,`\ `musicFileName)`],
+        disable-dst: true,
+      )
+      _seq("a", "c", comment: [`redirect`], disable-src: true)
+    }),
+  ),
 )
 
 *Creare una playlist*
 
 #figure(
-  diagram({
-    _par("a", display-name: "CreatePlaylist")
-    _par("b", display-name: "PlaylistDao")
-    _par("c", display-name: "SongDao")
-    _par("d", display-name: "homepage.html")
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "CreatePlaylist")
+      _par("b", display-name: "PlaylistDao")
+      _par("c", display-name: "SongDao")
+      _par("d", display-name: "homepage.html")
 
-    _seq("[", "a", comment: "doPost", enable-dst: true)
-    _note(
-      "left",
-      pos: "a",
-      [/CreatePlaylist
-        - title;
-        - songs id.
-        From: homepage.html],
-    )
-    _seq("a", "b", comment: [`new PlaylistDao()`], enable-dst: true)
-    _seq("a", "c", comment: [`new songDao()`], enable-dst: true)
-    _seq("a", "d", comment: [[`title == null`] `redirect`])
-    _seq("a", "c", comment: [`getSongsIdFromUserId(session.user.getId())`])
-    _seq("c", "a", comment: [`userSongsId`], disable-src: true)
-    _seq("a", "a", comment: [[`request.songId != null`]\ `songs.add(songId)`])
-    _seq("a", "b", comment: [`insertPlaylist(`\ `session.user.getId(), title, songs)`], disable-dst: true)
-    _seq("a", "d", comment: [`redirect`], disable-src: true)
-  }),
+      _seq("[", "a", comment: "doPost", enable-dst: true)
+      _note(
+        "left",
+        pos: "a",
+        [\ /CreatePlaylist
+          - title;
+          - songs id.
+          From: homepage.html],
+      )
+      _seq("a", "b", comment: [`new PlaylistDao()`], enable-dst: true)
+      _seq("a", "c", comment: [`new songDao()`], enable-dst: true)
+      _seq("a", "d", comment: [[`title == null`] `redirect`])
+      _seq("a", "c", comment: [`getSongsIdFromUserId(session.user.getId())`])
+      _seq("c", "a", comment: [`userSongsId`], disable-src: true)
+      _seq("a", "a", comment: [[`request.songId != null`]\ `songs.add(songId)`])
+      _seq("a", "b", comment: [`insertPlaylist(`\ `session.user.getId(), title, songs)`], disable-dst: true)
+      _seq("a", "d", comment: [`redirect`], disable-src: true)
+    }),
+  ),
 )
 
 *Recuperare un file*
 
-#figure(diagram({ }))
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "GetFile")
+      _par("b", display-name: "Response")
+
+      _seq("[", "a", comment: "doGet", enable-dst: true)
+      _note("left", pos: "a", [From: playlist.html,\ song.html])
+      _seq("a", "b", comment: [`getParameter("filename")`], enable-dst: true)
+      _seq("b", "a", comment: "filename")
+      _seq("a", "a", comment: [`new File(folderPath + user.getId(), filename)`])
+      _alt(
+        "File not found",
+        {
+          _seq(
+            "a",
+            "b",
+            comment: [[`!file.exists() || file.isDirectory()`]\ `sendError(SC_NOT_FOUND)`],
+          )
+        },
+        "File found",
+        {
+          _seq("a", "b", comment: [`setHeader(...)`])
+          _seq(
+            "a",
+            "b",
+            comment: [`Files.copy(file.toPath(), response.getOutputStream())`],
+            disable-dst: true,
+            disable-src: true,
+          )
+        },
+      )
+    }),
+  ),
+)
 
 *Andare alla pagina della playlist*
 
-#figure(diagram({ }))
+#figure(
+  scale(
+    95%,
+    diagram({
+      _par("a", display-name: "GoToPlaylist")
+      _par("b", display-name: "PlaylistDao")
+      _par("c", display-name: "SongDao")
+      _par("d", display-name: "WebContext")
+      _par("e", display-name: "TemplateEngine")
+      _par("f", display-name: "homepage.html")
+
+      _seq("[", "a", comment: [`/Playlist(`\ `playlistId,`\ `songsIndex)`], enable-dst: true)
+      _seq("a", "f", comment: [[`playlistId nan || playlistId <= 0 || songsIndex < 0`] `redirect`], enable-dst: true)
+      _seq("a", "a", comment: [[`songsIndex nan`]\ `songsIndex = 0`])
+      _seq("a", "b", comment: [`new PlaylistDao()`], enable-dst: true)
+      _seq("b", "a", comment: [`getFullPlaylist(`\ `playlistid)`], disable-src: true)
+      _seq("a", "f", comment: [[`currPlaylist.getUserId() != session.user.getId()`] `redirect`])
+      _seq("a", "f", comment: [[`songsIndex oob`] `redirect`], disable-dst: true)
+      _seq("a", "a", comment: [`currSongs =`\ `visible songs`])
+      _seq("a", "c", comment: [`new SongDao()`], enable-dst: true)
+      _seq("c", "a", comment: [`getSongsNotInPlaylist(`\ `session.user.getId(),`\ `playlistId)`], disable-src: true)
+      _seq("a", "d", comment: [`setVariable(currPlaylist)`], enable-dst: true)
+      _seq("a", "d", comment: [`setVariable(currSongs)`])
+      _seq("a", "d", comment: [`setVariable(songsBefore)`])
+      _seq("a", "d", comment: [`setVariable(songsAfter)`])
+      _seq("a", "d", comment: [`setVariable(playlistId)`])
+      _seq("a", "d", comment: [`setVariable(songsIndex)`])
+      _seq("a", "d", comment: [`setVariable(otherSongs)`], disable-dst: true)
+      _seq("a", "e", comment: [`process("playlist.html", WebContext, ...)`], disable-src: true)
+    }),
+  ),
+)
 
 *Aggiungere canzoni alla playlist*
 
-#figure(diagram({ }))
+#figure(
+  scale(
+    95%,
+    diagram({
+      _par("a", display-name: "AddSongs")
+      _par("b", display-name: "PlaylistDao")
+      _par("c", display-name: "SongDao")
+      _par("d", display-name: "GoToPlaylist")
+      _par("e", display-name: "homepage.html")
+
+      _seq("[", "a", comment: "doPost", enable-dst: true)
+      _note(
+        "left",
+        pos: "a",
+        [\ /AddSongs
+          - playlistId
+          - songs id
+          From: playlist.html],
+      )
+      _seq("a", "b", comment: [`new PlaylistDao`], enable-dst: true)
+      _seq("a", "c", comment: [`new SongDao`], enable-dst: true)
+      _seq("a", "e", comment: [[`playlistId nan`] `redirect`], enable-dst: true)
+      _seq("a", "b", comment: [`getUserId(playlistId)`])
+      _seq("b", "a", comment: [userId])
+      _seq("a", "e", comment: [[`session.user.getId() != userId`] `redirect`], disable-dst: true)
+      _seq("a", "c", comment: [`getSongsIdFromUserId(session.user.getId())`])
+      _seq("c", "a", comment: [`userSongsId`], disable-src: true)
+      _seq("a", "a", comment: [[`request.songId != null`]\ `songs.add(songId)`])
+      _seq("a", "b", comment: [`addSongsToPlaylist(`\ `playlistId, songs)`], disable-dst: true)
+      _seq("a", "d", comment: [`redirect /Playlist?playlistId`], disable-src: true)
+    }),
+  ),
+)
 
 *Andare alla pagina della canzone*
 
-#figure(diagram({ }))
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "GoToSongs")
+      _par("b", display-name: "SongDao")
+      _par("c", display-name: "WebContext")
+      _par("d", display-name: "TemplateEngine")
+      _par("e", display-name: "homepage.html")
+
+      _seq("[", "a", comment: [`/Song(`\ `playlistId,`\ `songsIndex,`\ `songId)`], enable-dst: true)
+      _seq("a", "e", comment: [[`playlistId nan || songsIndex nan || songId nan`] `redirect`], enable-dst: true)
+      _seq("a", "b", comment: [`new SongDao()`], enable-dst: true)
+      _seq("a", "b", comment: [`getSong(songId)`])
+      _seq("b", "a", comment: "currSong", disable-src: true)
+      _seq(
+        "a",
+        "e",
+        comment: [[`currSong == null || currSong.getId() != session.user.getId()`] `redirect`],
+        disable-dst: true,
+      )
+      _seq("a", "c", comment: [`setVariable(playlistId)`], enable-dst: true)
+      _seq("a", "c", comment: [`setVariable(songsIndex)`])
+      _seq("a", "c", comment: [`setVariable(otherSongs)`], disable-dst: true)
+      _seq("a", "d", comment: [`process("song.html", WebContext, ...)`], disable-src: true)
+    }),
+  ),
+)
