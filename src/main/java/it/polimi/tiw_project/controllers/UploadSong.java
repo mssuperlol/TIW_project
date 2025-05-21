@@ -3,9 +3,7 @@ package it.polimi.tiw_project.controllers;
 import it.polimi.tiw_project.beans.User;
 import it.polimi.tiw_project.dao.SongDAO;
 import it.polimi.tiw_project.utils.DBConnectionHandler;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -17,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @MultipartConfig

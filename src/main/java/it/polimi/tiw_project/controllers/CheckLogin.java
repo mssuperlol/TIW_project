@@ -3,9 +3,7 @@ package it.polimi.tiw_project.controllers;
 import it.polimi.tiw_project.beans.User;
 import it.polimi.tiw_project.dao.UserDAO;
 import it.polimi.tiw_project.utils.DBConnectionHandler;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @WebServlet("/CheckLogin")

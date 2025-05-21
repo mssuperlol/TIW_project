@@ -1,6 +1,5 @@
 package it.polimi.tiw_project.controllers;
 
-import it.polimi.tiw_project.beans.Song;
 import it.polimi.tiw_project.beans.User;
 import it.polimi.tiw_project.dao.PlaylistDAO;
 import it.polimi.tiw_project.dao.SongDAO;
@@ -17,7 +16,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebServlet("/AddSongs")
 public class AddSongs extends HttpServlet {
