@@ -50,13 +50,9 @@ public class CreatePlaylist extends HttpServlet {
         }
 
         try {
-            userSongsId = songDAO.getAllSongsFromUserId(userId).stream()
-                    .map(Song::getId)
-                    .collect(Collectors.toList());
+            userSongsId = songDAO.getSongsIdFromUserId(userId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } catch (NullPointerException e) {
-            userSongsId = new ArrayList<>();
         }
 
         for (Integer songId : userSongsId) {
