@@ -231,7 +231,7 @@ Legenda:
   diagram({
     _par("a", display-name: "UploadSong")
     _par("b", display-name: "SongDao")
-    _par("c", display-name: "GoToHomepage")
+    _par("c", display-name: "homepage.html")
     _par("d", display-name: "localStorage")
 
     _seq("[", "a", comment: "doPost", enable-dst: true)
@@ -250,17 +250,56 @@ Legenda:
     )
     _seq("a", "a", comment: [check file\ format])
     _seq("a", "b", comment: [`new SongDao()`], enable-dst: true)
-    _seq("a", "c", comment: [[`title == null || albumTitle == null ||`\ `performer == null || genre == null`]\ `redirect`])
+    _seq(
+      "a",
+      "c",
+      comment: [[`title == null || albumTitle == null ||`\ `performer == null || genre == null`]\ `redirect`],
+    )
     _seq("a", "d", comment: [`Files.copy(image_file,`\ `ServletContext.musicPath + image_file_name)`], enable-dst: true)
-    _seq("a", "d", comment: [`Files.copy(music_file,`\ `ServletContext.musicPath + music_file_name)`], disable-dst: true)
-    _seq("a", "b", comment: [`insertSong(session.user.getId(),`\ `title, imageFileName, albumTitle,`\ `performer, year, genre,`\ `musicFileName)`], disable-dst: true)
+    _seq(
+      "a",
+      "d",
+      comment: [`Files.copy(music_file,`\ `ServletContext.musicPath + music_file_name)`],
+      disable-dst: true,
+    )
+    _seq(
+      "a",
+      "b",
+      comment: [`insertSong(session.user.getId(),`\ `title, imageFileName, albumTitle,`\ `performer, year, genre,`\ `musicFileName)`],
+      disable-dst: true,
+    )
     _seq("a", "c", comment: [`redirect`], disable-src: true)
   }),
 )
 
 *Creare una playlist*
 
-#figure(diagram({ }))
+#figure(
+  diagram({
+    _par("a", display-name: "CreatePlaylist")
+    _par("b", display-name: "PlaylistDao")
+    _par("c", display-name: "SongDao")
+    _par("d", display-name: "homepage.html")
+
+    _seq("[", "a", comment: "doPost", enable-dst: true)
+    _note(
+      "left",
+      pos: "a",
+      [/CreatePlaylist
+        - title;
+        - songs id.
+        From: homepage.html],
+    )
+    _seq("a", "b", comment: [`new PlaylistDao()`], enable-dst: true)
+    _seq("a", "c", comment: [`new songDao()`], enable-dst: true)
+    _seq("a", "d", comment: [[`title == null`] `redirect`])
+    _seq("a", "c", comment: [`getSongsIdFromUserId(session.user.getId())`])
+    _seq("c", "a", comment: [`userSongsId`], disable-src: true)
+    _seq("a", "a", comment: [[`request.songId != null`]\ `songs.add(songId)`])
+    _seq("a", "b", comment: [`insertPlaylist(`\ `session.user.getId(), title, songs)`], disable-dst: true)
+    _seq("a", "d", comment: [`redirect`], disable-src: true)
+  }),
+)
 
 *Recuperare un file*
 
