@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Year;
 
 @MultipartConfig
 @WebServlet("/UploadSong")
@@ -79,7 +80,7 @@ public class UploadSong extends HttpServlet {
             return;
         }
 
-        if (title != null && albumTitle != null && performer != null && genre != null) {
+        if (title != null && albumTitle != null && performer != null && genre != null && year > 0 && year <= Year.now().getValue()) {
             //saves the files to /home/mssuperlol/Documents/TIW_project_resources/ID/
             String outputPath = folderPath + user.getId() + File.separator + imageFileName;
             File outputFile = new File(outputPath);

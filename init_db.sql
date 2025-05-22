@@ -45,7 +45,7 @@ create table songs
     image_file_name varchar(64)  not null,
     album_title     varchar(64)  not null,
     performer       varchar(64)  not null, #interprete
-    year            int          not null,
+    year            int          not null check ( year > 0 ),
     genre           varchar(64)  not null,
     music_file_name varchar(128) not null,
     primary key (id),
