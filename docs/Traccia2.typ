@@ -124,18 +124,26 @@ create table playlist_contents
 A seguito del #set_colour(red, [LOGIN]), l'utente accede all'#set_colour(red, [HOME PAGE]) che presenta l'#set_colour(olive, [elenco delle proprie playlist]), ordinate per data di creazione decrescente, un #set_colour(olive, [#set_colour(olive, [FORM per #set_colour(blue, [caricare un BRANO])]) con tutti i dati relativi]) e #set_colour(olive, [un FORM per #set_colour(blue, [creare una nuova playlist])]). \
 Il FORM per la creazione di una nuova PLAYLIST mostra l'#set_colour(olive, [elenco dei brani dell'utente ordinati per ordine alfabetico crescente dell'autore o gruppo e per data crescente di pubblicazione dell'album a cui il brano appartiene]). Tramite il form è possibile #set_colour(blue, [selezionare uno o più brani da includere]). \
 Quando l'utente #set_colour(blue, [clicca su una playlist nell'HOME PAGE]), #set_colour(maroon, [appare la pagina]) #set_colour(red, [PLAYLIST PAGE]) che contiene inizialmente una #set_colour(olive, [tabella di una riga e cinque colonne. Ogni cella contiene il titolo di un brano e l'immagine dell'album]) da cui proviene. #set_colour(olive, [I brani sono ordinati da sinistra a destra per ordine alfabetico crescente dell'autore o gruppo e per data crescente di pubblicazione dell'album a cui il brano appartiene]). #set_colour(olive, [Se la playlist contiene più di cinque brani, sono disponibili comandi per #set_colour(maroon, [vedere il precedente e successivo gruppo di brani])]). Se la pagina PLAYLIST mostra il primo gruppo e ne esistono altri successivi nell'ordinamento, #set_colour(maroon, [compare a destra della riga]) #set_colour(olive, [il bottone SUCCESSIVI]), #set_colour(maroon, [che permette di vedere il gruppo successivo]). Se la pagina PLAYLIST mostra l'ultimo gruppo e ne esistono altri precedenti nell'ordinamento, #set_colour(maroon, [compare a sinistra della riga]) #set_colour(olive, [il bottone PRECEDENTI]), #set_colour(maroon, [che permette di vedere i cinque brani precedenti]). Se la pagina PLAYLIST mostra un blocco ed esistono sia precedenti sia successivi, compare a destra della riga il bottone SUCCESSIVI e a sinistra il bottone PRECEDENTI. \
-La pagina PLAYLIST contiene anche un #set_colour(olive, [FORM che consente di selezionare e AGGIUNGERE uno o più BRANI alla playlist corrente]), se non già presente nella playlist. Tale form #set_colour(olive, [presenta i brani da scegliere nello stesso modo del form usato per creare una playlist]). #set_colour(blue, [A seguito dell'aggiunta di un brano alla playlist corrente]), #set_colour(maroon, [l'applicazione visualizza nuovamente la pagina a partire dal primo blocco della playlist]). \
+La pagina PLAYLIST contiene anche un #set_colour(olive, [FORM che consente di]) #set_colour(blue, [selezionare e AGGIUNGERE uno o più BRANI alla playlist corrente]), se non già presente nella playlist. Tale form #set_colour(olive, [presenta i brani da scegliere nello stesso modo del form usato per creare una playlist]). #set_colour(blue, [A seguito dell'aggiunta di un brano alla playlist corrente]), #set_colour(maroon, [l'applicazione visualizza nuovamente la pagina a partire dal primo blocco della playlist]). \
 Quando l'utente #set_colour(blue, [seleziona il titolo di un brano]), la pagina #set_colour(red, [PLAYER]) mostra tutti #set_colour(olive, [i dati del brano scelto]) e il #set_colour(olive, [player audio]) per la riproduzione del brano.
 
 Legenda:
-- #set_colour(red, [Pagine])
-- #set_colour(color.olive, [Componenti])
-- #set_colour(blue, [Eventi])
-- #set_colour(color.maroon, [Azioni])
+- #set_colour(red, [Pagine])\;
+- #set_colour(olive, [Componenti])\;
+- #set_colour(blue, [Eventi])\;
+- #set_colour(maroon, [Azioni]).
 
 === Aggiunta alle specifiche
 
-blabla
+- Funzione di logout, accessibile tramite un pulsante dalle pagine di home, playlist e canzone;
+- Funzione per tornare alla homepage, accessibile tramite un pulsante dalle pagine di playlist e canzone;
+- Funzione per tornare alla pagina della playlist originale, accessibile tramite un link dalla pagina della canzone;
+- Messaggio di "benvenuto" quando l'utente è nella home page;
+- Nella pagina della playlist viene mostrata la data in cui è stata creata;
+- Possibilità di creare una playlist senza brani;
+- Istruzioni sul creare una playlist nella homepage se l'utente non ha playlist associate;
+- Istruzioni sull'aggiungere brani alla playlist se vuota nella pagina della playlist;
+- Istruzioni sul caricare canzoni nella pagina della playlist se l'utente o ha aggiunto tutti i suoi brani alla playlist o non ha brani associati.
 
 === Diagramma IFL
 
@@ -468,3 +476,99 @@ blabla
     }),
   ),
 )
+
+#pagebreak()
+
+= Documentazione ver. Javascript
+
+== Analisi requisiti dati
+
+[...]\
+- L'applicazione deve consentire all'utente di _riordinare le playlist_ con un criterio personalizzato diverso da quello di default. Dalla HOME con un link associato a ogni playlist si accede a una finestra modale RIORDINO, che mostra la lista completa dei brani della playlist ordinati secondo il criterio corrente (personalizzato o di default). L'utente può trascinare il titolo di un brano nell'elenco e di collocarlo in una _posizione_ diversa per realizzare l'ordinamento che desidera, senza invocare il server. Quando l'utente ha raggiunto l'ordinamento desiderato, usa un bottone "salva ordinamento", per memorizzare la sequenza sul server. Ai successivi accessi, l'ordinamento personalizzato è usato al posto di quello di default. Un brano aggiunto a una playlist con ordinamento personalizzato è inserito nell'ultima posizione.
+
+Legenda:
+- *Entità*;
+- _Attributi_;
+- #underline[Relazioni].
+
+=== Design database
+
+```sql
+create table users
+(
+    id       int auto_increment,
+    username varchar(32) not null unique,
+    password varchar(32) not null,
+    name     varchar(32) not null,
+    surname  varchar(32) not null,
+    primary key (id)
+);
+
+create table genres
+(
+    name varchar(32),
+    primary key (name)
+);
+
+create table songs
+(
+    id              int auto_increment,
+    user_id         int          not null,
+    title           varchar(64)  not null,
+    image_file_name varchar(64)  not null,
+    album_title     varchar(64)  not null,
+    performer       varchar(64)  not null,
+    year            int          not null check ( year > 0 ),
+    genre           varchar(64)  not null,
+    music_file_name varchar(128) not null,
+    primary key (id),
+    foreign key (user_id) references users (id) on update cascade on delete no action,
+    foreign key (genre) references genres (name) on update cascade on delete no action,
+    unique (user_id, music_file_name)
+);
+
+create table playlists
+(
+    id               int auto_increment,
+    user_id          int         not null,
+    title            varchar(64) not null,
+    date             date        not null default current_date,
+    has_custom_order boolean     not null default false,
+    primary key (id),
+    unique (user_id, title)
+);
+
+create table playlist_contents
+(
+    playlist  int,
+    song      int,
+    custom_id int default null,
+    primary key (playlist, song),
+    foreign key (playlist) references playlists (id) on update cascade on delete no action,
+    foreign key (song) references songs (id) on update cascade on delete no action
+);
+```
+
+#pagebreak()
+
+== Analisi requisiti d'applicazione
+
+[...]\
+Si realizzi un'applicazione client server web che modifica le specifiche precedenti come segue:
+- Dopo il #set_colour(blue, [login dell'utente]), l'intera applicazione è realizzata con un'#set_colour(red, [unica pagina]);
+- Ogni interazione dell'utente è gestita senza ricaricare completamente la pagina, ma produce l'invocazione asincrona del server e l'eventuale modifica del contenuto da aggiornare a seguito dell'evento;
+- L'evento di visualizzazione del blocco precedente/successivo è gestito a lato client senza generare una richiesta al server;
+- L'applicazione deve consentire all'utente di riordinare le playlist con un criterio personalizzato diverso da quello di default. Dalla HOME con un link associato a ogni playlist si accede a una finestra modale #set_colour(olive, [RIORDINO]), che mostra #set_colour(olive, [la lista completa dei brani della playlist ordinati secondo il criterio corrente]) (personalizzato o di default). L'utente può #set_colour(blue, [trascinare il titolo di un brano nell'elenco e di collocarlo in una posizione diversa]) per realizzare l'ordinamento che desidera, senza invocare il server. Quando l'utente ha raggiunto l'ordinamento desiderato, usa un #set_colour(olive, [bottone "salva ordinamento"]), per #set_colour(maroon, [memorizzare la sequenza sul server]). Ai successivi accessi, #set_colour(olive, [l'ordinamento personalizzato è usato al posto di quello di default]). #set_colour(blue, [Un brano aggiunto a una playlist con ordinamento personalizzato]) è #set_colour(maroon, [inserito nell'ultima posizione]).
+
+Legenda:
+- #set_colour(red, [Pagine])\;
+- #set_colour(olive, [Componenti])\;
+- #set_colour(blue, [Eventi])\;
+- #set_colour(maroon, [Azioni]).
+
+=== Aggiunta alle specifiche
+
+=== Diagramma IFL
+
+=== Sequence diagram
+
