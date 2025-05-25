@@ -151,7 +151,7 @@ Legenda:
 
 === Sequence diagram
 
-*Login*
+- *Login*
 
 #figure(
   scale(
@@ -179,7 +179,7 @@ Legenda:
   ),
 )
 
-*Controllare l'user*
+- *Controllare l'user*
 
 #figure(
   scale(
@@ -201,7 +201,7 @@ Legenda:
   ),
 )
 
-*Tornare/andare alla homepage*
+- *Tornare/andare alla homepage*
 
 #figure(
   scale(
@@ -232,7 +232,7 @@ Legenda:
   ),
 )
 
-*Logout*
+- *Logout*
 
 #figure(
   scale(
@@ -249,7 +249,7 @@ Legenda:
   ),
 )
 
-*Caricare una canzone*
+- *Caricare una canzone*
 
 #figure(
   scale(
@@ -304,7 +304,7 @@ Legenda:
   ),
 )
 
-*Creare una playlist*
+- *Creare una playlist*
 
 #figure(
   scale(
@@ -336,7 +336,7 @@ Legenda:
   ),
 )
 
-*Recuperare un file*
+- *Recuperare un file*
 
 #figure(
   scale(
@@ -375,7 +375,7 @@ Legenda:
   ),
 )
 
-*Andare alla pagina della playlist*
+- *Andare alla pagina della playlist*
 
 #figure(
   scale(
@@ -410,7 +410,7 @@ Legenda:
   ),
 )
 
-*Aggiungere canzoni alla playlist*
+- *Aggiungere canzoni alla playlist*
 
 #figure(
   scale(
@@ -446,7 +446,7 @@ Legenda:
   ),
 )
 
-*Andare alla pagina della canzone*
+- *Andare alla pagina della canzone*
 
 #figure(
   scale(
@@ -492,6 +492,8 @@ Legenda:
 - #underline[Relazioni].
 
 === Design database
+
+#figure(image("ER Diagram JS.png", width: 100%));
 
 ```sql
 create table users
@@ -568,7 +570,11 @@ Legenda:
 
 === Aggiunta alle specifiche
 
+
+
 === Diagramma IFL
+
+
 
 === Sequence diagram
 
