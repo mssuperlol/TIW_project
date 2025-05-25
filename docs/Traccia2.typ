@@ -24,9 +24,9 @@
 
 #pagebreak()
 
-= Traccia 2: playlist musicale
+= Traccia
 
-== Versione HTML pura
+*Versione HTML pura*
 
 Un'applicazione web consente la gestione di una playlist di brani musicali.
 
@@ -38,7 +38,7 @@ Quando l'utente clicca su una playlist nell'HOME PAGE, appare la pagina PLAYLIST
 La pagina PLAYLIST contiene anche un FORM che consente di selezionare e AGGIUNGERE uno o più BRANI alla playlist corrente, se non già presente nella playlist. Tale form presenta i brani da scegliere nello stesso modo del form usato per creare una playlist. A seguito dell'aggiunta di un brano alla playlist corrente, l'applicazione visualizza nuovamente la pagina a partire dal primo blocco della playlist. \
 Quando l'utente seleziona il titolo di un brano, la pagina PLAYER mostra tutti i dati del brano scelto e il player audio per la riproduzione del brano.
 
-== Versione con JavaScript
+*Versione con JavaScript*
 
 Si realizzi un'applicazione client server web che modifica le specifiche precedenti come segue:
 - Dopo il login dell'utente, l'intera applicazione è realizzata con un'unica pagina;
@@ -149,7 +149,7 @@ Legenda:
 
 #figure(image("IFML Diagram HTML.png", width: 100%))
 
-=== Sequence diagram
+=== Sequence diagrams
 
 - *Login*
 
@@ -178,6 +178,8 @@ Legenda:
     }),
   ),
 )
+
+#pagebreak()
 
 - *Controllare l'user*
 
@@ -231,6 +233,8 @@ Legenda:
     }),
   ),
 )
+
+#pagebreak()
 
 - *Logout*
 
@@ -304,6 +308,8 @@ Legenda:
   ),
 )
 
+#pagebreak()
+
 - *Creare una playlist*
 
 #figure(
@@ -335,6 +341,8 @@ Legenda:
     }),
   ),
 )
+
+#pagebreak()
 
 - *Recuperare un file*
 
@@ -375,6 +383,8 @@ Legenda:
   ),
 )
 
+#pagebreak()
+
 - *Andare alla pagina della playlist*
 
 #figure(
@@ -409,6 +419,8 @@ Legenda:
     }),
   ),
 )
+
+#pagebreak()
 
 - *Aggiungere canzoni alla playlist*
 
@@ -445,6 +457,8 @@ Legenda:
     }),
   ),
 )
+
+#pagebreak()
 
 - *Andare alla pagina della canzone*
 
