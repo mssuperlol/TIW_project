@@ -94,7 +94,8 @@ create table songs
     primary key (id),
     foreign key (user_id) references users (id),
     foreign key (genre) references genres (name),
-    unique (user_id, music_file_name)
+    unique (user_id, music_file_name),
+    unique (user_id, title)
 );
 
 create table playlists
@@ -540,7 +541,8 @@ create table songs
     primary key (id),
     foreign key (user_id) references users (id) on update cascade on delete no action,
     foreign key (genre) references genres (name) on update cascade on delete no action,
-    unique (user_id, music_file_name)
+    unique (user_id, music_file_name),
+    unique (user_id, title)
 );
 
 create table playlists
