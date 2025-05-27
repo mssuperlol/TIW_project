@@ -592,5 +592,129 @@ Legenda:
 
 
 
+=== Eventi e azioni
+
+#figure(
+  table(
+    align: left,
+    columns: 4,
+    table.header(
+      table.cell(colspan: 2)[*Client side*],
+      table.cell(colspan: 2)[*Server side*],
+      [*Evento*],
+      [*Azione*],
+      [*Evento*],
+      [*Azione*],
+    ),
+
+    [Index $=>$ login form $=>$ submit], [Controllo dati], [POST: username, password], [Controllo credenziali],
+    [Homepage $=>$ primo caricamento], [Aggiorna view], [GET], [Recupera informazioni utente e generi],
+    [Homepage $=>$ primo caricamento o creazione playlist],
+    [Aggiorna elenco playlist],
+    [GET],
+    [Recupera playlist dell'utente],
+
+    [Homepage $=>$ primo caricamento o aggiunta brano],
+    [Aggiorna create playlist form],
+    [GET],
+    [Recupera canzoni dell'utente],
+
+    [Homepage $=>$ upload song form $=>$ submit],
+    [Controllo dati],
+    [POST: titolo, album, interprete, anno, genere, file musicale, immagine],
+    [Aggiunta brano],
+
+    [Homepage $=>$ create playlist form $=>$ submit],
+    [Controllo dati],
+    [POST: titolo, elenco brani da aggiungere],
+    [Creazione playlist],
+
+    [Homepage $=>$ elenco playlist $=>$ seleziona playlist],
+    [Aggiorna view e visualizza playlist page],
+    [GET: playlistId],
+    [Recupero canzoni presenti nella playlist e non],
+
+    [Playlist page $=>$ add songs form $=>$ submit],
+    [Controllo dati],
+    [POST: elenco brani da aggiungere],
+    [Aggiunta brani alla playlist],
+
+    [Playlist page $=>$ riordino],
+    [Aggiorna view e mostra modal di riordino],
+    [GET: playlistId],
+    [Recupero brani presenti nella playlist],
+
+    [Modal riordino $=>$ riordino $=>$ submit], [/*TODO*/], [], [],
+    [Modal riordino $=>$ annulla riordino/click fuori dal modal], [Nascondi modal di riordino], [-], [-],
+    [Playlist page $=>$ successive/precedenti canzoni $=>$ submit], [Aggiorna view], [-], [-],
+    [Playlist page $=>$ elenco brani $=>$ seleziona brano],
+    [Aggiorna view e visualizza song page],
+    [GET: songId],
+    [Recupero informazioni brano],
+
+    [Playlist/song page $=>$ homepage $=>$ submit], [Aggiorna view e visualizza homepage], [-], [-],
+    [Song page $=>$ torna alla playlist $=>$ submit], [Aggiorna view e visualizza playlist page], [-], [-],
+    [Logout], [-], [GET], [Terminazione sessione],
+  ),
+)
+
+=== Controller ed Event handler
+
+#figure(
+  table(
+    align: left,
+    columns: 4,
+    table.header(
+      table.cell(colspan: 2)[*Client side*],
+      table.cell(colspan: 2)[*Server side*],
+      [*Evento*],
+      [*Controller*],
+      [*Evento*],
+      [*Controller*],
+    ),
+
+    [Index $=>$ login form $=>$ submit], [Funzione `makeCall`], [POST: username, password], [Servlet `CheckLogin`],
+    [Homepage $=>$ primo caricamento], [Funzione `homepageInit`], [GET], [Servlet `GetUser` e `GetGenres`],
+    [Homepage $=>$ primo caricamento o creazione playlist],
+    [Funzione `updatePlaylists`],
+    [GET],
+    [Servlet `GetPlaylists`],
+
+    [Homepage $=>$ primo caricamento o aggiunta brano],
+    [Funzione `updCreatePlaylistForm`],
+    [GET],
+    [Servlet `GetSongsByUserID`],
+
+    [Homepage $=>$ upload song form $=>$ submit],
+    [Funzione `makeCall`],
+    [POST: titolo, album, interprete, anno, genere, file musicale, immagine],
+    [Servlet `UploadSong`],
+
+    [Homepage $=>$ create playlist form $=>$ submit],
+    [Funzione `makeCall`],
+    [POST: titolo, elenco brani da aggiungere],
+    [Servlet `CreatePlaylist`],
+
+    [Homepage $=>$ elenco playlist $=>$ seleziona playlist],
+    [Funzione `playlistPageInit`],
+    [GET: playlistId],
+    [Servlet `GetPlaylist`, `GetSongsFromPlaylist` e `GetSongsNotInPlaylist`],
+
+    [Playlist page $=>$ add songs form $=>$ submit],
+    [Funzione `makeCall`],
+    [POST: elenco brani da aggiungere],
+    [Servlet `AddSongsToPlaylist`],
+
+    [Playlist page $=>$ riordino], [Funzione `showReorderPage`], [GET: playlistId], [Servlet `GetSongsFromPlaylist`],
+    [Modal riordino $=>$ riordino $=>$ submit], [/*TODO*/], [], [],
+    [Modal riordino $=>$ annulla riordino/click fuori dal modal], [Funzione `closeModal`], [-], [-],
+    [Playlist page $=>$ successive/precedenti canzoni $=>$ submit], [Funzione `showVisibleSongs`], [-], [-],
+    [Playlist page $=>$ elenco brani $=>$ seleziona brano], [Funzione `showSongPage`], [GET: songId], [Servlet `GetSong`],
+    [Playlist/song page $=>$ homepage $=>$ submit], [Funzione `showHomepage`], [-], [-],
+    [Song page $=>$ torna alla playlist $=>$ submit], [Funzione `showPlaylistPage`], [-], [-],
+    [Logout], [-], [GET], [Servlet `Logout`],
+  ),
+)
+
 === Sequence diagram
 
