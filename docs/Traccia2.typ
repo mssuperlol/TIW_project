@@ -13,10 +13,12 @@
 }
 
 #align(horizon + center)[
-  = Progetto di Tecnologie Informatiche per il Web
+  #heading(level:1, "Progetto di Tecnologie Informatiche per il Web", outlined: false)
   #v(1em)
   Michele Sangaletti
 ]
+
+#set heading(numbering: "1.a.")
 
 #pagebreak()
 
@@ -599,12 +601,12 @@ Legenda:
     align: left,
     columns: 4,
     table.header(
-      table.cell(colspan: 2)[*Client side*],
-      table.cell(colspan: 2)[*Server side*],
-      [*Evento*],
-      [*Azione*],
-      [*Evento*],
-      [*Azione*],
+      table.cell(colspan: 2, align(center, strong("Client side"))),
+      table.cell(colspan: 2, align(center, strong("Server side"))),
+      align(center)[*Evento*],
+      align(center)[*Azione*],
+      align(center)[*Evento*],
+      align(center)[*Azione*],
     ),
 
     [Index $=>$ login form $=>$ submit], [Controllo dati], [POST: username, password], [Controllo credenziali],
@@ -665,12 +667,12 @@ Legenda:
     align: left,
     columns: 4,
     table.header(
-      table.cell(colspan: 2)[*Client side*],
-      table.cell(colspan: 2)[*Server side*],
-      [*Evento*],
-      [*Controller*],
-      [*Evento*],
-      [*Controller*],
+      table.cell(colspan: 2, align(center, strong("Client side"))),
+      table.cell(colspan: 2, align(center, strong("Server side"))),
+      align(center)[*Evento*],
+      align(center)[*Controller*],
+      align(center)[*Evento*],
+      align(center)[*Controller*],
     ),
 
     [Index $=>$ login form $=>$ submit], [Funzione `makeCall`], [POST: username, password], [Servlet `CheckLogin`],
