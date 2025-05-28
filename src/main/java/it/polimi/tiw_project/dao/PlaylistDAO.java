@@ -30,7 +30,7 @@ public class PlaylistDAO {
                 FROM playlists
                 WHERE user_id = ?
                 GROUP BY id, date
-                ORDER BY title, date DESC 
+                ORDER BY title, date DESC
                 """;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -104,16 +104,23 @@ public class PlaylistDAO {
      */
     public void insertPlaylist(int userId, String title, List<Integer> songsId) throws SQLException {
         String query = "INSERT INTO playlists (user_id, title) VALUES (?, ?)";
+        connection.setAutoCommit(false);
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
             statement.setString(2, title);
             statement.executeUpdate();
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
         }
 
         if (songsId != null && !songsId.isEmpty()) {
             addSongsToPlaylist(getPlaylistId(userId, title), songsId);
         }
+
+        connection.commit();
+        connection.setAutoCommit(true);
     }
 
     /**
@@ -127,6 +134,7 @@ public class PlaylistDAO {
         String query = """
                 INSERT INTO playlist_contents (playlist, song) VALUES (?, ?)
                 """;
+        connection.setAutoCommit(false);
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             for (Integer songId : songsId) {
@@ -134,7 +142,13 @@ public class PlaylistDAO {
                 statement.setInt(2, songId);
                 statement.executeUpdate();
             }
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
         }
+
+        connection.commit();
+        connection.setAutoCommit(true);
     }
 
     /**
