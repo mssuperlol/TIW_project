@@ -25,11 +25,13 @@ public class PlaylistDAO {
      * @throws SQLException
      */
     public List<Playlist> getPlaylists(int userId) throws SQLException {
-        String query = "SELECT id, title, date " +
-                "FROM playlists " +
-                "WHERE user_id = ? " +
-                "GROUP BY id, date " +
-                "ORDER BY title, date DESC ";
+        String query = """
+                SELECT id, title, date
+                FROM playlists
+                WHERE user_id = ?
+                GROUP BY id, date
+                ORDER BY title, date DESC 
+                """;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
@@ -61,9 +63,11 @@ public class PlaylistDAO {
      * @throws SQLException
      */
     public Playlist getFullPlaylist(int playlistId) throws SQLException {
-        String query = "SELECT * " +
-                "FROM playlists " +
-                "WHERE id = ?";
+        String query = """
+                SELECT *
+                FROM playlists
+                WHERE id = ?
+                """;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, playlistId);
@@ -120,7 +124,9 @@ public class PlaylistDAO {
      * @throws SQLException
      */
     public void addSongsToPlaylist(int playlistId, List<Integer> songsId) throws SQLException {
-        String query = "INSERT INTO playlist_contents (playlist, song) VALUES (?, ?)";
+        String query = """
+                INSERT INTO playlist_contents (playlist, song) VALUES (?, ?)
+                """;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             for (Integer songId : songsId) {
@@ -140,9 +146,11 @@ public class PlaylistDAO {
      * @throws SQLException
      */
     public int getPlaylistId(int userId, String title) throws SQLException {
-        String query = "SELECT id " +
-                "FROM playlists " +
-                "WHERE user_id = ? AND title = ?";
+        String query = """
+                SELECT id
+                FROM playlists
+                WHERE user_id = ? AND title = ?
+                """;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
@@ -163,7 +171,9 @@ public class PlaylistDAO {
      * @throws SQLException
      */
     public int getUserId(int playlistId) throws SQLException {
-        String query = "SELECT user_id FROM playlists WHERE id = ?";
+        String query = """
+                SELECT user_id FROM playlists WHERE id = ?
+                """;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, playlistId);
