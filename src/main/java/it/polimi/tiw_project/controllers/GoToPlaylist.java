@@ -20,6 +20,7 @@ import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,10 +28,11 @@ import java.util.List;
 
 @WebServlet("/Playlist")
 public class GoToPlaylist extends HttpServlet {
+    @Serial
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
     private Connection connection = null;
-    private static int VISIBLE_SONGS = 5;
+    private final int VISIBLE_SONGS = 5;
 
     public GoToPlaylist() {
         super();

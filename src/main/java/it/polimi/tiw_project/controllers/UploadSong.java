@@ -11,6 +11,7 @@ import jakarta.servlet.http.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,6 +23,7 @@ import java.time.Year;
 @MultipartConfig
 @WebServlet("/UploadSong")
 public class UploadSong extends HttpServlet {
+    @Serial
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
     String folderPath;

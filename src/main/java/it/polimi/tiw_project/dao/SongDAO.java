@@ -125,8 +125,8 @@ public class SongDAO {
      */
     public Song getSong(int songId) throws SQLException {
         String query = """
-                SELECT * 
-                FROM songs 
+                SELECT *
+                FROM songs
                 WHERE id = ?
                 """;
 
@@ -178,8 +178,8 @@ public class SongDAO {
      */
     public List<Integer> getSongsIdFromUserId(int userId) throws SQLException {
         String query = """
-                SELECT id 
-                FROM songs 
+                SELECT id
+                FROM songs
                 WHERE user_id = ?
                 """;
 
@@ -199,8 +199,8 @@ public class SongDAO {
     }
 
     /**
-     * @param resultSet
-     * @return
+     * @param resultSet result set containing the song data
+     * @return song object with the result set data
      * @throws SQLException
      */
     private Song getSongFromResultSet(ResultSet resultSet) throws SQLException {

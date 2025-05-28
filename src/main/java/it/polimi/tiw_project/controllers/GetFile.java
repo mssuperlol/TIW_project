@@ -1,7 +1,6 @@
 package it.polimi.tiw_project.controllers;
 
 import it.polimi.tiw_project.beans.User;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,20 +9,22 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.nio.file.Files;
 
 @WebServlet("/GetFile/*")
 public class GetFile extends HttpServlet {
+    @Serial
     private static final long serialVersionUID = 1L;
     String folderPath = "";
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         folderPath = getServletContext().getInitParameter("musicPath");
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String loginPath = getServletContext().getContextPath() + "/login.html";
         HttpSession session = request.getSession();
 
