@@ -13,7 +13,7 @@
 }
 
 #align(horizon + center)[
-  #heading(level:1, "Progetto di Tecnologie Informatiche per il Web", outlined: false)
+  #heading(level: 1, "Progetto di Tecnologie Informatiche per il Web", outlined: false)
   #v(1em)
   Michele Sangaletti
 ]
@@ -148,7 +148,7 @@ Legenda:
 - Istruzioni sull'aggiungere brani alla playlist se vuota nella pagina della playlist;
 - Istruzioni sul caricare canzoni nella pagina della playlist se l'utente o ha aggiunto tutti i suoi brani alla playlist o non ha brani associati.
 
-=== Diagramma IFL
+=== Diagramma IFML
 
 #figure(image("IFML Diagram HTML.png", width: 100%))
 
@@ -162,7 +162,7 @@ Legenda:
     diagram({
       _par("a", display-name: "login.html")
       _par("b", display-name: "CheckLogin")
-      _par("c", display-name: "UserDao")
+      _par("c", display-name: "UserDAO")
       _par("d", display-name: "Session")
       _par("e", display-name: "GotToHomepage")
 
@@ -173,7 +173,7 @@ Legenda:
           username, password],
         enable-dst: true,
       )
-      _seq("b", "c", comment: "new UserDao()", enable-dst: true)
+      _seq("b", "c", comment: "new UserDAO()", enable-dst: true)
       _seq("c", "b", comment: "checkLogin", disable-src: true)
       _seq("b", "a", comment: [[`user == null`] redirect])
       _seq("b", "d", comment: [[`user != null`] `setAttribute("user", user)`])
@@ -213,20 +213,20 @@ Legenda:
     90%,
     diagram({
       _par("a", display-name: "GoToHomepage")
-      _par("b", display-name: "PlaylistDao")
-      _par("c", display-name: "GenreDao")
-      _par("d", display-name: "SongDao")
+      _par("b", display-name: "PlaylistDAO")
+      _par("c", display-name: "GenreDAO")
+      _par("d", display-name: "SongDAO")
       _par("e", display-name: "Context")
       _par("f", display-name: "TemplateEngine")
 
       _seq("[", "a", comment: "Redirect", enable-dst: true)
-      _seq("a", "b", comment: [`new PlaylistDao()`], enable-dst: true)
+      _seq("a", "b", comment: [`new PlaylistDAO()`], enable-dst: true)
       _seq("a", "b", comment: [`getPlaylists(session.user.getId())`])
       _seq("b", "a", comment: "playlists", disable-src: true)
-      _seq("a", "c", comment: [`new GenreDao()`], enable-dst: true)
+      _seq("a", "c", comment: [`new GenreDAO()`], enable-dst: true)
       _seq("a", "c", comment: [`getGenres()`])
       _seq("c", "a", comment: "genres", disable-src: true)
-      _seq("a", "d", comment: [`new SongDao()`], enable-dst: true)
+      _seq("a", "d", comment: [`new SongDAO()`], enable-dst: true)
       _seq("a", "d", comment: [`getAllSongsFromUserID(session.user.getId())`])
       _seq("d", "a", comment: "songs", disable-src: true)
       _seq("a", "e", comment: [`setVariable(playlists)`], enable-dst: true)
@@ -263,7 +263,7 @@ Legenda:
     100%,
     diagram({
       _par("a", display-name: "UploadSong")
-      _par("b", display-name: "SongDao")
+      _par("b", display-name: "SongDAO")
       _par("c", display-name: "homepage.html")
       _par("d", display-name: "localStorage")
 
@@ -282,7 +282,7 @@ Legenda:
         pos: "a",
       )
       _seq("a", "a", comment: [check file\ format])
-      _seq("a", "b", comment: [`new SongDao()`], enable-dst: true)
+      _seq("a", "b", comment: [`new SongDAO()`], enable-dst: true)
       _seq(
         "a",
         "c",
@@ -320,8 +320,8 @@ Legenda:
     100%,
     diagram({
       _par("a", display-name: "CreatePlaylist")
-      _par("b", display-name: "PlaylistDao")
-      _par("c", display-name: "SongDao")
+      _par("b", display-name: "PlaylistDAO")
+      _par("c", display-name: "SongDAO")
       _par("d", display-name: "homepage.html")
 
       _seq("[", "a", comment: "doPost", enable-dst: true)
@@ -333,8 +333,8 @@ Legenda:
           - songs id.
           From: homepage.html],
       )
-      _seq("a", "b", comment: [`new PlaylistDao()`], enable-dst: true)
-      _seq("a", "c", comment: [`new songDao()`], enable-dst: true)
+      _seq("a", "b", comment: [`new PlaylistDAO()`], enable-dst: true)
+      _seq("a", "c", comment: [`new songDAO()`], enable-dst: true)
       _seq("a", "d", comment: [[`title == null`] `redirect`])
       _seq("a", "c", comment: [`getSongsIdFromUserId(session.user.getId())`])
       _seq("c", "a", comment: [`userSongsId`], disable-src: true)
@@ -395,8 +395,8 @@ Legenda:
     95%,
     diagram({
       _par("a", display-name: "GoToPlaylist")
-      _par("b", display-name: "PlaylistDao")
-      _par("c", display-name: "SongDao")
+      _par("b", display-name: "PlaylistDAO")
+      _par("c", display-name: "SongDAO")
       _par("d", display-name: "WebContext")
       _par("e", display-name: "TemplateEngine")
       _par("f", display-name: "homepage.html")
@@ -404,12 +404,12 @@ Legenda:
       _seq("[", "a", comment: [`/Playlist(`\ `playlistId,`\ `songsIndex)`], enable-dst: true)
       _seq("a", "f", comment: [[`playlistId nan || playlistId <= 0 || songsIndex < 0`] `redirect`], enable-dst: true)
       _seq("a", "a", comment: [[`songsIndex nan`]\ `songsIndex = 0`])
-      _seq("a", "b", comment: [`new PlaylistDao()`], enable-dst: true)
+      _seq("a", "b", comment: [`new PlaylistDAO()`], enable-dst: true)
       _seq("b", "a", comment: [`getFullPlaylist(`\ `playlistid)`], disable-src: true)
       _seq("a", "f", comment: [[`currPlaylist.getUserId() != session.user.getId()`] `redirect`])
       _seq("a", "f", comment: [[`songsIndex oob`] `redirect`], disable-dst: true)
       _seq("a", "a", comment: [`currSongs =`\ `visible songs`])
-      _seq("a", "c", comment: [`new SongDao()`], enable-dst: true)
+      _seq("a", "c", comment: [`new SongDAO()`], enable-dst: true)
       _seq("c", "a", comment: [`getSongsNotInPlaylist(`\ `session.user.getId(),`\ `playlistId)`], disable-src: true)
       _seq("a", "d", comment: [`setVariable(currPlaylist)`], enable-dst: true)
       _seq("a", "d", comment: [`setVariable(currSongs)`])
@@ -432,8 +432,8 @@ Legenda:
     95%,
     diagram({
       _par("a", display-name: "AddSongs")
-      _par("b", display-name: "PlaylistDao")
-      _par("c", display-name: "SongDao")
+      _par("b", display-name: "PlaylistDAO")
+      _par("c", display-name: "SongDAO")
       _par("d", display-name: "GoToPlaylist")
       _par("e", display-name: "homepage.html")
 
@@ -446,8 +446,8 @@ Legenda:
           - songs id
           From: playlist.html],
       )
-      _seq("a", "b", comment: [`new PlaylistDao`], enable-dst: true)
-      _seq("a", "c", comment: [`new SongDao`], enable-dst: true)
+      _seq("a", "b", comment: [`new PlaylistDAO`], enable-dst: true)
+      _seq("a", "c", comment: [`new SongDAO`], enable-dst: true)
       _seq("a", "e", comment: [[`playlistId nan`] `redirect`], enable-dst: true)
       _seq("a", "b", comment: [`getUserId(playlistId)`])
       _seq("b", "a", comment: [userId])
@@ -470,14 +470,14 @@ Legenda:
     100%,
     diagram({
       _par("a", display-name: "GoToSongs")
-      _par("b", display-name: "SongDao")
+      _par("b", display-name: "SongDAO")
       _par("c", display-name: "WebContext")
       _par("d", display-name: "TemplateEngine")
       _par("e", display-name: "homepage.html")
 
       _seq("[", "a", comment: [`/Song(`\ `playlistId,`\ `songsIndex,`\ `songId)`], enable-dst: true)
       _seq("a", "e", comment: [[`playlistId nan || songsIndex nan || songId nan`] `redirect`], enable-dst: true)
-      _seq("a", "b", comment: [`new SongDao()`], enable-dst: true)
+      _seq("a", "b", comment: [`new SongDAO()`], enable-dst: true)
       _seq("a", "b", comment: [`getSong(songId)`])
       _seq("b", "a", comment: "currSong", disable-src: true)
       _seq(
@@ -588,11 +588,20 @@ Legenda:
 
 === Aggiunta alle specifiche
 
+- Funzione di logout, accessibile tramite un pulsante dalle pagine di home, playlist e canzone;
+- Funzione per tornare alla homepage, accessibile tramite un pulsante dalle pagine di playlist e canzone;
+- Funzione per tornare alla pagina della playlist originale, accessibile tramite un pulsante dalla pagina della canzone;
+- Messaggio di "benvenuto" quando l'utente è nella home page;
+- Nella pagina della playlist viene mostrata la data in cui è stata creata;
+- Possibilità di creare una playlist senza brani;
+- Istruzioni sul creare una playlist nella homepage se l'utente non ha playlist associate;
+- Istruzioni sull'aggiungere brani alla playlist se vuota nella pagina della playlist;
+- Istruzioni sul caricare canzoni nella pagina della playlist se l'utente o ha aggiunto tutti i suoi brani alla playlist o non ha brani associati;
+- Possibilità di annullare il riordino di una playlist cliccando l'apposito pulsante o al di fuori del modal.
 
+=== Diagramma IFML
 
-=== Diagramma IFL
-
-
+#figure(image("IFML Diagram JS.png", width: 100%))
 
 === Eventi e azioni
 
@@ -646,7 +655,11 @@ Legenda:
     [GET: playlistId],
     [Recupero brani presenti nella playlist],
 
-    [Modal riordino $=>$ riordino $=>$ submit], [/*TODO*/], [], [],
+    [Modal riordino $=>$ riordino $=>$ submit],
+    [Controllo dati],
+    [POST: brani ordinati],
+    [Salva l'ordine personalizzato],
+
     [Modal riordino $=>$ annulla riordino/click fuori dal modal], [Nascondi modal di riordino], [-], [-],
     [Playlist page $=>$ successive/precedenti canzoni $=>$ submit], [Aggiorna view], [-], [-],
     [Playlist page $=>$ elenco brani $=>$ seleziona brano],
@@ -708,15 +721,628 @@ Legenda:
     [Servlet `AddSongsToPlaylist`],
 
     [Playlist page $=>$ riordino], [Funzione `showReorderPage`], [GET: playlistId], [Servlet `GetSongsFromPlaylist`],
-    [Modal riordino $=>$ riordino $=>$ submit], [/*TODO*/], [], [],
+    [Modal riordino $=>$ riordino $=>$ submit],
+    [Funzione `makeCall`],
+    [POST: brani ordinati],
+    [Servlet `UpdateCustomOrder`],
+
     [Modal riordino $=>$ annulla riordino/click fuori dal modal], [Funzione `closeModal`], [-], [-],
     [Playlist page $=>$ successive/precedenti canzoni $=>$ submit], [Funzione `showVisibleSongs`], [-], [-],
-    [Playlist page $=>$ elenco brani $=>$ seleziona brano], [Funzione `showSongPage`], [GET: songId], [Servlet `GetSong`],
+    [Playlist page $=>$ elenco brani $=>$ seleziona brano],
+    [Funzione `showSongPage`],
+    [GET: songId],
+    [Servlet `GetSong`],
+
     [Playlist/song page $=>$ homepage $=>$ submit], [Funzione `showHomepage`], [-], [-],
     [Song page $=>$ torna alla playlist $=>$ submit], [Funzione `showPlaylistPage`], [-], [-],
     [Logout], [-], [GET], [Servlet `Logout`],
   ),
 )
 
-=== Sequence diagram
+#pagebreak()
 
+=== Sequence diagrams
+
+- *Login*
+
+#figure(
+  scale(
+    90%,
+    diagram({
+      _par("a", display-name: "login.html + loginManagement.js")
+      _par("b", display-name: "CheckLogin", color: color.aqua)
+      _par("c", display-name: "UserDAO", color: color.aqua)
+      _par("d", display-name: "Session")
+      _par("e", display-name: "Session storage")
+      _par("f", display-name: "homepage.html")
+
+      _seq("[", "a", enable-dst: true)
+      _seq(
+        "a",
+        "b",
+        comment: [doPost \
+          username, password],
+        enable-dst: true,
+      )
+      _seq("b", "c", comment: [new UserDAO()], enable-dst: true)
+      _seq("c", "b", comment: [checkLogin], disable-src: true)
+      _alt(
+        "User not found",
+        {
+          _seq("b", "a", comment: [[`user == null`]\ display error])
+        },
+        "User found",
+        {
+          _seq("b", "d", comment: [[`user != null`]\ `setAttribute("user", user)`])
+          _seq(
+            "b",
+            "a",
+            comment: [[`user != null`] `SC_OK` \
+              user.getId()],
+            disable-src: true,
+          )
+          _seq("a", "e", comment: [`setItem("user_id", message)`])
+          _seq("a", "f", comment: [redirect], disable-src: true)
+        },
+      )
+    }),
+  ),
+)
+
+- *Filtro utente*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.html")
+      _par("b", display-name: "LoginChecker", color: color.aqua)
+      _par("c", display-name: "Session")
+      _par("d", display-name: "login.html")
+
+      _seq("[", "a", enable-dst: true)
+      _seq("a", "b", enable-dst: true)
+      _seq("b", "c", comment: [[`!session.isNew()`] `getAttribute("user")`], enable-dst: true)
+      _seq("c", "b", comment: [`user`], disable-src: true)
+      _seq("b", "d", comment: [[`session.isNew() || user == null`] redirect])
+      _seq("b", "a", disable-src: true, disable-dst: true)
+    }),
+  ),
+)
+
+#pagebreak()
+
+- *Caricare la homepage*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.html + filter.js")
+      _par("c", display-name: "Session storage")
+      _par("d", display-name: "login.html")
+
+      _seq("[", "a", comment: [load], enable-dst: true)
+      _seq("a", "c", comment: [`getItem("user_id")`], enable-dst: true)
+      _seq("c", "a", comment: [`user_id`], disable-src: true)
+      _seq("a", "d", comment: [[`user_id === null`] `redirect`])
+      _seq("a", "a", comment: [[`user_id !== null`] `homepageInit()`], disable-dst: true)
+    }),
+  ),
+)
+
+#pagebreak()
+
+- *Inizializzare la homepage*
+
+#figure(
+  scale(
+    95%,
+    diagram({
+      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("b", display-name: "GetUser", color: color.aqua)
+      _par("c", display-name: "GetGenres", color: color.aqua)
+      _par("d", display-name: "GenreDAO", color: color.aqua)
+
+      _seq("[", "a", comment: [`homepageInit()`], enable-dst: true)
+      _seq("a", "b", comment: [doGet], enable-dst: true)
+      _seq("b", "b", comment: [`session.`\ `getAttribute("user")`])
+      _seq("b", "a", comment: [`gson.toJson(user)`], disable-src: true)
+      _seq("a", "a", comment: [[`req.status !== 200`]\ `sessionStorage.`\ `removeItem("user")`])
+      _seq("a", "a", comment: [set welcome message])
+      _seq("a", "c", comment: [doGet], enable-dst: true)
+      _seq("c", "d", comment: [`new GenreDAO()`], enable-dst: true)
+      _seq("d", "c", comment: [`getGenres()`], disable-src: true)
+      _seq("c", "a", comment: [`gson.toJson(genres)`], disable-src: true)
+      _seq("a", "a", comment: [[`req.status !== 200`]\ `sessionStorage.`\ `removeItem("user")`])
+      _seq("a", "a", comment: [set genreChoiceMenu])
+      _seq("a", "a", comment: [`updatePlaylists()`])
+      _seq("a", "a", comment: [`updateCreatePlaylistForm()`])
+      _seq("a", "a", comment: [`showHomepage()`], disable-dst: true)
+    }),
+  ),
+)
+
+#pagebreak()
+
+- *Aggiornare la lista di playlist*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("b", display-name: "GetPlaylists", color: color.aqua)
+      _par("c", display-name: "PlaylistDAO", color: color.aqua)
+      _par("d", display-name: "playlists_list")
+
+      _seq("[", "a", comment: [`updatePlaylists()`], enable-dst: true)
+      _seq("a", "b", comment: [doGet], enable-dst: true)
+      _seq("b", "c", comment: [`new PlaylistDAO()`], enable-dst: true)
+      _seq("c", "b", comment: [`getPlaylists(user.getId())`], disable-src: true)
+      _seq("b", "a", comment: [`gson.toJson(playlists)`], disable-src: true)
+      _alt(
+        "Error",
+        {
+          _seq("a", "a", comment: [[`req.status !== 200`]\ handle error])
+        },
+        "Playlists recovered",
+        {
+          _seq("a", "d", comment: [update], disable-src: true)
+        },
+      )
+    }),
+  ),
+)
+
+- *Aggiornare il form per creare una playlist*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("b", display-name: "GetSongsByUserID", color: color.aqua)
+      _par("c", display-name: "SongDAO", color: color.aqua)
+      _par("d", display-name: "create_playlist_table")
+
+      _seq("[", "a", comment: [`updateCreate`\ `PlaylistForm()`], enable-dst: true)
+      _seq("a", "b", comment: [doGet], enable-dst: true)
+      _seq("b", "c", comment: [`new SongDAO()`], enable-dst: true)
+      _seq("c", "b", comment: [`getAllSongsFromUserId`\ `(user.getId())`], disable-src: true)
+      _seq("b", "a", comment: [`gson.toJson(songs)`], disable-src: true)
+      _alt(
+        "Error",
+        {
+          _seq("a", "a", comment: [[`req.status !== 200`]\ handle error])
+        },
+        "Playlists recovered",
+        {
+          _seq("a", "d", comment: [update], disable-src: true)
+        },
+      )
+    }),
+  ),
+)
+
+#pagebreak()
+
+- *Andare alla homepage*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("b", display-name: "main_page")
+      _par("c", display-name: "homepage_button")
+      _par("d", display-name: "playlist_page + song_page")
+
+      _seq("[", "a", comment: [`showHomepage()`], enable-dst: true)
+      _seq("a", "b", comment: [display])
+      _seq("a", "c", comment: [mask])
+      _seq("a", "d", comment: [mask], disable-src: true)
+    }),
+  ),
+)
+
+- *Caricare una canzone*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "upload_song_form + formsChecker.js")
+      _par("b", display-name: "UploadSong", color: color.aqua)
+      _par("c", display-name: "SongDAO", color: color.aqua)
+
+      _seq("a", "a", comment: [check form], enable-dst: true)
+      _alt(
+        "Wrong input",
+        {
+          _seq("a", "a", comment: [handle error])
+        },
+        "Valid input",
+        {
+          _seq("a", "b", comment: [doPost\ form], enable-dst: true)
+          _seq("b", "b", comment: [check data])
+          _alt(
+            "Wrong input",
+            {
+              _seq("b", "a", comment: [error])
+              _seq("a", "a", comment: [handle error])
+            },
+            "Valid input",
+            {
+              _seq("b", "c", comment: [`new SongDAO()`], enable-dst: true)
+              _seq("b", "c", comment: [`insertSong(...)`], disable-dst: true)
+              _seq("b", "a", comment: [`SC_OK`], disable-src: true)
+              _seq("a", "a", comment: [reset form\ notify user])
+              _seq("a", "[", comment: [`updateCreatePlaylistForm()`], disable-src: true)
+            },
+          )
+        },
+      )
+    }),
+  ),
+)
+
+#pagebreak()
+
+- *Creare una playlist*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "create_playlist_form + formsChecker.js")
+      _par("b", display-name: "CreatePlaylist", color: color.aqua)
+      _par("c", display-name: "PlaylistDAO", color: color.aqua)
+      _par("d", display-name: "SongDAO", color: color.aqua)
+
+      _seq("a", "a", comment: [check form], enable-dst: true)
+      _alt(
+        "Wrong input",
+        {
+          _seq("a", "a", comment: [handle error])
+        },
+        "Valid input",
+        {
+          _seq("a", "b", comment: [doPost\ form], enable-dst: true)
+          _seq("b", "c", comment: [`new PlaylistDAO()`], enable-dst: true)
+          _seq("b", "d", comment: [`new SongDAO()`], enable-dst: true)
+          _seq("b", "b", comment: [check data])
+          _alt(
+            "Wrong input",
+            {
+              _seq("b", "a", comment: [error])
+              _seq("a", "a", comment: [handle error])
+            },
+            "Valid input",
+            {
+              _seq("d", "b", comment: [`getSongsIdFromUserId(user.getId())`], disable-src: true)
+              _seq("b", "c", comment: [`insertPlaylist(...)`], disable-dst: true)
+              _seq("b", "a", comment: [`SC_OK`], disable-src: true)
+              _seq("a", "a", comment: [reset form\ notify user])
+              _seq("a", "]", comment: [`updatePlaylists()`], disable-src: true)
+            },
+          )
+        },
+      )
+    }),
+  ),
+)
+
+#pagebreak()
+
+- *Inizializzare la pagina della playlist*
+
+Parte 1
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.html + showPage.js")
+      _par("b", display-name: "GetPlaylist", color: color.aqua)
+      _par("c", display-name: "PlaylistDAO", color: color.aqua)
+
+      _seq("[", "a", comment: [`playlistPageInit`\ `(playlist.id)`], enable-dst: true)
+      _seq("a", "a", comment: [`sessionStorage.setItem`\ `("playlistId", playlistId)`])
+      _seq("a", "b", comment: [doGet\ playlistId], enable-dst: true)
+      _alt(
+        "Invalid playlit id",
+        {
+          _seq("b", "a", comment: [[`playlistId nan`] error])
+        },
+        "Valid playlist id",
+        {
+          _seq("b", "c", comment: `new PlaylistDAO()`, enable-dst: true)
+          _seq("c", "b", comment: `getPlaylist(playlistId)`, disable-src: true)
+          _alt(
+            "Wrong user",
+            {
+              _seq("b", "a", comment: [[`user.getId() !=`\ `playlist.getUserId()`]\ `SC_UNAUTHORIZED`])
+            },
+            "Correct user",
+            {
+              _seq("b", "a", comment: [`gson.toJson(playlist)`\ `SC_OK`], disable-src: true)
+              _seq("a", "a", comment: [set playlist heading])
+              _seq("a", "]", comment: [doGet GetSongsFromPlaylist\ playlistId], disable-src: true)
+            },
+          )
+        },
+      )
+    }),
+  ),
+)
+
+#pagebreak()
+
+Parte 2
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.html + showPage.js")
+      _par("b", display-name: "GetSongsFromPlaylist", color: color.aqua)
+      _par("c", display-name: "PlaylistDAO", color: color.aqua)
+      _par("d", display-name: "SongDAO", color: color.aqua)
+
+      _alt(
+        "Correct user",
+        {
+          _seq("[", "a", enable-dst: true)
+          _seq("a", "b", comment: [doGet\ playlistId], enable-dst: true)
+          _alt(
+            "Invalid playlist id",
+            {
+              _seq("b", "a", comment: [[`playlistId nan`] error])
+            },
+            "Valid playlist id",
+            {
+              _seq("b", "c", comment: `new PlaylistDAO()`, enable-dst: true)
+              _seq("b", "d", comment: [`new SongDAO()`], enable-dst: true)
+              _seq("c", "b", comment: `getUserId(playlistId)`, disable-src: true)
+              _alt(
+                "Wrong user",
+                {
+                  _seq("b", "a", comment: [[`user.getId() != userId`]\ `SC_UNAUTHORIZED`])
+                },
+                "Correct user",
+                {
+                  _seq("d", "b", comment: [`getAllSongsFromPlaylist(playlistId)`], disable-src: true)
+                  _seq("b", "a", comment: [`gson.toJson(songs)`\ `SC_OK`], disable-src: true)
+                  _seq("a", "a", comment: [set playlist song table])
+                  _seq("a", "a", comment: [set modal song table])
+                  _seq("a", "]", comment: [`showVisibleSongs(0)`])
+                },
+              )
+            },
+          )
+        },
+      )
+      _seq("a", "]", comment: [doGet GetSongsNotInPlaylist\ playlistId], disable-src: true)
+    }),
+  ),
+)
+
+#pagebreak()
+
+Parte 3
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.html + showPage.js")
+      _par("b", display-name: "GetSongsNotInPlaylist", color: color.aqua)
+      _par("c", display-name: "PlaylistDAO", color: color.aqua)
+      _par("d", display-name: "SongDAO", color: color.aqua)
+
+      _seq("[", "a", enable-dst: true)
+      _seq("a", "b", comment: [doGet\ playlistId], enable-dst: true)
+      _seq("b", "c", comment: [`new PlaylistDAO()`], enable-dst: true)
+      _alt(
+        "Invalid playlist id",
+        {
+          _seq("b", "a", comment: [[`playlistId nan`] error])
+        },
+        "Valid playlist id",
+        {
+          _seq("b", "d", comment: [`new SongDAO()`], enable-dst: true)
+          _seq("c", "b", comment: [`getUserId(playlistId)`], disable-src: true)
+          _alt(
+            "Wrong user",
+            {
+              _seq("b", "a", comment: [[`user.getId() != userId`]\ `SC_UNAUTHORIZED`])
+            },
+            "Correct user",
+            {
+              _seq("d", "b", comment: [`getSongsNotInPlaylist(`\ `user.getId(), playlistId)`], disable-src: true)
+              _seq("b", "a", comment: [`gson.toJson(songs)`\ `SC_OK`], disable-src: true)
+              _seq("a", "a", comment: [set add songs to playlist form])
+            },
+          )
+        },
+      )
+      _seq("a", "]", comment: [`showPlaylistPage()`], disable-src: true)
+    }),
+  ),
+)
+
+- *Andare alla pagina della playlist*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("b", display-name: "playlist_page")
+      _par("c", display-name: "homepage_button")
+      _par("d", display-name: "main_page + song_page")
+
+      _seq("[", "a", comment: [`showPlaylistPage()`], enable-dst: true)
+      _seq("a", "b", comment: [display])
+      _seq("a", "c", comment: [display])
+      _seq("a", "d", comment: [mask], disable-src: true)
+    }),
+  ),
+)
+
+#pagebreak()
+
+- *Visualizzare brani precedenti/successivi*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("b", display-name: "displayed_songs")
+      _par("c", display-name: "prev_songs")
+      _par("d", display-name: "next_songs")
+
+      _seq("[", "a", comment: [`showVisibleSongs`\ `(songsIndex)`], enable-dst: true)
+      _seq("a", "a", comment: [get max row index])
+      _seq("a", "a", comment: [[songsIndex invalid] `songsIndex = 0`])
+      _seq("a", "a", comment: [`sessionStorage.setItem`\ `("songsIndex", songsIndex)`])
+      _loop(
+        "maxRow times",
+        {
+          _seq("a", "b", comment: [[`rowIndex !== songsIndex`] mask row], enable-dst: true)
+          _seq("a", "b", comment: [[`rowIndex === songsIndex`] display row], disable-dst: true)
+        },
+      )
+      _seq("a", "c", comment: [[`songsIndex !== 0`] mask], enable-dst: true)
+      _seq("a", "c", comment: [[`songsIndex === 0`] display], disable-dst: true)
+      _seq("a", "d", comment: [[`songsIndex < maxRow`] display], enable-dst: true)
+      _seq("a", "d", comment: [[`songsIndex >= maxRow`] mask], disable-dst: true, disable-src: true)
+    }),
+  ),
+)
+
+#pagebreak()
+
+- *Aggiungere brani alla playlist*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "add_songs_to_playlist + formsChecker.js")
+      _par("b", display-name: "AddSongsToPlaylist", color: color.aqua)
+      _par("c", display-name: "PlaylistDAO", color: color.aqua)
+      _par("d", display-name: "SongDAO", color: color.aqua)
+
+      _seq("a", "a", comment: [`sessionStorage.getItem`\ `("playlistId")`], enable-dst: true)
+      _seq("a", "b", comment: [doPost\ playlistId, form], enable-dst: true)
+      _seq("b", "c", comment: [`new PlaylistDAO()`], enable-dst: true)
+      _seq("b", "d", comment: [`new SongDAO()`], enable-dst: true)
+      _alt(
+        "Invalid playlist id",
+        {
+          _seq("b", "a", comment: [[`playlistId nan`] error])
+        },
+        "Valid playlist id",
+        {
+          _seq("c", "b", comment: [`getUserId(playlistId)`])
+          _alt(
+            "Wrong user",
+            {
+              _seq("b", "a", comment: [[`user.getId() != userId`]\ `SC_UNAUTHORIZED`])
+            },
+            "Correct user",
+            {
+              _seq("d", "b", comment: [`getSongsIdFromUserId`\ `(user.getId())`], disable-src: true)
+              _loop(
+                "for songId : userSongsId",
+                {
+                  _seq("b", "b", comment: [[`request.songId != null`]\ `songs.add(songId)`])
+                },
+              )
+              _seq("c", "b", comment: [`addSongsToPlaylist`\ `(playlistId, songs)`], disable-src: true)
+              _seq("b", "a", comment: [`SC_OK`], disable-src: true)
+              _seq("a", "a", comment: [notify user])
+              _seq("a", "]", comment: [`playlistPageInit(playlistId)`], disable-src: true)
+            },
+          )
+        },
+      )
+    }),
+  ),
+)
+
+#pagebreak()
+
+- *Cambiare ordinamento della playlist*
+
+#figure(
+  scale(
+    90%,
+    diagram({
+      _par("a", display-name: "reorder_form + formsChecker.js")
+      _par("b", display-name: "UpdateCustomOrder", color: color.aqua)
+      _par("c", display-name: "PlaylistDAO", color: color.aqua)
+      _par("d", display-name: "SongDAO", color: color.aqua)
+
+      _seq("a", "a", comment: [`sessionStorage.getItem`\ `("playlistId")`], enable-dst: true)
+      _seq("a", "b", comment: [doPost\ playlistId, form], enable-dst: true)
+      _seq("b", "c", comment: [`new PlaylistDAO()`], enable-dst: true)
+      _seq("b", "d", comment: [`new SongDAO()`], enable-dst: true)
+      _alt(
+        "Invalid playlist id",
+        {
+          _seq("b", "a", comment: [[`playlistId nan`] error])
+        },
+        "Valid playlist id",
+        {
+          _seq("d", "b", comment: [`getSongsIdFromUserId`\ `(user.getId())`], disable-src: true)
+          _loop(
+            "for songId : request",
+            {
+              _seq("b", "a", comment: [[`!userSongsId.contains(songId)`]\ `SC_BAD_REQUEST`])
+              _seq("b", "b", comment: [[`userSongsId.contains(songId)`]\ `songOrder.add(songId)`])
+            },
+          )
+          _seq("b", "a", comment: [[`userSongsId.size() !=`\ `songOrder.size()`]\ `SC_BAD_REQUEST`])
+          _seq("c", "b", comment: [`getUserId(playlistId)`])
+          _alt(
+            "Wrong user",
+            {
+              _seq("b", "a", comment: [[`user.getId() != userId`]\ `SC_UNAUTHORIZED`])
+            },
+            "Correct user",
+            {
+              _seq("c", "b", comment: [`updateCustomOrder`\ `(playlistId, songOrder)`], disable-src: true)
+              _seq("b", "a", comment: [`SC_OK`], disable-src: true)
+              _seq("a", "]", comment: [`playlistPageInit(playlistId)`], disable-src: true)
+            },
+          )
+        },
+      )
+    }),
+  ),
+)
+
+#pagebreak()
+
+- *Andare alla pagina della canzone*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("b", display-name: "song_page")
+      _par("c", display-name: "homepage_button")
+      _par("d", display-name: "main_page + playlist_page")
+
+      _seq("[", "a", comment: [`showPlaylistPage()`], enable-dst: true)
+      _seq("a", "b", comment: [display])
+      _seq("a", "c", comment: [display])
+      _seq("a", "d", comment: [mask], disable-src: true)
+    }),
+  ),
+)
