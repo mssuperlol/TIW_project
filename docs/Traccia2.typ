@@ -175,9 +175,17 @@ Legenda:
       )
       _seq("b", "c", comment: "new UserDAO()", enable-dst: true)
       _seq("c", "b", comment: "checkLogin", disable-src: true)
-      _seq("b", "a", comment: [[`user == null`] redirect])
-      _seq("b", "d", comment: [[`user != null`] `setAttribute("user", user)`])
-      _seq("b", "e", comment: [[`user != null`] redirect], disable-src: true)
+      _alt(
+        "User not found in db",
+        {
+          _seq("b", "a", comment: [[`user == null`] redirect])
+        },
+        "User found in db",
+        {
+          _seq("b", "d", comment: [[`user != null`] `setAttribute("user", user)`])
+          _seq("b", "e", comment: [[`user != null`] redirect], disable-src: true)
+        },
+      )
     }),
   ),
 )
@@ -206,6 +214,8 @@ Legenda:
   ),
 )
 
+Questo controllo viene fatto all'inizio di ogni servlet da qui in poi, ed è stato riportato separatamente per sintesi.
+
 - *Tornare/andare alla homepage*
 
 #figure(
@@ -221,14 +231,14 @@ Legenda:
 
       _seq("[", "a", comment: "Redirect", enable-dst: true)
       _seq("a", "b", comment: [`new PlaylistDAO()`], enable-dst: true)
-      _seq("a", "b", comment: [`getPlaylists(session.user.getId())`])
-      _seq("b", "a", comment: "playlists", disable-src: true)
+      _seq("b", "a", comment: [`getPlaylists(session.user.getId())`], disable-src: true)
+      // _seq("b", "a", comment: "playlists", disable-src: true)
       _seq("a", "c", comment: [`new GenreDAO()`], enable-dst: true)
-      _seq("a", "c", comment: [`getGenres()`])
-      _seq("c", "a", comment: "genres", disable-src: true)
+      _seq("c", "a", comment: [`getGenres()`], disable-src: true)
+      // _seq("c", "a", comment: "genres", disable-src: true)
       _seq("a", "d", comment: [`new SongDAO()`], enable-dst: true)
-      _seq("a", "d", comment: [`getAllSongsFromUserID(session.user.getId())`])
-      _seq("d", "a", comment: "songs", disable-src: true)
+      _seq("d", "a", comment: [`getAllSongsFromUserID(session.user.getId())`], disable-src: true)
+      // _seq("d", "a", comment: "songs", disable-src: true)
       _seq("a", "e", comment: [`setVariable(playlists)`], enable-dst: true)
       _seq("a", "e", comment: [`setVariable(genres)`])
       _seq("a", "e", comment: [`setVariable(songs)`], disable-dst: true)
@@ -255,6 +265,8 @@ Legenda:
     }),
   ),
 )
+
+#pagebreak()
 
 - *Caricare una canzone*
 
@@ -283,30 +295,38 @@ Legenda:
       )
       _seq("a", "a", comment: [check file\ format])
       _seq("a", "b", comment: [`new SongDAO()`], enable-dst: true)
-      _seq(
-        "a",
-        "c",
-        comment: [[`title == null || albumTitle == null ||`\ `performer == null || genre == null`]\ `redirect`],
+      _alt(
+        "Invalid form",
+        {
+          _seq(
+            "a",
+            "c",
+            comment: [[`title == null || albumTitle == null ||`\ `performer == null || genre == null`]\ `redirect`],
+          )
+        },
+        "Valid form",
+        {
+          _seq(
+            "a",
+            "d",
+            comment: [`Files.copy(image_file,`\ `ServletContext.musicPath + image_file_name)`],
+            enable-dst: true,
+          )
+          _seq(
+            "a",
+            "d",
+            comment: [`Files.copy(music_file,`\ `ServletContext.musicPath + music_file_name)`],
+            disable-dst: true,
+          )
+          _seq(
+            "a",
+            "b",
+            comment: [`insertSong(session.user.getId(),`\ `title, imageFileName, albumTitle,`\ `performer, year, genre,`\ `musicFileName)`],
+            disable-dst: true,
+          )
+          _seq("a", "c", comment: [`redirect`], disable-src: true)
+        },
       )
-      _seq(
-        "a",
-        "d",
-        comment: [`Files.copy(image_file,`\ `ServletContext.musicPath + image_file_name)`],
-        enable-dst: true,
-      )
-      _seq(
-        "a",
-        "d",
-        comment: [`Files.copy(music_file,`\ `ServletContext.musicPath + music_file_name)`],
-        disable-dst: true,
-      )
-      _seq(
-        "a",
-        "b",
-        comment: [`insertSong(session.user.getId(),`\ `title, imageFileName, albumTitle,`\ `performer, year, genre,`\ `musicFileName)`],
-        disable-dst: true,
-      )
-      _seq("a", "c", comment: [`redirect`], disable-src: true)
     }),
   ),
 )
@@ -335,12 +355,25 @@ Legenda:
       )
       _seq("a", "b", comment: [`new PlaylistDAO()`], enable-dst: true)
       _seq("a", "c", comment: [`new songDAO()`], enable-dst: true)
-      _seq("a", "d", comment: [[`title == null`] `redirect`])
-      _seq("a", "c", comment: [`getSongsIdFromUserId(session.user.getId())`])
-      _seq("c", "a", comment: [`userSongsId`], disable-src: true)
-      _seq("a", "a", comment: [[`request.songId != null`]\ `songs.add(songId)`])
-      _seq("a", "b", comment: [`insertPlaylist(`\ `session.user.getId(), title, songs)`], disable-dst: true)
-      _seq("a", "d", comment: [`redirect`], disable-src: true)
+      _alt(
+        "Invalid title",
+        {
+          _seq("a", "d", comment: [[`title == null`] `redirect`])
+        },
+        "Valid title",
+        {
+          _seq("c", "a", comment: [`getSongsIdFromUserId(session.user.getId())`], disable-src: true)
+          // _seq("c", "a", comment: [`userSongsId`], disable-src: true)
+          _loop(
+            "songId : userSongsId",
+            {
+              _seq("a", "a", comment: [[`request.songId != null`]\ `songs.add(songId)`])
+            },
+          )
+          _seq("a", "b", comment: [`insertPlaylist(`\ `session.user.getId(), title, songs)`], disable-dst: true)
+          _seq("a", "d", comment: [`redirect`], disable-src: true)
+        },
+      )
     }),
   ),
 )
@@ -402,23 +435,52 @@ Legenda:
       _par("f", display-name: "homepage.html")
 
       _seq("[", "a", comment: [`/Playlist(`\ `playlistId,`\ `songsIndex)`], enable-dst: true)
-      _seq("a", "f", comment: [[`playlistId nan || playlistId <= 0 || songsIndex < 0`] `redirect`], enable-dst: true)
-      _seq("a", "a", comment: [[`songsIndex nan`]\ `songsIndex = 0`])
-      _seq("a", "b", comment: [`new PlaylistDAO()`], enable-dst: true)
-      _seq("b", "a", comment: [`getFullPlaylist(`\ `playlistid)`], disable-src: true)
-      _seq("a", "f", comment: [[`currPlaylist.getUserId() != session.user.getId()`] `redirect`])
-      _seq("a", "f", comment: [[`songsIndex oob`] `redirect`], disable-dst: true)
-      _seq("a", "a", comment: [`currSongs =`\ `visible songs`])
-      _seq("a", "c", comment: [`new SongDAO()`], enable-dst: true)
-      _seq("c", "a", comment: [`getSongsNotInPlaylist(`\ `session.user.getId(),`\ `playlistId)`], disable-src: true)
-      _seq("a", "d", comment: [`setVariable(currPlaylist)`], enable-dst: true)
-      _seq("a", "d", comment: [`setVariable(currSongs)`])
-      _seq("a", "d", comment: [`setVariable(songsBefore)`])
-      _seq("a", "d", comment: [`setVariable(songsAfter)`])
-      _seq("a", "d", comment: [`setVariable(playlistId)`])
-      _seq("a", "d", comment: [`setVariable(songsIndex)`])
-      _seq("a", "d", comment: [`setVariable(otherSongs)`], disable-dst: true)
-      _seq("a", "e", comment: [`process("playlist.html", WebContext, ...)`], disable-src: true)
+      _alt(
+        "Invalid playlistId",
+        {
+          _seq(
+            "a",
+            "f",
+            comment: [[`playlistId nan || playlistId <= 0 || songsIndex < 0`] `redirect`],
+            enable-dst: true,
+          )
+        },
+        "Valid playlistId",
+        {
+          _seq("a", "a", comment: [[`songsIndex nan`]\ `songsIndex = 0`])
+          _seq("a", "b", comment: [`new PlaylistDAO()`], enable-dst: true)
+          _seq("b", "a", comment: [`getFullPlaylist(`\ `playlistid)`], disable-src: true)
+          _alt(
+            "Wrong user",
+            {
+              _seq("a", "f", comment: [[`currPlaylist.getUserId() != session.user.getId()`] `redirect`])
+            },
+            "songsIndex overflows the playlist",
+            {
+              _seq("a", "f", comment: [[`songsIndex oob`] `redirect`], disable-dst: true)
+            },
+            "Ok",
+            {
+              _seq("a", "a", comment: [`currSongs =`\ `visible songs`])
+              _seq("a", "c", comment: [`new SongDAO()`], enable-dst: true)
+              _seq(
+                "c",
+                "a",
+                comment: [`getSongsNotInPlaylist(`\ `session.user.getId(),`\ `playlistId)`],
+                disable-src: true,
+              )
+              _seq("a", "d", comment: [`setVariable(currPlaylist)`], enable-dst: true)
+              _seq("a", "d", comment: [`setVariable(currSongs)`])
+              _seq("a", "d", comment: [`setVariable(songsBefore)`])
+              _seq("a", "d", comment: [`setVariable(songsAfter)`])
+              _seq("a", "d", comment: [`setVariable(playlistId)`])
+              _seq("a", "d", comment: [`setVariable(songsIndex)`])
+              _seq("a", "d", comment: [`setVariable(otherSongs)`], disable-dst: true)
+              _seq("a", "e", comment: [`process("playlist.html", WebContext, ...)`], disable-src: true)
+            },
+          )
+        },
+      )
     }),
   ),
 )
@@ -448,15 +510,30 @@ Legenda:
       )
       _seq("a", "b", comment: [`new PlaylistDAO`], enable-dst: true)
       _seq("a", "c", comment: [`new SongDAO`], enable-dst: true)
-      _seq("a", "e", comment: [[`playlistId nan`] `redirect`], enable-dst: true)
-      _seq("a", "b", comment: [`getUserId(playlistId)`])
-      _seq("b", "a", comment: [userId])
-      _seq("a", "e", comment: [[`session.user.getId() != userId`] `redirect`], disable-dst: true)
-      _seq("a", "c", comment: [`getSongsIdFromUserId(session.user.getId())`])
-      _seq("c", "a", comment: [`userSongsId`], disable-src: true)
-      _seq("a", "a", comment: [[`request.songId != null`]\ `songs.add(songId)`])
-      _seq("a", "b", comment: [`addSongsToPlaylist(`\ `playlistId, songs)`], disable-dst: true)
-      _seq("a", "d", comment: [`redirect /Playlist?playlistId`], disable-src: true)
+      _alt(
+        "Invalid playlistId",
+        {
+          _seq("a", "e", comment: [[`playlistId nan`] `redirect`], enable-dst: true)
+        },
+        "Valid playlistId",
+        {
+          _seq("b", "a", comment: [`getUserId(playlistId)`])
+          _alt(
+            "Wrong user",
+            {
+              _seq("a", "e", comment: [[`session.user.getId() != userId`] `redirect`], disable-dst: true)
+            },
+            "Correct user",
+            {
+              _seq("a", "c", comment: [`getSongsIdFromUserId(session.user.getId())`])
+              _seq("c", "a", comment: [`userSongsId`], disable-src: true)
+              _seq("a", "a", comment: [[`request.songId != null`]\ `songs.add(songId)`])
+              _seq("a", "b", comment: [`addSongsToPlaylist(`\ `playlistId, songs)`], disable-dst: true)
+              _seq("a", "d", comment: [`redirect /Playlist?playlistId`], disable-src: true)
+            },
+          )
+        },
+      )
     }),
   ),
 )
@@ -469,27 +546,43 @@ Legenda:
   scale(
     100%,
     diagram({
-      _par("a", display-name: "GoToSongs")
+      _par("a", display-name: "GoToSong")
       _par("b", display-name: "SongDAO")
       _par("c", display-name: "WebContext")
       _par("d", display-name: "TemplateEngine")
       _par("e", display-name: "homepage.html")
 
       _seq("[", "a", comment: [`/Song(`\ `playlistId,`\ `songsIndex,`\ `songId)`], enable-dst: true)
-      _seq("a", "e", comment: [[`playlistId nan || songsIndex nan || songId nan`] `redirect`], enable-dst: true)
-      _seq("a", "b", comment: [`new SongDAO()`], enable-dst: true)
-      _seq("a", "b", comment: [`getSong(songId)`])
-      _seq("b", "a", comment: "currSong", disable-src: true)
-      _seq(
-        "a",
-        "e",
-        comment: [[`currSong == null || currSong.getId() != session.user.getId()`] `redirect`],
-        disable-dst: true,
+      _alt(
+        "Invalid playlistId",
+        {
+          _seq("a", "e", comment: [[`playlistId nan || songsIndex nan || songId nan`] `redirect`], enable-dst: true)
+        },
+        "Valid playlistId",
+        {
+          _seq("a", "b", comment: [`new SongDAO()`], enable-dst: true)
+          _seq("b", "a", comment: [`getSong(songId)`], disable-src: true)
+          // _seq("b", "a", comment: "currSong", disable-src: true)
+          _alt(
+            "Song not found or wrong user",
+            {
+              _seq(
+                "a",
+                "e",
+                comment: [[`currSong == null || currSong.getId() != session.user.getId()`] `redirect`],
+                disable-dst: true,
+              )
+            },
+            "Ok",
+            {
+              _seq("a", "c", comment: [`setVariable(playlistId)`], enable-dst: true)
+              _seq("a", "c", comment: [`setVariable(songsIndex)`])
+              _seq("a", "c", comment: [`setVariable(currSong)`], disable-dst: true)
+              _seq("a", "d", comment: [`process("song.html", WebContext, ...)`], disable-src: true)
+            },
+          )
+        },
       )
-      _seq("a", "c", comment: [`setVariable(playlistId)`], enable-dst: true)
-      _seq("a", "c", comment: [`setVariable(songsIndex)`])
-      _seq("a", "c", comment: [`setVariable(otherSongs)`], disable-dst: true)
-      _seq("a", "d", comment: [`process("song.html", WebContext, ...)`], disable-src: true)
     }),
   ),
 )
