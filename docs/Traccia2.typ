@@ -932,7 +932,7 @@ Legenda:
   scale(
     95%,
     diagram({
-      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("a", display-name: "homepage.thml + homepageManager.js")
       _par("b", display-name: "GetUser", color: color.aqua)
       _par("c", display-name: "GetGenres", color: color.aqua)
       _par("d", display-name: "GenreDAO", color: color.aqua)
@@ -962,9 +962,9 @@ Legenda:
 
 #figure(
   scale(
-    100%,
+    95%,
     diagram({
-      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("a", display-name: "homepage.thml + homepageManager.js")
       _par("b", display-name: "GetPlaylists", color: color.aqua)
       _par("c", display-name: "PlaylistDAO", color: color.aqua)
       _par("d", display-name: "playlists_list")
@@ -992,9 +992,9 @@ Legenda:
 
 #figure(
   scale(
-    100%,
+    90%,
     diagram({
-      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("a", display-name: "homepage.thml + homepageManager.js")
       _par("b", display-name: "GetSongsByUserID", color: color.aqua)
       _par("c", display-name: "SongDAO", color: color.aqua)
       _par("d", display-name: "create_playlist_table")
@@ -1026,7 +1026,7 @@ Legenda:
   scale(
     100%,
     diagram({
-      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("a", display-name: "homepage.thml + homepageManager.js")
       _par("b", display-name: "main_page")
       _par("c", display-name: "homepage_button")
       _par("d", display-name: "playlist_page + song_page")
@@ -1045,7 +1045,7 @@ Legenda:
   scale(
     100%,
     diagram({
-      _par("a", display-name: "upload_song_form + formsChecker.js")
+      _par("a", display-name: "upload_song_form + homepageManager.js")
       _par("b", display-name: "UploadSong", color: color.aqua)
       _par("c", display-name: "SongDAO", color: color.aqua)
 
@@ -1071,7 +1071,7 @@ Legenda:
               _seq("b", "c", comment: [`insertSong(...)`], disable-dst: true)
               _seq("b", "a", comment: [`SC_OK`], disable-src: true)
               _seq("a", "a", comment: [reset form\ notify user])
-              _seq("a", "[", comment: [`updateCreatePlaylistForm()`], disable-src: true)
+              _seq("a", "]", comment: [`updateCreatePlaylistForm()`], disable-src: true)
             },
           )
         },
@@ -1086,9 +1086,9 @@ Legenda:
 
 #figure(
   scale(
-    100%,
+    90%,
     diagram({
-      _par("a", display-name: "create_playlist_form + formsChecker.js")
+      _par("a", display-name: "create_playlist_form + homepageManager.js")
       _par("b", display-name: "CreatePlaylist", color: color.aqua)
       _par("c", display-name: "PlaylistDAO", color: color.aqua)
       _par("d", display-name: "SongDAO", color: color.aqua)
@@ -1136,7 +1136,7 @@ Parte 1
   scale(
     100%,
     diagram({
-      _par("a", display-name: "homepage.html + showPage.js")
+      _par("a", display-name: "homepage.html + playlistPageManager.js")
       _par("b", display-name: "GetPlaylist", color: color.aqua)
       _par("c", display-name: "PlaylistDAO", color: color.aqua)
 
@@ -1176,9 +1176,9 @@ Parte 2
 
 #figure(
   scale(
-    100%,
+    85%,
     diagram({
-      _par("a", display-name: "homepage.html + showPage.js")
+      _par("a", display-name: "homepage.html + playlistPageManager.js")
       _par("b", display-name: "GetSongsFromPlaylist", color: color.aqua)
       _par("c", display-name: "PlaylistDAO", color: color.aqua)
       _par("d", display-name: "SongDAO", color: color.aqua)
@@ -1227,9 +1227,9 @@ Parte 3
 
 #figure(
   scale(
-    100%,
+    90%,
     diagram({
-      _par("a", display-name: "homepage.html + showPage.js")
+      _par("a", display-name: "homepage.html + playlistPageManager.js")
       _par("b", display-name: "GetSongsNotInPlaylist", color: color.aqua)
       _par("c", display-name: "PlaylistDAO", color: color.aqua)
       _par("d", display-name: "SongDAO", color: color.aqua)
@@ -1269,9 +1269,9 @@ Parte 3
 
 #figure(
   scale(
-    100%,
+    95%,
     diagram({
-      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("a", display-name: "homepage.thml + playlistPageManager.js")
       _par("b", display-name: "playlist_page")
       _par("c", display-name: "homepage_button")
       _par("d", display-name: "main_page + song_page")
@@ -1292,7 +1292,7 @@ Parte 3
   scale(
     100%,
     diagram({
-      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("a", display-name: "homepage.thml + playlistPageManager.js")
       _par("b", display-name: "displayed_songs")
       _par("c", display-name: "prev_songs")
       _par("d", display-name: "next_songs")
@@ -1322,9 +1322,9 @@ Parte 3
 
 #figure(
   scale(
-    100%,
+    90%,
     diagram({
-      _par("a", display-name: "add_songs_to_playlist + formsChecker.js")
+      _par("a", display-name: "add_songs_to_playlist + playlistPageManager.js")
       _par("b", display-name: "AddSongsToPlaylist", color: color.aqua)
       _par("c", display-name: "PlaylistDAO", color: color.aqua)
       _par("d", display-name: "SongDAO", color: color.aqua)
@@ -1369,13 +1369,72 @@ Parte 3
 
 #pagebreak()
 
+- *Aprire il modal*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "reorder_button + modalManager.js")
+      _par("b", display-name: "modal-overlay")
+
+      _seq("[", "a", comment: [click], enable-dst: true)
+      _seq("a", "b", comment: [`classList.remove("masked")`], enable-dst: true)
+      _seq("a", "b", comment: [`classList.add("displayed")`], disable-dst: true, disable-src: true)
+    }),
+  ),
+)
+
+- *Chiudere il modal*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "reorder_submit/abort_reorder + modalManager.js")
+      _par("b", display-name: "modal-overlay")
+      _seq("[", "a", comment: [click], enable-dst: true)
+      _seq("a", "b", comment: [`classList.remove("displayed")`], enable-dst: true)
+      _seq("a", "b", comment: [`classList.add("masked")`], disable-dst: true, disable-src: true)
+    }),
+  ),
+)
+
+- *Chiudere il modal cliccando fuori dal form*
+
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "modal-overlay + modalManager.js")
+      _par("b", display-name: "modal-overlay")
+      _seq("[", "a", comment: [click], enable-dst: true)
+      _seq(
+        "a",
+        "b",
+        comment: [[`e.target.classList.contains("modal-overlay")`]\ `classList.remove("displayed")`],
+        enable-dst: true,
+      )
+      _seq(
+        "a",
+        "b",
+        comment: [[`e.target.classList.contains("modal-overlay")`]\ `classList.add("masked")`],
+        disable-dst: true,
+        disable-src: true,
+      )
+    }),
+  ),
+)
+
+#pagebreak()
+
 - *Cambiare ordinamento della playlist*
 
 #figure(
   scale(
     90%,
     diagram({
-      _par("a", display-name: "reorder_form + formsChecker.js")
+      _par("a", display-name: "reorder_form + modalManager.js")
       _par("b", display-name: "UpdateCustomOrder", color: color.aqua)
       _par("c", display-name: "PlaylistDAO", color: color.aqua)
       _par("d", display-name: "SongDAO", color: color.aqua)
@@ -1423,19 +1482,59 @@ Parte 3
 
 - *Andare alla pagina della canzone*
 
+Parte 1
+
 #figure(
   scale(
     100%,
     diagram({
-      _par("a", display-name: "homepage.thml + showPage.js")
+      _par("a", display-name: "homepage.thml + songPageManager.js")
       _par("b", display-name: "song_page")
       _par("c", display-name: "homepage_button")
       _par("d", display-name: "main_page + playlist_page")
 
-      _seq("[", "a", comment: [`showPlaylistPage()`], enable-dst: true)
+      _seq("[", "a", comment: [`showSongPage(songId)`], enable-dst: true)
       _seq("a", "b", comment: [display])
       _seq("a", "c", comment: [display])
-      _seq("a", "d", comment: [mask], disable-src: true)
+      _seq("a", "d", comment: [mask])
+      _seq("a", "]", comment: [doGet GetSong\ songId], disable-src: true)
+    }),
+  ),
+)
+
+Parte 2
+#figure(
+  scale(
+    100%,
+    diagram({
+      _par("a", display-name: "song_page + songPageManager.js")
+      _par("b", display-name: "GetSong", color: color.aqua)
+      _par("c", display-name: "SongDAO", color: color.aqua)
+
+      _seq("[", "a", enable-dst: true)
+      _seq("a", "b", comment: [doGet\ songId], enable-dst: true)
+      _alt(
+        "Invalid songId",
+        {
+          _seq("b", "a", comment: [[`songId nan`] error])
+        },
+        "Valid songId",
+        {
+          _seq("b", "c", comment: [`new SongDAO()`], enable-dst: true)
+          _seq("c", "b", comment: [`getSong(songId)`], disable-src: true)
+          _alt(
+            "Wrong user",
+            {
+              _seq("b", "a", comment: [[`user.getId() !=`\ `song.getUser_id()`] error])
+            },
+            "Correct user",
+            {
+              _seq("b", "a", comment: [`gson.toJson(song)`\ `SC_OK`], disable-src: true)
+              _seq("a", "a", comment: [set song info and player], disable-dst: true)
+            },
+          )
+        },
+      )
     }),
   ),
 )
