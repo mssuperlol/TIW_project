@@ -53,15 +53,15 @@
                     <tbody>
                     <tr>
                         <td>Titolo:</td>
-                        <td><label><input type="text" name="title" maxlength="64" required></label></td>
+                        <td><label><input type="text" name="title" maxlength="256" required></label></td>
                     </tr>
                     <tr>
                         <td>Album:</td>
-                        <td><label><input type="text" name="album_title" maxlength="64" required></label></td>
+                        <td><label><input type="text" name="album_title" maxlength="256" required></label></td>
                     </tr>
                     <tr>
                         <td>Inteprete:</td>
-                        <td><label><input type="text" name="performer" maxlength="64" required></label></td>
+                        <td><label><input type="text" name="performer" maxlength="256" required></label></td>
                     </tr>
                     <tr>
                         <td>Anno:</td>
@@ -105,7 +105,7 @@
                     <tr>
                         <td>Titolo:</td>
                         <td><label>
-                            <input type="text" name="title" maxlength="64" required>
+                            <input type="text" name="title" maxlength="256" required>
                         </label></td>
                     </tr>
                     <tr th:each="s : ${songs}">
