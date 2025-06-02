@@ -86,16 +86,16 @@ create table songs
 (
     id              int auto_increment,
     user_id         int          not null,
-    title           varchar(64)  not null,
-    image_file_name varchar(64)  not null,
-    album_title     varchar(64)  not null,
-    performer       varchar(64)  not null,
-    year            int          not null,
-    genre           varchar(64)  not null,
-    music_file_name varchar(128) not null,
+    title           varchar(256) not null,
+    image_file_name varchar(256) not null,
+    album_title     varchar(256) not null,
+    performer       varchar(256) not null,
+    year            int          not null check ( year > 0 ),
+    genre           varchar(256) not null,
+    music_file_name varchar(256) not null,
     primary key (id),
-    foreign key (user_id) references users (id),
-    foreign key (genre) references genres (name),
+    foreign key (user_id) references users (id) on update cascade on delete no action,
+    foreign key (genre) references genres (name) on update cascade on delete no action,
     unique (user_id, music_file_name),
     unique (user_id, title)
 );
@@ -103,9 +103,9 @@ create table songs
 create table playlists
 (
     id      int auto_increment,
-    user_id int         not null,
-    title   varchar(64) not null,
-    date    date        not null,
+    user_id int          not null,
+    title   varchar(256) not null,
+    date    date         not null default current_date,
     primary key (id),
     unique (user_id, title)
 );
@@ -115,8 +115,8 @@ create table playlist_contents
     playlist int,
     song     int,
     primary key (playlist, song),
-    foreign key (playlist) references playlists (id),
-    foreign key (song) references songs (id)
+    foreign key (playlist) references playlists (id) on update cascade on delete no action,
+    foreign key (song) references songs (id) on update cascade on delete no action
 );
 ```
 
@@ -626,13 +626,13 @@ create table songs
 (
     id              int auto_increment,
     user_id         int          not null,
-    title           varchar(64)  not null,
-    image_file_name varchar(64)  not null,
-    album_title     varchar(64)  not null,
-    performer       varchar(64)  not null,
+    title           varchar(256) not null,
+    image_file_name varchar(256) not null,
+    album_title     varchar(256) not null,
+    performer       varchar(256) not null,
     year            int          not null check ( year > 0 ),
-    genre           varchar(64)  not null,
-    music_file_name varchar(128) not null,
+    genre           varchar(256) not null,
+    music_file_name varchar(256) not null,
     primary key (id),
     foreign key (user_id) references users (id) on update cascade on delete no action,
     foreign key (genre) references genres (name) on update cascade on delete no action,
@@ -643,10 +643,10 @@ create table songs
 create table playlists
 (
     id               int auto_increment,
-    user_id          int         not null,
-    title            varchar(64) not null,
-    date             date        not null default current_date,
-    has_custom_order boolean     not null default false,
+    user_id          int          not null,
+    title            varchar(256) not null,
+    date             date         not null default current_date,
+    has_custom_order boolean      not null default false,
     primary key (id),
     unique (user_id, title)
 );
