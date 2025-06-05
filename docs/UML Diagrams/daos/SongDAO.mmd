@@ -1,0 +1,19 @@
+---
+config:
+  htmlLabels: false
+---
+
+classDiagram
+direction BT
+class SongDAO {
+  + SongDAO(Connection)
+  - Connection connection
+  + getSongsIdFromUserId(int) List~Integer~
+  + getAllSongsFromPlaylist(int) List~Song~
+  + getSong(int) Song
+  + insertSong(int, String, String, String, String, int, String, String) void
+  - getSongFromResultSet(ResultSet) Song
+  + getAllSongsFromUserId(int) List~Song~
+  + getSongsNotInPlaylist(int, int) List~Song~
+  - getSongListFromResultSet(ResultSet) List~Song~?
+}

@@ -61,9 +61,11 @@ Legenda:
 - _Attributi_;
 - #underline[Relazioni].
 
-=== Design database
+=== Diagramma entità-relazioni
 
-#figure(image("ER Diagram.png", width: 100%))
+#figure(image("ER DIagrams/ER Diagram HTML.png", width: 100%))
+
+=== Database design
 
 ```sql
 create table users
@@ -150,7 +152,53 @@ Legenda:
 
 === Diagramma IFML
 
-#figure(image("IFML Diagram HTML.png", width: 100%))
+#figure(image("IFML Diagrams/IFML Diagram HTML.png", width: 100%))
+
+#pagebreak()
+
+=== Componenti e viste
+
+1. *Beans*
+
+#figure(image("UML Diagrams/beans.svg"))
+
+Tutti gli attributi sono riconducibili al diagramma ER del database (tranne per la tabella `playlist_contents`, che è stata incorporata dentro l'oggetto `Playlist` per convenienza), mentre i metodi sono i soliti getter e setter di Java.
+
+2. *DAO*
+
+#figure(image("UML Diagrams/daos/GenreDAO.svg"))
+
+- `getGenres()`: ritorna una lista dei generi come stringhe.
+
+#figure(image("UML Diagrams/daos/PlaylistDAO.svg"))
+
+- `getPlaylists(int userId)`: ritorna una lista di `Playlist` create dallo user associato all'assegnato `userId`. Gli oggetti `Playlist` hanno l'attributo `songs = null`, dato che questa funzione viene chiamata solo per riempire la lista di playlist nella homepage;
+- `getFullPlaylist(int playlistId)`: ritorna la `Playlist` con l'id dato con tutte le informazioni associate (compreso l'elenco di canzoni associate);
+- `insertPlaylist(int userId, String title, List<Integer> songsId)`: crea una nuova playlist con le informazioni date e "oggi" comme data di creazione;
+- `addSongsToPlaylist(int playlistId, List<Integer> songsId)`: aggiunge la coppia (playlistId, songId) alla tabella `playlist_contents` per ogni id nella lista `songsId`;
+- `getPlaylistId(int userId, String title)`: ritorna l'id della playlist che ha associati lo user id e il titolo passati;
+- `getUserId(int playlistId)`: ritorna l'id dello user che ha creato la playlist, o $-1$ altrimenti.
+
+#figure(image("UML Diagrams/daos/SongDAO.svg"))
+
+- `getAllSongsFromUserId(int userId)`: ritorna una lista di tutte le canzoni associate allo user dato, ordinate per interprete e anno, o `null` se non ne sono state trovate;
+- `getAllSongsFromPlaylist(int playlistId)`: ritorna una lista di tutte le canzoni associate all'id della playlist dato, ordinate per interprete e anno, o `null` se non ne sono state trovate;
+- `getSongListFromResultSet(ResultSet resultSet)`: metodo che estrare le canzoni dal set dato (se vuoto, ritorna `null`);
+- `insertSong(int userId, String title, String imageFileName, String albumTitle, String performer, int year, String genre, String musicFileName)`: aggiunge la canzone alla tabella `songs`;
+- `getSong(int songId)`: ritorna un oggetto `Song` dato l'id della canzone;
+- `getSongsNotInPlaylist(int userId, int playlistId)`: ritorna una lista di tutte le canzoni associate al dato user che non appartengono alla data playlist;
+- `getSongsIdFromUserId(int userId)`: ritorna una lista di tutti gli id delle canzoni associate al dato user;
+- `getSongFromResultSet(ResultSet resultSet)`: estrae un'oggetto `Song` dal dato result set.
+
+#figure(image("UML Diagrams/daos/UserDAO.svg"))
+
+- `checkLogin(String username, String password)`: controlla nel database se un utente con i dati username e password esiste: in caso affermativo, ritorna un oggetto `User` con le informazioni dell'utente, `null` altrimenti.
+
+3. *Controllers*
+
+4. *Utils*
+
+5. *Templates*
 
 === Sequence diagrams
 
@@ -601,9 +649,11 @@ Legenda:
 - _Attributi_;
 - #underline[Relazioni].
 
-=== Design database
+=== Diagramma entità-relazioni
 
-#figure(image("ER Diagram JS.png", width: 100%));
+#figure(image("ER DIagrams/ER Diagram JS.png", width: 100%));
+
+=== Database design
 
 ```sql
 create table users
@@ -694,7 +744,7 @@ Legenda:
 
 === Diagramma IFML
 
-#figure(image("IFML Diagram JS.png", width: 100%))
+#figure(image("IFML Diagrams/IFML Diagram JS.png", width: 100%))
 
 === Eventi e azioni
 

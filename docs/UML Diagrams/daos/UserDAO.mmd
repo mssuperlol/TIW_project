@@ -1,0 +1,12 @@
+---
+config:
+  htmlLabels: false
+---
+
+classDiagram
+direction BT
+class UserDAO {
+  + UserDAO(Connection)
+  - Connection connection
+  + checkLogin(String, String) User
+}

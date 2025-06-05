@@ -1,0 +1,12 @@
+---
+config:
+  htmlLabels: false
+---
+
+classDiagram
+direction BT
+class GenreDAO {
+  + GenreDAO(Connection)
+  - Connection connection
+  + getGenres() List~String~
+}
