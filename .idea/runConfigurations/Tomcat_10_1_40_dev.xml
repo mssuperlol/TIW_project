@@ -3,7 +3,7 @@
     <option name="BROWSER_ID" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
     <option name="UPDATING_POLICY" value="restart-server" />
     <deployment>
-      <artifact name="HTML_pure:war exploded">
+      <artifact name="TIW_project:war exploded">
         <settings>
           <option name="CONTEXT_PATH" value="/TIW_project_war_exploded" />
         </settings>
@@ -19,6 +19,9 @@
     <predefined_log_file id="Tomcat Localhost Access" />
     <RunnerSettings RunnerId="AppServerDebuggerRunner">
       <option name="DEBUG_PORT" value="41341" />
+    </RunnerSettings>
+    <RunnerSettings RunnerId="Debug">
+      <option name="DEBUG_PORT" value="34495" />
     </RunnerSettings>
     <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="AppServerDebuggerRunner">
       <option name="USE_ENV_VARIABLES" value="true" />
@@ -36,6 +39,21 @@
       </SHUTDOWN>
     </ConfigurationWrapper>
     <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
       <option name="USE_ENV_VARIABLES" value="true" />
       <STARTUP>
         <option name="USE_DEFAULT" value="true" />
@@ -84,7 +102,7 @@
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="CheckDBConnectionTest" run_configuration_type="JUnit" />
       <option name="Make" enabled="true" />
       <option name="BuildArtifacts" enabled="true">
-        <artifact name="HTML_pure:war exploded" />
+        <artifact name="TIW_project:war exploded" />
       </option>
     </method>
   </configuration>
