@@ -14,7 +14,7 @@ create table users
     primary key (id)
 );
 
-load data local infile 'docs/users.tsv'
+load data local infile 'docs/TSV/users.tsv'
     into table users
     fields terminated by '\t'
     enclosed by '\t'
@@ -29,7 +29,7 @@ create table genres
 );
 
 #source: https://en.wikipedia.org/wiki/List_of_music_genres_and_styles
-load data local infile 'docs/genres.tsv'
+load data local infile 'docs/TSV/genres.tsv'
     into table genres
     fields terminated by '\t'
     enclosed by '\t'
@@ -55,7 +55,7 @@ create table songs
     unique (user_id, title)
 );
 
-load data local infile 'docs/songs.tsv'
+load data local infile 'docs/TSV/songs.tsv'
     into table songs
     fields terminated by '\t'
     enclosed by '\t'
@@ -73,7 +73,7 @@ create table playlists
     unique (user_id, title)
 );
 
-load data local infile 'docs/playlists.tsv'
+load data local infile 'docs/TSV/playlists.tsv'
     into table playlists
     fields terminated by '\t'
     enclosed by '\t'
@@ -91,7 +91,7 @@ create table playlist_contents
     foreign key (song) references songs (id) on update cascade on delete no action
 );
 
-load data local infile 'docs/playlist_contents.tsv'
+load data local infile 'docs/TSV/playlist_contents.tsv'
     into table playlist_contents
     fields terminated by '\t'
     enclosed by '\t'
