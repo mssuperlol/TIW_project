@@ -83,24 +83,25 @@ public class UploadSong extends HttpServlet {
         }
 
         if (title != null && albumTitle != null && performer != null && genre != null && year > 0 && year <= Year.now().getValue()) {
-            //saves the files to /home/mssuperlol/Documents/TIW_project_resources/ID/
-            String outputPath = folderPath + user.getId() + File.separator + imageFileName;
-            File outputFile = new File(outputPath);
-            try (InputStream fileContent = imageFilePart.getInputStream()) {
-                Files.copy(fileContent, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
-
-            outputPath = folderPath + user.getId() + File.separator + musicFileName;
-            outputFile = new File(outputPath);
-            try (InputStream fileContent = musicFilePart.getInputStream()) {
-                Files.copy(fileContent, outputFile.toPath());
-            } catch (FileAlreadyExistsException e) {
-                response.sendRedirect(getServletContext().getContextPath() + "/Homepage");
-            }
-
             //update the db
             try {
+                //if the db update fails, the copying of files is aborted too
                 songDAO.insertSong(userID, title, imageFileName, albumTitle, performer, year, genre, musicFileName);
+
+                //saves the files to /home/mssuperlol/Documents/TIW_project_resources/ID/
+                String outputPath = folderPath + user.getId() + File.separator + imageFileName;
+                File outputFile = new File(outputPath);
+                try (InputStream fileContent = imageFilePart.getInputStream()) {
+                    Files.copy(fileContent, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                outputPath = folderPath + user.getId() + File.separator + musicFileName;
+                outputFile = new File(outputPath);
+                try (InputStream fileContent = musicFilePart.getInputStream()) {
+                    Files.copy(fileContent, outputFile.toPath());
+                } catch (FileAlreadyExistsException e) {
+                    response.sendRedirect(getServletContext().getContextPath() + "/Homepage");
+                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
