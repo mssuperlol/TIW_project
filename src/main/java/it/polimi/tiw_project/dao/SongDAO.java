@@ -17,7 +17,7 @@ public class SongDAO {
     }
 
     /**
-     * Gets all the songs associated with the given user id
+     * Gets all the songs associated with the given user id, ordered by performer and year
      *
      * @param userId user id
      * @return a list containing all the songs associated with id, or null if no songs were found
@@ -70,6 +70,7 @@ public class SongDAO {
      * @param resultSet
      * @return list of all songs from resultSet, or null if no songs were found
      * @throws SQLException
+     * @see SongDAO#getSongFromResultSet
      */
     private List<Song> getSongListFromResultSet(ResultSet resultSet) throws SQLException {
         if (!resultSet.isBeforeFirst()) {
@@ -122,6 +123,7 @@ public class SongDAO {
      * @param songId id of the song
      * @return Song object with all data; null if not found
      * @throws SQLException
+     * @see SongDAO#getSongFromResultSet
      */
     public Song getSong(int songId) throws SQLException {
         String query = """
@@ -148,6 +150,7 @@ public class SongDAO {
      * @param playlistId id of the playlist to exclude
      * @return a list of Song that were uploaded by the given user that are not already part of the given playlist
      * @throws SQLException
+     * @see SongDAO#getSongListFromResultSet
      */
     public List<Song> getSongsNotInPlaylist(int userId, int playlistId) throws SQLException {
         String query = """
