@@ -1,18 +1,8 @@
 #import "@preview/chronos:0.2.1": *
 
-#set text(lang: "it")
-
-#set page(
-  paper: "a4",
-  margin: (x: 2cm, y: 2cm),
-)
-#set page(numbering: "1", number-align: center)
-
 #let set_colour(colour, name) = {
   text(colour)[#name]
 }
-
-#set heading(numbering: "1.a.")
 
 = Documentazione ver. html pura
 
@@ -27,7 +17,7 @@ Legenda:
 
 === Diagramma entità-relazioni
 
-#figure(image("ER DIagrams/ER Diagram HTML.png", width: 100%))
+#figure(image("ER DIagrams/ER Diagram HTML.svg", width: 100%))
 
 === Database design
 
@@ -116,7 +106,7 @@ Legenda:
 
 === Diagramma IFML
 
-#figure(image("IFML Diagrams/IFML Diagram HTML.png", width: 100%))
+#figure(image("IFML Diagrams/IFML Diagram HTML.svg", width: 100%))
 
 #pagebreak()
 
@@ -124,17 +114,17 @@ Legenda:
 
 1. *Beans*
 
-#figure(image("UML Diagrams/beans.svg"))
+#figure(image("UML Diagrams/beans html.svg"))
 
 Tutti gli attributi sono riconducibili al diagramma ER del database (tranne per la tabella `playlist_contents`, che è stata incorporata dentro l'oggetto `Playlist` per convenienza), mentre i metodi sono i soliti getter e setter di Java.
 
-2. *DAO*
+2. *DAOs*
 
-#figure(image("UML Diagrams/daos/GenreDAO.svg"))
+#figure(image("UML Diagrams/GenreDAO html.svg"))
 
 - `getGenres()`: ritorna una lista dei generi come stringhe.
 
-#figure(image("UML Diagrams/daos/PlaylistDAO.svg"))
+#figure(image("UML Diagrams/PlaylistDAO html.svg"))
 
 - `getPlaylists(int userId)`: ritorna una lista di `Playlist` create dallo user associato all'assegnato `userId`. Gli oggetti `Playlist` hanno l'attributo `songs = null`, dato che questa funzione viene chiamata solo per riempire la lista di playlist nella homepage;
 - `getFullPlaylist(int playlistId)`: ritorna la `Playlist` con l'id dato con tutte le informazioni associate (compreso l'elenco di canzoni associate);
@@ -143,7 +133,7 @@ Tutti gli attributi sono riconducibili al diagramma ER del database (tranne per 
 - `getPlaylistId(int userId, String title)`: ritorna l'id della playlist che ha associati lo user id e il titolo passati;
 - `getUserId(int playlistId)`: ritorna l'id dello user che ha creato la playlist, o $-1$ altrimenti.
 
-#figure(image("UML Diagrams/daos/SongDAO.svg"))
+#figure(image("UML Diagrams/SongDAO html.svg"))
 
 - `getAllSongsFromUserId(int userId)`: ritorna una lista di tutte le canzoni associate allo user dato, ordinate per interprete e anno, o `null` se non ne sono state trovate;
 - `getAllSongsFromPlaylist(int playlistId)`: ritorna una lista di tutte le canzoni associate all'id della playlist dato, ordinate per interprete e anno, o `null` se non ne sono state trovate;
@@ -154,7 +144,7 @@ Tutti gli attributi sono riconducibili al diagramma ER del database (tranne per 
 - `getSongsIdFromUserId(int userId)`: ritorna una lista di tutti gli id delle canzoni associate al dato user;
 - `getSongFromResultSet(ResultSet resultSet)`: estrae un'oggetto `Song` dal dato result set.
 
-#figure(image("UML Diagrams/daos/UserDAO.svg"))
+#figure(image("UML Diagrams/UserDAO html.svg"))
 
 - `checkLogin(String username, String password)`: controlla nel database se un utente con i dati username e password esiste: in caso affermativo, ritorna un oggetto `User` con le informazioni dell'utente, `null` altrimenti.
 
@@ -647,3 +637,4 @@ Quando l'utente clicca sul titolo di una canzone, viene reindirizzato a questa s
 - L'id della playlist e l'indice servono quando l'utente usa il pulsante per tornare alla playlist: così facendo, ritorna alla pagina dalla quale ha cliccato la canzone.
 
 #pagebreak()
+
