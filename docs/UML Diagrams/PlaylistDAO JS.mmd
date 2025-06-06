@@ -1,0 +1,19 @@
+---
+config:
+  htmlLabels: false
+---
+
+classDiagram
+direction BT
+class PlaylistDAO {
+  + PlaylistDAO(Connection) 
+  - Connection connection
+  + insertPlaylist(int, String, List~Integer~) void
+  + addSongsToPlaylist(int, List~Integer~) void
+  + getPlaylist(int) Playlist
+  + getPlaylists(int) List~Playlist~
+  + getUserId(int) int
+  + updateCustomOrder(int, List~Integer~) void
+  + hasCustomOrder(int) boolean
+  + getPlaylistId(int, String) int
+}

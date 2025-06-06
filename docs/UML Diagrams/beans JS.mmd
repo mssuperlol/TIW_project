@@ -1,0 +1,68 @@
+---
+config:
+  htmlLabels: false
+---
+
+classDiagram
+direction BT
+class Playlist {
+  + Playlist() 
+  - String name
+  - int id
+  - Date date
+  - int userId
+  + getId() int
+  + setDate(Date) void
+  + setName(String) void
+  + getDate() Date
+  + setId(int) void
+  + getUserId() int
+  + getName() String
+  + setUserId(int) void
+}
+class Song {
+  + Song() 
+  - String title
+  - String image_file_name
+  - String album_title
+  - String music_file_name
+  - String performer
+  - int year
+  - int user_id
+  - String genre
+  - int id
+  + setAlbum_title(String) void
+  + setGenre(String) void
+  + getUser_id() int
+  + getYear() int
+  + getGenre() String
+  + setImage_file_name(String) void
+  + getMusic_file_name() String
+  + setPerformer(String) void
+  + setUser_id(int) void
+  + getId() int
+  + getImage_file_name() String
+  + setId(int) void
+  + setTitle(String) void
+  + setMusic_file_name(String) void
+  + getAlbum_title() String
+  + getPerformer() String
+  + getTitle() String
+  + setYear(int) void
+}
+class User {
+  + User() 
+  - int id
+  - String name
+  - String username
+  - String surname
+  + setSurname(String) void
+  + setName(String) void
+  + setId(int) void
+  + getName() String
+  + getId() int
+  + getUsername() String
+  + getSurname() String
+  + setUsername(String) void
+}
+
