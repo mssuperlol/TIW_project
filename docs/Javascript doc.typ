@@ -4,86 +4,88 @@
   text(colour)[#name]
 }
 
+#let cooler_link(anchor, text) = {
+  link(anchor)[#set_colour(color.blue, [#underline(text)])]
+}
+
 = Documentazione ver. Javascript
 
 == Analisi requisiti dati
 
-[...]\
-- L'applicazione deve consentire all'utente di _riordinare le playlist_ con un criterio personalizzato diverso da quello di default. Dalla HOME con un link associato a ogni playlist si accede a una finestra modale RIORDINO, che mostra la lista completa dei brani della playlist ordinati secondo il criterio corrente (personalizzato o di default). L'utente può trascinare il titolo di un brano nell'elenco e di collocarlo in una _posizione_ diversa per realizzare l'ordinamento che desidera, senza invocare il server. Quando l'utente ha raggiunto l'ordinamento desiderato, usa un bottone "salva ordinamento", per memorizzare la sequenza sul server. Ai successivi accessi, l'ordinamento personalizzato è usato al posto di quello di default. Un brano aggiunto a una playlist con ordinamento personalizzato è inserito nell'ultima posizione.
+L'applicazione deve consentire all'utente di _riordinare le playlist_ con un criterio personalizzato diverso da quello di default. Dalla HOME con un link associato a ogni playlist si accede a una finestra modale RIORDINO, che mostra la lista completa dei brani della playlist ordinati secondo il criterio corrente (personalizzato o di default). L'utente può trascinare il titolo di un brano nell'elenco e di collocarlo in una _posizione_ diversa per realizzare l'ordinamento che desidera, senza invocare il server. Quando l'utente ha raggiunto l'ordinamento desiderato, usa un bottone "salva ordinamento", per memorizzare la sequenza sul server. Ai successivi accessi, l'ordinamento personalizzato è usato al posto di quello di default. Un brano aggiunto a una playlist con ordinamento personalizzato è inserito nell'ultima posizione.
 
 Legenda:
 - *Entità*;
 - _Attributi_;
 - #underline[Relazioni].
 
-=== Diagramma entità-relazioni
+#figure(image("ER DIagrams/ER Diagram JS.svg", width: 110%), caption: [Diagramma entità-relazioni]);
 
-#figure(image("ER DIagrams/ER Diagram JS.svg", width: 100%));
+#figure(
+  [
+    ```sql
+    create table users
+    (
+        id       int auto_increment,
+        username varchar(32) not null unique,
+        password varchar(32) not null,
+        name     varchar(32) not null,
+        surname  varchar(32) not null,
+        primary key (id)
+    );
 
-=== Database design
+    create table genres
+    (
+        name varchar(32),
+        primary key (name)
+    );
 
-```sql
-create table users
-(
-    id       int auto_increment,
-    username varchar(32) not null unique,
-    password varchar(32) not null,
-    name     varchar(32) not null,
-    surname  varchar(32) not null,
-    primary key (id)
-);
+    create table songs
+    (
+        id              int auto_increment,
+        user_id         int          not null,
+        title           varchar(256) not null,
+        image_file_name varchar(256) not null,
+        album_title     varchar(256) not null,
+        performer       varchar(256) not null,
+        year            int          not null check ( year > 0 ),
+        genre           varchar(256) not null,
+        music_file_name varchar(256) not null,
+        primary key (id),
+        foreign key (user_id) references users (id) on update cascade on delete no action,
+        foreign key (genre) references genres (name) on update cascade on delete no action,
+        unique (user_id, music_file_name),
+        unique (user_id, title)
+    );
 
-create table genres
-(
-    name varchar(32),
-    primary key (name)
-);
+    create table playlists
+    (
+        id               int auto_increment,
+        user_id          int          not null,
+        title            varchar(256) not null,
+        date             date         not null default current_date,
+        has_custom_order boolean      not null default false,
+        primary key (id),
+        unique (user_id, title)
+    );
 
-create table songs
-(
-    id              int auto_increment,
-    user_id         int          not null,
-    title           varchar(256) not null,
-    image_file_name varchar(256) not null,
-    album_title     varchar(256) not null,
-    performer       varchar(256) not null,
-    year            int          not null check ( year > 0 ),
-    genre           varchar(256) not null,
-    music_file_name varchar(256) not null,
-    primary key (id),
-    foreign key (user_id) references users (id) on update cascade on delete no action,
-    foreign key (genre) references genres (name) on update cascade on delete no action,
-    unique (user_id, music_file_name),
-    unique (user_id, title)
-);
-
-create table playlists
-(
-    id               int auto_increment,
-    user_id          int          not null,
-    title            varchar(256) not null,
-    date             date         not null default current_date,
-    has_custom_order boolean      not null default false,
-    primary key (id),
-    unique (user_id, title)
-);
-
-create table playlist_contents
-(
-    playlist  int,
-    song      int,
-    custom_id int default null,
-    primary key (playlist, song),
-    foreign key (playlist) references playlists (id) on update cascade on delete no action,
-    foreign key (song) references songs (id) on update cascade on delete no action
-);
-```
-
+    create table playlist_contents
+    (
+        playlist  int,
+        song      int,
+        custom_id int default null,
+        primary key (playlist, song),
+        foreign key (playlist) references playlists (id) on update cascade on delete no action,
+        foreign key (song) references songs (id) on update cascade on delete no action
+    );
+    ```
+  ],
+  caption: [Database design],
+)
 
 
 == Analisi requisiti d'applicazione
 
-[...]\
 Si realizzi un'applicazione client server web che modifica le specifiche precedenti come segue:
 - Dopo il #set_colour(blue, [login dell'utente]), l'intera applicazione è realizzata con un'#set_colour(red, [unica pagina]);
 - Ogni interazione dell'utente è gestita senza ricaricare completamente la pagina, ma produce l'invocazione asincrona del server e l'eventuale modifica del contenuto da aggiornare a seguito dell'evento;
@@ -96,7 +98,7 @@ Legenda:
 - #set_colour(blue, [Eventi])\;
 - #set_colour(maroon, [Azioni]).
 
-=== Aggiunta alle specifiche
+== Aggiunta alle specifiche
 
 - Funzione di logout, accessibile tramite un pulsante dalle pagine di home, playlist e canzone;
 - Funzione per tornare alla homepage, accessibile tramite un pulsante dalle pagine di playlist e canzone;
@@ -109,25 +111,26 @@ Legenda:
 - Istruzioni sul caricare canzoni nella pagina della playlist se l'utente o ha aggiunto tutti i suoi brani alla playlist o non ha brani associati;
 - Possibilità di annullare il riordino di una playlist cliccando l'apposito pulsante o al di fuori del modal.
 
-=== Diagramma IFML
-
-#figure(image("IFML Diagrams/IFML Diagram JS.svg", width: 100%))
+#figure(
+  image("IFML Diagrams/IFML Diagram JS.svg", width: 110%),
+  caption: [Diagramma IFML],
+)
 
 #pagebreak()
 
-=== Componenti e viste
+== Componenti e viste
 
-1. *Beans*
+=== Beans
 
 #figure(image("UML Diagrams/beans JS.svg"))
 
-I beans sono uguali alla versione precedente, tranne la playlist che non ha l'attributo `Songs`: questo perché il recupero delle canzoni della playlist è stato mosso in `SongDAO`, che tiene conto della presenza o meno dell'ordine personalizzato.
+I beans sono uguali alla #cooler_link(<beans_html>, "versione precedente"), tranne la playlist che non ha l'attributo `Songs`: questo perché il recupero delle canzoni della playlist è stato spostato in `SongDAO`, che tiene conto della presenza o meno dell'ordine personalizzato.
 
-2. *DAOs*
+=== DAOs
 
 #figure(image("UML Diagrams/Genre+User DAOs JS.svg"))
 
-Questi due DAO sono uguali alla versione precedente.
+Questi due DAO sono uguali alla #cooler_link(<daos_html>, "versione precedente").
 
 #figure(image("UML Diagrams/PlaylistDAO JS.svg"))
 
@@ -135,44 +138,53 @@ Questi due DAO sono uguali alla versione precedente.
 - `updateCustomOrder(int playlistId, List<Integer> songsId)`: data una lista di id di brani e l'id della playlist, aggiorna il suo ordine personalizzato in base all'ordine degli id nella lista (il primo id sarà il primo brano visualizzato, etc...);
 - `hasCustomOrder(int playlistId)`: ritorna verso se la playlist ha un ordine personalizzato, falso altrimenti.
 
-Il resto dei metodi sono uguali alla versione precedente.
+Il resto dei metodi sono uguali alla #cooler_link(<dao_playlist_html>, "versione precedente").
 
 #figure(image("UML Diagrams/SongDAO JS.svg"))
 
-Tutti i metodi sono simili alla versione html, tranne `getAllSongsFromPlaylist`, che controlla se la playlist ha un ordine personalizzato per decidere quale tipo di ordinamento usare.
+Tutti i metodi sono simili alla #cooler_link(<dao_song_html>, "versione html"), tranne `getAllSongsFromPlaylist`, che controlla se la playlist ha un ordine personalizzato per decidere quale tipo di ordinamento usare.
 
-3. *Controllers*
+#pagebreak()
 
-- `AddSongsToPlaylist`;
-- `CheckLogin`;
-- `CreatePlaylist`;
-- `GetGenres`;
-- `GetPlaylist`;
-- `GetPlaylists`;
-- `GetSong`;
-- `GetSongsByUserID`;
-- `GetSongsFromPlaylist`;
-- `GetSongsNotInPlaylist`;
-- `GetUserData`;
-- `Logout`;
-- `UpdateCustomOrder`;
-- `UploadSong`.
+=== Controllers
 
-4. *Filters*
+#columns([
+  - `AddSongsToPlaylist`;
+  - `CheckLogin`;
+  - `CreatePlaylist`;
+  - `GetGenres`;
+  - `GetPlaylist`;
+  - `GetPlaylists`;
+  - `GetSong`;
+  #colbreak()
+  - `GetSongsByUserID`;
+  - `GetSongsFromPlaylist`;
+  - `GetSongsNotInPlaylist`;
+  - `GetUserData`;
+  - `Logout`;
+  - `UpdateCustomOrder`;
+  - `UploadSong`.
+])
+
+
+=== Filters
 
 - `LoginChecker`: quando l'utente tenta di accedere a `homepage.html`, il filtro controlla che la sessione non sia "nuova", e richiede l'attributo `user`. Se la sessione è nuova o l'`user` è `null`, l'utente viene indirizzato alla pagina di login, altrimenti la servlet procede nel suo compito.
 
-5. *Utils*
+=== Utils
 
-- `getConnection(ServletContext context)`: come sopra;
+- `getConnection(ServletContext context)`: #cooler_link(<utils_html>, "come sopra");
 - `getFileEncoding(String relativeFilePath, ServletContext context)`: metodo che prende il file dal local storage e lo encripta in una stringa "base64". Dal contesto prende il percorso che punta alla cartella con tutte le risorse degli utenti, e il percorso relativo viene aggiunto per puntare al file specifico.
 
-6. *Templates*
+=== Html files
 
-- `login.html` (welcome-file);
-- `homepage.html`.
+#columns([
+  - `login.html` (welcome-file);
+  #colbreak()
+  - `homepage.html`.
+])
 
-7. *JS*
+=== JS
 
 - `filter`: controlla che l'utente abbia fatto il login;
 - `homepageButton`: quando l'utente clicca l'`homepage_button`, chiama la funzione `showHomepage()`, dato che non è necessario inizializzarla di nuovo;
@@ -184,7 +196,7 @@ Tutti i metodi sono simili alla versione html, tranne `getAllSongsFromPlaylist`,
 - `songPageManager`: si occupa di renderizzare la pagina del brano e il pulsante per tornare alla playlist;
 - `utils.js`: si occupa di gestire le chiamate con le servlet tramite la funzione `makeCall()`.
 
-=== Eventi e azioni
+== Eventi e azioni
 
 #figure(
   table(
@@ -254,7 +266,7 @@ Tutti i metodi sono simili alla versione html, tranne `getAllSongsFromPlaylist`,
   ),
 )
 
-=== Controller ed Event handler
+== Controller ed Event handler
 
 #figure(
   table(
@@ -322,7 +334,7 @@ Tutti i metodi sono simili alla versione html, tranne `getAllSongsFromPlaylist`,
 
 #pagebreak()
 
-=== Sequence diagrams
+== Sequence diagrams
 
 *Login*
 
@@ -370,7 +382,7 @@ Tutti i metodi sono simili alla versione html, tranne `getAllSongsFromPlaylist`,
   ),
 )
 
-Simile alla versione precedente. A lato client, `loginManagement.js` controlla che il form sia valido prima di mandare la richiesta: se la servlet ritorna esito positivo, salva lo `user_id` nel session storage e reindirizza lo user alla homepage; se la servlet ritorna esito negativo, stampa un messaggio di errore.
+Simile alla #cooler_link(<login_html>, "versione precedente"). A lato client, `loginManagement.js` controlla che il form sia valido prima di mandare la richiesta: se la servlet ritorna esito positivo, salva lo `user_id` nel session storage e reindirizza lo user alla homepage; se la servlet ritorna esito negativo, stampa un messaggio di errore.
 
 *Filtro utente*
 
@@ -424,11 +436,11 @@ Al caricamento della homepage, il `LoginChecker` controlla che la sessione non s
   ),
 )
 
-Al caricamento di `homepage.html`, controlla che l'attributo `user_id` non sia nullo: se lo è, reindirizza l'utente alla pagina di login, altrimenti renderizza la homepage chiamando `homepageInit`;
+Al caricamento di `homepage.html`, controlla che l'attributo `user_id` non sia nullo: se lo è, reindirizza l'utente alla pagina di login, altrimenti renderizza la homepage chiamando `homepageInit`.
 
 #pagebreak()
 
-- *Inizializzare la homepage*
+*Inizializzare la homepage*
 
 #figure(
   scale(
@@ -492,7 +504,7 @@ Quando la homepage viene caricata per la prima volta e passa il filtro, vengono 
   ),
 )
 
-Quando è necessario aggiornare l'elenco di playlist, chiama la servlet `GetPlaylists` e ritorna le playlist come json. Se la risposta arriva correttamente, viene resettata aggiornato l'elenco.
+Quando è necessario aggiornare l'elenco di playlist, chiama la servlet `GetPlaylists` e ritorna le playlist come JSON. Se la risposta arriva correttamente, viene aggiornato l'elenco.
 
 *Aggiornare il form per creare una playlist*
 
@@ -524,7 +536,7 @@ Quando è necessario aggiornare l'elenco di playlist, chiama la servlet `GetPlay
   ),
 )
 
-Quando è necessario aggiornare il form per creare playlist, chiama la servlet `GetSongsByUserID` e ritorna le canzoni come json. Se la risposta arriva correttamente, viene resettata aggiornato il form.
+Quando è necessario aggiornare il form per creare playlist, chiama la servlet `GetSongsByUserID` e ritorna le canzoni come JSON. Se la risposta arriva correttamente, viene aggiornato il form.
 
 #pagebreak()
 
@@ -588,7 +600,7 @@ Quando è necessario aggiornare il form per creare playlist, chiama la servlet `
   ),
 )
 
-Quando l'utente manda l'`upload_song_form`, controlla tutti i campi e, in caso d'errore, mostra un messaggio di errore e annulla l'operazione. Se tutti i campi sono stati compilati correttamente, fa una chiamata alla servlet di `UploadSong`: se la canzone viene caricata correttamente, resetta il form e ricarica il form per creare una playlist (`updateCreatePlaylistForm()`), altrimenti mostra un messaggio d'errore;
+Quando l'utente manda l'`upload_song_form`, controlla tutti i campi e, in caso d'errore, mostra un messaggio di errore e annulla l'operazione. Se tutti i campi sono stati compilati correttamente, fa una chiamata alla servlet di `UploadSong`: se la canzone viene caricata correttamente, resetta il form e ricarica il form per creare una playlist `updateCreatePlaylistForm()`, altrimenti mostra un messaggio d'errore.
 
 *Creare una playlist*
 
@@ -634,7 +646,7 @@ Quando l'utente manda l'`upload_song_form`, controlla tutti i campi e, in caso d
   ),
 )
 
-Quando l'utente manda il `create_playlist_form`, controlla il campo del titolo e, in caso d'errore, mostra un messaggio di errore e annulla l'operazione. Altrimenti, fa una chiamata alla servlet `CreatePlaylist`: se la playlist viene creata correttamente, resetta il form e ricarica la lista di playlist (`updatePlaylists()`), altrimenti mostra un messaggio di errore.
+Quando l'utente manda il `create_playlist_form`, controlla il campo del titolo e, in caso d'errore, mostra un messaggio di errore e annulla l'operazione. Altrimenti, fa una chiamata alla servlet `CreatePlaylist`: se la playlist viene creata correttamente, resetta il form e ricarica la lista di playlist `updatePlaylists()`, altrimenti mostra un messaggio di errore.
 
 #pagebreak()
 
@@ -680,7 +692,7 @@ Quando l'utente manda il `create_playlist_form`, controlla il campo del titolo e
   ),
 )
 
-Quando è necessario ricaricare la pagina della playlist, viene chiamata la servlet `GetPlaylist` con il playlistId preso dalla session storage. Se la chiamata ha esito positivo, viene aggiornato la "heading" della pagina con le informazioni della playlist corrente.
+Quando è necessario ricaricare la pagina della playlist, viene chiamata la servlet `GetPlaylist` con il playlistId preso dalla session storage. Se la chiamata ha esito positivo, viene aggiornata la "heading" della pagina con le informazioni della playlist corrente.
 
 #pagebreak()
 
@@ -700,6 +712,8 @@ Quando è necessario ricaricare la pagina della playlist, viene chiamata la serv
         {
           _seq("[", "a", enable-dst: true)
           _seq("a", "b", comment: [doGet\ playlistId], enable-dst: true)
+          _seq("b", "c", comment: [`new PlaylistDAO()`], enable-dst: true)
+          _seq("b", "d", comment: [`new SongDAO()`], enable-dst: true)
           _alt(
             "Invalid playlist id",
             {
@@ -707,8 +721,6 @@ Quando è necessario ricaricare la pagina della playlist, viene chiamata la serv
             },
             "Valid playlist id",
             {
-              _seq("b", "c", comment: `new PlaylistDAO()`, enable-dst: true)
-              _seq("b", "d", comment: [`new SongDAO()`], enable-dst: true)
               _seq("c", "b", comment: `getUserId(playlistId)`, disable-src: true)
               _alt(
                 "Wrong user",
@@ -733,7 +745,7 @@ Quando è necessario ricaricare la pagina della playlist, viene chiamata la serv
   ),
 )
 
-Se la chiamata precedente ha avuto esito positivo, viene chiamata la servlet `GetSongsFromPlaylist`. Se anche questa chiamata ha esito positivo, le canzoni vengono inserite in una tabella in gruppi di 5, e viene chiamata `showVisibleSongs()` per renderizzare correttamente solo il primo gruppo con i corrispettivi pulsanti. Lo stesso json viene usato anche per aggiornare il modal.
+Se la chiamata precedente ha avuto esito positivo, viene chiamata la servlet `GetSongsFromPlaylist`. Se anche questa chiamata ha esito positivo, le canzoni vengono inserite in una tabella in gruppi di 5 e viene chiamata `showVisibleSongs()` per renderizzare correttamente solo il primo gruppo con i corrispettivi pulsanti. Lo stesso JSON viene usato anche per aggiornare il modal.
 
 #pagebreak()
 
@@ -779,7 +791,7 @@ Se la chiamata precedente ha avuto esito positivo, viene chiamata la servlet `Ge
   ),
 )
 
-Dopo i passi precedenti, viene chiamata la servlet `GetSongsNotInPlaylist`: se questa chiamata ha esito positivo, viene inizializzato il form per aggiungere canzoni alla playlist corrente con i valori del json. Infine, vhiene renderizzata la pagina della playlist.
+Dopo i passi precedenti, viene chiamata la servlet `GetSongsNotInPlaylist`: se questa chiamata ha esito positivo, viene inizializzato il form per aggiungere canzoni alla playlist corrente con i valori del json. Infine, viene renderizzata la pagina della playlist.
 
 - *Andare alla pagina della playlist*
 
@@ -832,7 +844,7 @@ Dopo i passi precedenti, viene chiamata la servlet `GetSongsNotInPlaylist`: se q
   ),
 )
 
-Quando viene inizializzata la pagina della playlist o l'utente clicca i pulsanti "precedenti"/"successivi", la funzione calcola l'indice massimo e controlla che l'indice passato sia valido (numero positivo $<=$ indice massimo): se non lo è, gli viene assegnato il valore di default $0$. Il nuovo indice viene poi salvato nella session storage e vengono mascherate tutte le righe il cui indice non coincide con il `songsIndex`, e viene rivelata la riga con lo stesso indice. Infine, in base all'indice, vengono mascherati/rivelati i relativi pulsanti.
+Quando viene inizializzata la pagina della playlist o l'utente clicca i pulsanti "precedenti"/"successivi", la funzione calcola l'indice massimo e controlla che l'indice passato sia valido (numero positivo minore dell'indice massimo): se non lo è, gli viene assegnato il valore di default $0$. Il nuovo indice viene poi salvato nella session storage e vengono mascherate tutte le righe il cui indice non coincide con il `songsIndex`, e viene rivelata la riga con lo stesso indice. Infine, in base all'indice, vengono mascherati/rivelati i relativi pulsanti.
 
 #pagebreak()
 
@@ -885,7 +897,7 @@ Quando viene inizializzata la pagina della playlist o l'utente clicca i pulsanti
   ),
 )
 
-Quando l'utente compila il form, viene controllato che abbia selezionato almeno una canzone: in tal caso, viene chiamata la servlet `AddSongsToPlaylist`. Il resto è simile alla versione precedente.
+Quando l'utente compila il form, viene controllato che abbia selezionato almeno una canzone: in tal caso, viene chiamata la servlet `AddSongsToPlaylist`. Il resto è simile alla #cooler_link(<add_songs_to_playlist_html>, "versione precedente").
 
 #pagebreak()
 
@@ -905,7 +917,7 @@ Quando l'utente compila il form, viene controllato che abbia selezionato almeno 
   ),
 )
 
-- *Chiudere il modal*
+- *Chiudere il modal* <close_modal_js>
 
 #figure(
   scale(
@@ -946,7 +958,7 @@ Quando l'utente compila il form, viene controllato che abbia selezionato almeno 
   ),
 )
 
-Simile al diagramma di "Chiudere il modal", con l'aggiunta di controllare che l'utente abbia effettivamente cliccato il modal (cioè lo sfondo trasparente a lato del modal) e non uno dei contenuti del modal.
+Simile al diagramma di #cooler_link(<close_modal_js>, "Chiudere il modal"), con l'aggiunta di controllare che l'utente abbia effettivamente cliccato il modal (cioè lo sfondo trasparente a lato del modal) e non uno dei contenuti del modal.
 
 #pagebreak()
 
@@ -1062,5 +1074,5 @@ Quando l'utente è soddisfatto con il nuovo ordinamento, viene chiamata la servl
   ),
 )
 
-Quando l'utente clicca sul titolo di un brano, viene chiamata la servlet `GetSong`, che recupera la canzone e renderizza le sue informazioni.
+Quando l'utente clicca sul titolo di un brano, viene chiamata la servlet `GetSong`, che recupera la canzone e mostra le sue informazioni.
 

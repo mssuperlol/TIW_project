@@ -4,77 +4,85 @@
   text(colour)[#name]
 }
 
+#let cooler_link(anchor, text) = {
+  link(anchor)[#set_colour(color.blue, [#underline(text)])]
+}
+
 = Documentazione ver. html pura
 
 == Analisi requisiti dati
 
-#underline[Playlist e brani sono personali] di ogni utente e non condivisi. Ogni *utente* ha _username_, _password_, _nome_ e _cognome_. Ogni *brano musicale* è memorizzato nella base di dati mediante un _titolo_, l'_immagine_ e il _titolo dell'album_ da cui il brano è tratto, il _nome dell'interprete_ (singolo o gruppo) dell'album, l'_anno di pubblicazione dell'album_, il _genere musicale_ (#underline[si supponga che i *generi* siano prefissati]) e il _file musicale_. Non è richiesto di memorizzare l'ordine con cui i brani compaiono nell'album a cui appartengono. Si ipotizzi che #underline[un brano possa appartenere a un solo album] (no compilation). L'utente, previo login, può creare brani mediante il caricamento dei dati relativi e raggrupparli in playlist. #underline[Una playlist è un insieme di brani scelti tra quelli caricati dallo stesso utente]. #underline[Lo stesso brano può essere inserito in più playlist]. Una *playlist* ha un _titolo_ e una _data di creazione_ ed #underline[è associata al suo creatore].
+#set_colour(orange.darken(5%), [Playlist e brani sono personali]) di ogni utente e non condivisi. Ogni #set_colour(fuchsia, [utente]) ha #set_colour(eastern, [username]), #set_colour(eastern, [password]), #set_colour(eastern, [nome]) e #set_colour(eastern, [cognome]). Ogni #set_colour(fuchsia, [brano musicale]) è memorizzato nella base di dati mediante un #set_colour(eastern, [titolo]), l'#set_colour(eastern, [immagine]) e il #set_colour(eastern, [titolo dell'album]) da cui il brano è tratto, il #set_colour(eastern, [nome dell'interprete]) (singolo o gruppo) dell'album, l'#set_colour(eastern, [anno di pubblicazione dell'album]), il #set_colour(eastern, [genere musicale]) (#set_colour(orange.darken(5%), [si supponga che i #set_colour(fuchsia, [generi]) siano prefissati])) e il #set_colour(eastern, [file musicale]). Non è richiesto di memorizzare l'ordine con cui i brani compaiono nell'album a cui appartengono. Si ipotizzi che #set_colour(orange.darken(5%), [un brano possa appartenere a un solo album]) (no compilation). L'utente, previo login, può creare brani mediante il caricamento dei dati relativi e raggrupparli in playlist. #set_colour(orange.darken(5%), [Una playlist è un insieme di brani scelti tra quelli caricati dallo stesso utente]). #set_colour(orange.darken(5%), [Lo stesso brano può essere inserito in più playlist]). Una #set_colour(fuchsia, [playlist]) ha un #set_colour(eastern, [titolo]) e una #set_colour(eastern, [data di creazione]) ed #set_colour(orange.darken(5%), [è associata al suo creatore]).
 
 Legenda:
-- *Entità*;
-- _Attributi_;
-- #underline[Relazioni].
+- #set_colour(fuchsia, [Entità]);
+- #set_colour(eastern, [Attributi]);
+- #set_colour(orange.darken(5%), [Relazioni]).
 
-=== Diagramma entità-relazioni
+#figure(
+  image("ER DIagrams/ER Diagram HTML.svg", width: 110%),
+  caption: [Diagramma entità-relazioni],
+)
 
-#figure(image("ER DIagrams/ER Diagram HTML.svg", width: 100%))
+#figure(
+  [
+    ```sql
+    create table users
+    (
+        id       int auto_increment,
+        username varchar(32) not null unique,
+        password varchar(32) not null,
+        name     varchar(32) not null,
+        surname  varchar(32) not null,
+        primary key (id)
+    );
 
-=== Database design
+    create table genres
+    (
+        name varchar(32),
+        primary key (name)
+    );
 
-```sql
-create table users
-(
-    id       int auto_increment,
-    username varchar(32) not null unique,
-    password varchar(32) not null,
-    name     varchar(32) not null,
-    surname  varchar(32) not null,
-    primary key (id)
-);
+    create table songs
+    (
+        id              int auto_increment,
+        user_id         int          not null,
+        title           varchar(256) not null,
+        image_file_name varchar(256) not null,
+        album_title     varchar(256) not null,
+        performer       varchar(256) not null,
+        year            int          not null check ( year > 0 ),
+        genre           varchar(256) not null,
+        music_file_name varchar(256) not null,
+        primary key (id),
+        foreign key (user_id) references users (id) on update cascade on delete no action,
+        foreign key (genre) references genres (name) on update cascade on delete no action,
+        unique (user_id, music_file_name),
+        unique (user_id, title)
+    );
 
-create table genres
-(
-    name varchar(32),
-    primary key (name)
-);
+    create table playlists
+    (
+        id      int auto_increment,
+        user_id int          not null,
+        title   varchar(256) not null,
+        date    date         not null default current_date,
+        primary key (id),
+        unique (user_id, title)
+    );
 
-create table songs
-(
-    id              int auto_increment,
-    user_id         int          not null,
-    title           varchar(256) not null,
-    image_file_name varchar(256) not null,
-    album_title     varchar(256) not null,
-    performer       varchar(256) not null,
-    year            int          not null check ( year > 0 ),
-    genre           varchar(256) not null,
-    music_file_name varchar(256) not null,
-    primary key (id),
-    foreign key (user_id) references users (id) on update cascade on delete no action,
-    foreign key (genre) references genres (name) on update cascade on delete no action,
-    unique (user_id, music_file_name),
-    unique (user_id, title)
-);
-
-create table playlists
-(
-    id      int auto_increment,
-    user_id int          not null,
-    title   varchar(256) not null,
-    date    date         not null default current_date,
-    primary key (id),
-    unique (user_id, title)
-);
-
-create table playlist_contents
-(
-    playlist int,
-    song     int,
-    primary key (playlist, song),
-    foreign key (playlist) references playlists (id) on update cascade on delete no action,
-    foreign key (song) references songs (id) on update cascade on delete no action
-);
-```
+    create table playlist_contents
+    (
+        playlist int,
+        song     int,
+        primary key (playlist, song),
+        foreign key (playlist) references playlists (id) on update cascade on delete no action,
+        foreign key (song) references songs (id) on update cascade on delete no action
+    );
+    ```
+  ],
+  caption: [Database design],
+)
 
 #pagebreak()
 
@@ -92,7 +100,7 @@ Legenda:
 - #set_colour(blue, [Eventi])\;
 - #set_colour(maroon, [Azioni]).
 
-=== Aggiunta alle specifiche
+== Aggiunta alle specifiche
 
 - Funzione di logout, accessibile tramite un pulsante dalle pagine di home, playlist e canzone;
 - Funzione per tornare alla homepage, accessibile tramite un pulsante dalle pagine di playlist e canzone;
@@ -104,36 +112,34 @@ Legenda:
 - Istruzioni sull'aggiungere brani alla playlist se vuota nella pagina della playlist;
 - Istruzioni sul caricare canzoni nella pagina della playlist se l'utente o ha aggiunto tutti i suoi brani alla playlist o non ha brani associati.
 
-=== Diagramma IFML
-
-#figure(image("IFML Diagrams/IFML Diagram HTML.svg", width: 100%))
+#figure(image("IFML Diagrams/IFML Diagram HTML.svg", width: 110%), caption: [Diagramma IFML])
 
 #pagebreak()
 
-=== Componenti e viste
+== Componenti e viste
 
-1. *Beans*
+=== Beans <beans_html>
 
 #figure(image("UML Diagrams/beans html.svg"))
 
 Tutti gli attributi sono riconducibili al diagramma ER del database (tranne per la tabella `playlist_contents`, che è stata incorporata dentro l'oggetto `Playlist` per convenienza), mentre i metodi sono i soliti getter e setter di Java.
 
-2. *DAOs*
+=== DAOs <daos_html>
 
 #figure(image("UML Diagrams/GenreDAO html.svg"))
 
 - `getGenres()`: ritorna una lista dei generi come stringhe.
 
-#figure(image("UML Diagrams/PlaylistDAO html.svg"))
+#figure(image("UML Diagrams/PlaylistDAO html.svg")) <dao_playlist_html>
 
 - `getPlaylists(int userId)`: ritorna una lista di `Playlist` create dallo user associato all'assegnato `userId`. Gli oggetti `Playlist` hanno l'attributo `songs = null`, dato che questa funzione viene chiamata solo per riempire la lista di playlist nella homepage;
 - `getFullPlaylist(int playlistId)`: ritorna la `Playlist` con l'id dato con tutte le informazioni associate (compreso l'elenco di canzoni associate);
-- `insertPlaylist(int userId, String title, List<Integer> songsId)`: crea una nuova playlist con le informazioni date e "oggi" comme data di creazione;
+- `insertPlaylist(int userId, String title, List<Integer> songsId)`: crea una nuova playlist con le informazioni date e "oggi" come data di creazione;
 - `addSongsToPlaylist(int playlistId, List<Integer> songsId)`: aggiunge la coppia (playlistId, songId) alla tabella `playlist_contents` per ogni id nella lista `songsId`;
 - `getPlaylistId(int userId, String title)`: ritorna l'id della playlist che ha associati lo user id e il titolo passati;
 - `getUserId(int playlistId)`: ritorna l'id dello user che ha creato la playlist, o $-1$ altrimenti.
 
-#figure(image("UML Diagrams/SongDAO html.svg"))
+#figure(image("UML Diagrams/SongDAO html.svg")) <dao_song_html>
 
 - `getAllSongsFromUserId(int userId)`: ritorna una lista di tutte le canzoni associate allo user dato, ordinate per interprete e anno, o `null` se non ne sono state trovate;
 - `getAllSongsFromPlaylist(int playlistId)`: ritorna una lista di tutte le canzoni associate all'id della playlist dato, ordinate per interprete e anno, o `null` se non ne sono state trovate;
@@ -142,40 +148,52 @@ Tutti gli attributi sono riconducibili al diagramma ER del database (tranne per 
 - `getSong(int songId)`: ritorna un oggetto `Song` dato l'id della canzone;
 - `getSongsNotInPlaylist(int userId, int playlistId)`: ritorna una lista di tutte le canzoni associate al dato user che non appartengono alla data playlist;
 - `getSongsIdFromUserId(int userId)`: ritorna una lista di tutti gli id delle canzoni associate al dato user;
-- `getSongFromResultSet(ResultSet resultSet)`: estrae un'oggetto `Song` dal dato result set.
+- `getSongFromResultSet(ResultSet resultSet)`: estrae un'oggetto `Song` dal dato resultSet.
 
 #figure(image("UML Diagrams/UserDAO html.svg"))
 
 - `checkLogin(String username, String password)`: controlla nel database se un utente con i dati username e password esiste: in caso affermativo, ritorna un oggetto `User` con le informazioni dell'utente, `null` altrimenti.
 
-3. *Controllers*
+=== Controllers
 
-- `AddSongs`;
-- `CheckLogin`;
-- `CreatePlaylist`;
-- `GetFile`;
-- `GoToHomepage`;
-- `GoToPlaylist`;
-- `GoToSong`;
-- `Logout`;
-- `UploadSong`.
+#columns(
+  2,
+  [
+    - `AddSongs`;
+    - `CheckLogin`;
+    - `CreatePlaylist`;
+    - `GetFile`;
+    - `GoToHomepage`;
+    #colbreak()
+    - `GoToPlaylist`;
+    - `GoToSong`;
+    - `Logout`;
+    - `UploadSong`.
+  ],
+)
 
-4. *Utils*
+=== Utils <utils_html>
 
 - `getConnection(ServletContext context)`: dato il contesto della servlet, inizializza e restituisce la connessione al database.
 
-5. *Templates*
+=== Templates
 
-- `login.html` (welcome-file);
-- `homepage.html`;
-- `playlist.html`;
-- `song.html`;
+#columns(
+  2,
+  [
+    - `login.html` (welcome-file);
+    - `homepage.html`;
+    #colbreak()
+    - `playlist.html`;
+    - `song.html`;
+  ],
+)
 
 #pagebreak()
 
-=== Sequence diagrams
+== Sequence diagrams
 
-*Login*
+*Login* <login_html>
 
 #figure(
   scale(
@@ -211,7 +229,7 @@ Tutti gli attributi sono riconducibili al diagramma ER del database (tranne per 
   ),
 )
 
-Dopo che l'utente ha inserito le credenziali nel form e l'ha inviato, la servlet `CheckLogin` controlla, tramite `UserDAO`, se un utente con quel username e password esiste nel database: in caso affermativo, salva l'oggetto `user` nella sessione e reindirizza l'utente verso `GoToHomepage`; se l'utente non viene trovato, il DAO ritorna `null` e viene ricaricato `login.html`.
+Dopo che l'utente ha inserito le credenziali nel form e l'ha inviato, la servlet `CheckLogin` controlla, tramite `UserDAO`, se un utente con quello username e quella password esiste nel database: in caso affermativo, salva l'oggetto `user` nella sessione e reindirizza l'utente verso `GoToHomepage`; se l'utente non viene trovato, il DAO ritorna `null` e viene ricaricata `login.html`.
 
 *Controllare l'user*
 
@@ -219,7 +237,7 @@ Dopo che l'utente ha inserito le credenziali nel form e l'ha inviato, la servlet
   scale(
     100%,
     diagram({
-      _par("a", display-name: "/...")
+      _par("a", display-name: "Servlet")
       _par("b", display-name: "Request")
       _par("c", display-name: "Session")
       _par("d", display-name: "login.html")
@@ -235,7 +253,7 @@ Dopo che l'utente ha inserito le credenziali nel form e l'ha inviato, la servlet
   ),
 )
 
-Questo controllo viene fatto all'inizio di ogni servlet da qui in poi, ed è stato riportato separatamente per sintesi. Quando l'utente tenta di accedere a una servlet, questa controlla che la sessione non sia "nuova", e richiede l'attributo `user`. Se la sessione è nuova o l'`user` è `null`, l'utente viene indirizzato alla pagina di login, altrimenti la servlet procede nel suo compito.
+Questo controllo viene fatto all'inizio di ogni servlet da qui in poi, ed è stato riportato separatamente per sintesi. Quando l'utente tenta di accedere a una servlet, questa controlla che la sessione non sia "nuova", e richiede l'attributo `user`. Se la sessione è nuova o l'`user` è `null`, l'utente viene indirizzato alla pagina di login, altrimenti la servlet procede.
 
 #pagebreak()
 
@@ -270,12 +288,12 @@ Questo controllo viene fatto all'inizio di ogni servlet da qui in poi, ed è sta
   ),
 )
 
-Quando l'utente fa il log-in o ritorna alla homepage tramite l'apposito pulsante, viene chiamata la servlet `GoToHomepage`, che richiede la lista di playlist dell'utente dalla `PlaylistDAO`, i generi da `GenreDAO` e l'elenco delle canzoni dell'utente dal `SongDAO`. Questi vengono poi inseriti nel contesto e il template engine carica la pagina con le informazioni necessarie:
+Quando l'utente fa il login o ritorna alla homepage tramite l'apposito pulsante, viene chiamata la servlet `GoToHomepage`. Richiede la lista di playlist dell'utente dalla `PlaylistDAO`, i generi da `GenreDAO` e l'elenco delle canzoni dell'utente dal `SongDAO`. Questi vengono poi inseriti nel contesto e il template engine carica la pagina con le informazioni necessarie:
 
 - Dalla sessione recupera lo user e mette il suo nome e cognome nel messaggio di benvenuto;
 - Se la lista di playlist è vuota, viene renderizzato un messaggio che consiglia all'utente di usare il form apposito per creare una playlist. Se invece l'utente ha già creato delle playlist, viene renderizzata una tabella con il nome delle playlist (che serve da link per chiamare la servlet `GoToPlaylist`) e la sua data di creazione;
-- I generi vengono caricati in un menu a tendina nel form per caricare una nuova canzone;
-- Se la lista di canzoni è vuota, viene renderizzato un messaggio che consiglia all'utente di usare il form apposito per caricare un brano; altrimenti tutte le canzoni vengono renderizzati come opzioni per creare una nuova playlist. In entrambi i casi, viene renderizzato la casella di testo per inserire il nome della nuova playlist.
+- I generi vengono caricati in un menu a tendina nel form apposito;
+- Se la lista di canzoni è vuota, viene stampato un messaggio che consiglia all'utente di usare il form apposito per caricare un brano; altrimenti tutte le canzoni vengono renderizzate come opzioni per creare una nuova playlist. In entrambi i casi, viene renderizzata la casella di testo per inserire il nome della nuova playlist.
 
 *Logout*
 
@@ -294,7 +312,7 @@ Quando l'utente fa il log-in o ritorna alla homepage tramite l'apposito pulsante
   ),
 )
 
-Quando l'utente clicca l'apposito pulsante di logout, viene chiamata la servlet `Logout`, che invalida la sessione (se non è già nulla) e reindirizza l'utente alla pagina di login.
+Quando l'utente clicca il pulsante di logout, viene chiamata la servlet `Logout`, che invalida la sessione (se non è già nulla) e reindirizza l'utente alla pagina di login.
 
 - *Caricare una canzone*
 
@@ -329,7 +347,7 @@ Quando l'utente clicca l'apposito pulsante di logout, viene chiamata la servlet 
           _seq(
             "a",
             "c",
-            comment: [[at least one field is invalid]\ `redirect`],
+            comment: [#rect(fill: white, width: auto, height: auto, [[at least one field is invalid]\ `redirect`])],
           )
         },
         "Valid form",
@@ -363,7 +381,7 @@ Quando l'utente invia il form per creare una canzone (tutti i campi sono `requir
 
 #pagebreak()
 
-- *Creare una playlist*
+- *Creare una playlist* <create_playlist_html>
 
 #figure(
   scale(
@@ -392,7 +410,12 @@ Quando l'utente invia il form per creare una canzone (tutti i campi sono `requir
         },
         "Valid title",
         {
-          _seq("c", "a", comment: [`getSongsIdFromUserId(session.user.getId())`], disable-src: true)
+          _seq(
+            "c",
+            "a",
+            comment: [#rect(fill: white, width: auto, height: auto, [`getSongsIdFromUserId(session.user.getId())`])],
+            disable-src: true,
+          )
           // _seq("c", "a", comment: [`userSongsId`], disable-src: true)
           _loop(
             "songId : userSongsId",
@@ -408,7 +431,7 @@ Quando l'utente invia il form per creare una canzone (tutti i campi sono `requir
   ),
 )
 
-Quando l'utente invia il form per creare una nuova playlist (il campo del titolo è `required`) viene controllato che il titolo non sia nullo. Viene poi chiamato il `SongDAO` che restituisce una lista degli id delle canzoni dell'utente, e controlla quali tra questi si trova nella richiesta: se viene trovato, viene aggiunto alla lista di canzoni da aggiungere alla playlist. Una volta terminato questo controllo, il `PlaylistDAO` crea la nuova playlist e l'utente è reindirizzato alla homepage.
+Quando l'utente invia il form per creare una nuova playlist (il campo del titolo è `required`) viene controllato che il titolo non sia nullo. Viene poi chiamato il `SongDAO` che restituisce una lista degli id delle canzoni dell'utente e controlla quali tra questi si trova nella richiesta: se viene trovato, viene aggiunto alla lista di canzoni da aggiungere alla playlist. Una volta terminato questo controllo, il `PlaylistDAO` crea la nuova playlist e l'utente è reindirizzato alla homepage.
 
 #pagebreak()
 
@@ -451,7 +474,7 @@ Quando l'utente invia il form per creare una nuova playlist (il campo del titolo
   ),
 )
 
-Quando la pagina web deve renderizzare un contenuto multimediale, chiama questa servlet, che cerca il file richiesto nella cartella dell'utente. Se non viene trovato, manda un errore, altrimenti renderizza il file tramite l'output stream.
+Quando la pagina web deve mostrare un contenuto multimediale, chiama questa servlet, che cerca il file richiesto nella cartella dell'utente. Se non viene trovato, manda un errore, altrimenti renderizza il file tramite l'output stream.
 
 #pagebreak()
 
@@ -519,18 +542,18 @@ Quando la pagina web deve renderizzare un contenuto multimediale, chiama questa 
   ),
 )
 
-Quando l'utente clicca sul nome di una playlist o clicca l'apposito pulsante nella pagina di una canzone, viene reindirizzato a questa pagina. Se l'id della playlist non è valido o è associato a una playlist non dell'utente corrente, viene reindirizzato alla homepage. Se l'indice non è un numero, gli viene dato il valore di default `0`, altrimenti se è "out of bounds" o negativo l'utente viene reindirizzato alla homepage. Se tutti i controlli hanno esito positivo, viene recuperata la playlist dalla `PlaylistDAO` e i brani dell'utente che non appartengono a quella playlist dal `SongDAO`. Dai brani della playlist vengono selezionati quelli "puntati" dall'indice (es. `songsIndex = 0` $=>$ `currSongs = [song0, song1, song2, song3, song4]`) e vengono assegnati ai valori booleani `songsBefore` e `songsAfter` valori appropriati in base all'indice. Tutte le variabili vengono poi caricate nel contesto e il template engine carica la pagina `playlist.html` con le informazioni necessarie:
+Quando l'utente clicca sul nome di una playlist o clicca l'apposito pulsante nella pagina di una canzone, viene reindirizzato a questa pagina. Se l'id della playlist non è valido o è associato a una playlist non dell'utente corrente, viene reindirizzato alla homepage. Se l'indice non è un numero, gli viene dato il valore di default `0`, altrimenti se è non valido l'utente viene reindirizzato alla homepage. Se tutti i controlli hanno esito positivo, viene recuperata la playlist dalla `PlaylistDAO` e i brani dell'utente che non appartengono a quella playlist dal `SongDAO`. Dai brani della playlist vengono selezionati quelli "puntati" dall'indice (es. `songsIndex = 0` $=>$ `currSongs = [song0, song1, song2, song3, song4]`) e vengono assegnati ai valori booleani `songsBefore` e `songsAfter` valori appropriati in base all'indice. Tutte le variabili vengono poi caricate nel contesto e il template engine carica la pagina `playlist.html` con le informazioni necessarie:
 
 - Dalla playlist recupera il titolo e la data di creazione, che vengono mostrate a inizio pagina;
-- Se la playlist è vuota, viene renderizzato un messaggio che consiglia di usare il form apposito per caricare brani alla playlist; altrimenti, vengono renderizzati i brani in base all'indice, disposti in una tabella di una riga e 5 colonne. Ogni cella ha il titolo del brano (che funge da link per la relativa pagina) e l'immagine dell'album (caricata tramite una chiamata alla `GetFile` servlet);
-- I pulsanti per vedere i brani precedenti/successivi vengono renderizzati in base alle variabili:
-  - Se l'indice è 0, allora `songsBefore` è falso, e il pulsante non viene renderizzato; viceversa se l'indice è 0;
-  - Se l'indice punta all'ultimo "gruppo di 5", allora `songsAfter` è falso, e il pulsante non viene renderizzato; viceversa se l'indice punta a un altro gruppo;
-- Se la playlist contiene già tutte le canzoni dell'utente, viene renderizzato un messaggio che consiglia di caricare nuovi brani dalla homepage. Altrimenti, è presente un form da cui è possibile selezionare tutte le canzoni non già presenti nella playlist per aggiungerle.
+- Se la playlist è vuota, viene stampato un messaggio che consiglia di usare il form apposito per caricare brani alla playlist; altrimenti, vengono stampati i brani in base all'indice, disposti in una tabella di una riga e 5 colonne. Ogni cella ha il titolo del brano (che funge da link per la relativa pagina) e l'immagine dell'album (caricata tramite una chiamata alla `GetFile` servlet);
+- I pulsanti per vedere i brani precedenti/successivi vengono mostrati in base alle variabili:
+  - Se l'indice è 0, allora `songsBefore` è falso, e il pulsante non viene renderizzato, viceversa se l'indice è 0;
+  - Se l'indice punta all'ultimo "gruppo di 5", allora `songsAfter` è falso, e il pulsante non viene renderizzato, viceversa se l'indice punta a un altro gruppo;
+- Se la playlist contiene già tutte le canzoni dell'utente, viene stampato un messaggio che consiglia di caricare nuovi brani dalla homepage. Altrimenti, è presente un form da cui è possibile selezionare tutte le canzoni non già presenti nella playlist per aggiungerle.
 
 #pagebreak()
 
-*Aggiungere canzoni alla playlist*
+*Aggiungere canzoni alla playlist* <add_songs_to_playlist_html>
 
 #figure(
   scale(
@@ -581,7 +604,7 @@ Quando l'utente clicca sul nome di una playlist o clicca l'apposito pulsante nel
   ),
 )
 
-Quando l'utente invia il form per aggiungere brani alla playlist, viene controllato che il playlist id della request sia valido: in caso negativo, l'utente viene reindirizzato alla homepage (idem se l'id è di una playlist non dell'attuale utente). Se l'id è valido si recupera la lista degli id dei brani dell'utente e viene controllata la request come descritto nel sequence diagram "Creare una playlist": poi la playlist viene aggiornata tramite il `PlaylistDAO` e l'utente viene reindirizzato alla pagina della playlist.
+Quando l'utente invia il form per aggiungere brani alla playlist, viene controllato che il playlist id della request sia valido: in caso negativo, l'utente viene reindirizzato alla homepage (idem se l'id è di una playlist non dell'attuale utente). Se l'id è valido si recupera la lista degli id dei brani dell'utente e viene controllata la request come descritto nel sequence diagram #cooler_link(<create_playlist_html>, "Creare una playlist"): poi la playlist viene aggiornata tramite il `PlaylistDAO` e l'utente viene reindirizzato alla pagina della playlist.
 
 #pagebreak()
 
@@ -633,7 +656,7 @@ Quando l'utente invia il form per aggiungere brani alla playlist, viene controll
 )
 
 Quando l'utente clicca sul titolo di una canzone, viene reindirizzato a questa servlet. Se l'id della plalist, l'indice o l'id del brano non sono numeri, l'utente viene reindirizzato alla homepage. `SongDAO` viene chiamato per controllare che una canzone con quell'id esista e che appartenga allo user corrente: in caso negativo, viene reindirizzato alla homepage. Se tutti i controlli vanno bene, vengono salvati i dati nel contesto e caricata `song.html`:
-- Tutte le informazioni della canzone vengono renderizzate, insieme alla foto associata e al suo lettore musicale;
+- Tutte le informazioni della canzone vengono mostrate, insieme alla foto associata e al suo lettore musicale;
 - L'id della playlist e l'indice servono quando l'utente usa il pulsante per tornare alla playlist: così facendo, ritorna alla pagina dalla quale ha cliccato la canzone.
 
 #pagebreak()
