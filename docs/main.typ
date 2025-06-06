@@ -1,5 +1,3 @@
-#import "@preview/chronos:0.2.1": *
-
 #set text(lang: "it")
 
 #set page(
@@ -7,10 +5,6 @@
   margin: (x: 2cm, y: 2cm),
 )
 #set page(numbering: "1", number-align: center)
-
-#let set_colour(colour, name) = {
-  text(colour)[#name]
-}
 
 #align(horizon + center)[
   #heading(level: 1, "Progetto di Tecnologie Informatiche per il Web", outlined: false)
