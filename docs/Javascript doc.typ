@@ -1,19 +1,8 @@
 #import "@preview/chronos:0.2.1": *
 
-#set text(lang: "it")
-
-#set page(
-  paper: "a4",
-  margin: (x: 2cm, y: 2cm),
-)
-#set page(numbering: "1", number-align: center)
-
 #let set_colour(colour, name) = {
   text(colour)[#name]
 }
-
-#set heading(numbering: "1.a.")
-
 
 = Documentazione ver. Javascript
 
@@ -29,7 +18,7 @@ Legenda:
 
 === Diagramma entità-relazioni
 
-#figure(image("ER DIagrams/ER Diagram JS.png", width: 100%));
+#figure(image("ER DIagrams/ER Diagram JS.svg", width: 100%));
 
 === Database design
 
@@ -90,7 +79,7 @@ create table playlist_contents
 );
 ```
 
-#pagebreak()
+
 
 == Analisi requisiti d'applicazione
 
@@ -122,7 +111,78 @@ Legenda:
 
 === Diagramma IFML
 
-#figure(image("IFML Diagrams/IFML Diagram JS.png", width: 100%))
+#figure(image("IFML Diagrams/IFML Diagram JS.svg", width: 100%))
+
+#pagebreak()
+
+=== Componenti e viste
+
+1. *Beans*
+
+#figure(image("UML Diagrams/beans JS.svg"))
+
+I beans sono uguali alla versione precedente, tranne la playlist che non ha l'attributo `Songs`: questo perché il recupero delle canzoni della playlist è stato mosso in `SongDAO`, che tiene conto della presenza o meno dell'ordine personalizzato.
+
+2. *DAOs*
+
+#figure(image("UML Diagrams/Genre+User DAOs JS.svg"))
+
+Questi due DAO sono uguali alla versione precedente.
+
+#figure(image("UML Diagrams/PlaylistDAO JS.svg"))
+
+- `getPlaylist(int playlistId)`: l'equivalente di `getFullPlaylist` della versione precedente, con la differenza che non recupera direttamente le canzoni della playlist;
+- `updateCustomOrder(int playlistId, List<Integer> songsId)`: data una lista di id di brani e l'id della playlist, aggiorna il suo ordine personalizzato in base all'ordine degli id nella lista (il primo id sarà il primo brano visualizzato, etc...);
+- `hasCustomOrder(int playlistId)`: ritorna verso se la playlist ha un ordine personalizzato, falso altrimenti.
+
+Il resto dei metodi sono uguali alla versione precedente.
+
+#figure(image("UML Diagrams/SongDAO JS.svg"))
+
+Tutti i metodi sono simili alla versione html, tranne `getAllSongsFromPlaylist`, che controlla se la playlist ha un ordine personalizzato per decidere quale tipo di ordinamento usare.
+
+3. *Controllers*
+
+- `AddSongsToPlaylist`;
+- `CheckLogin`;
+- `CreatePlaylist`;
+- `GetGenres`;
+- `GetPlaylist`;
+- `GetPlaylists`;
+- `GetSong`;
+- `GetSongsByUserID`;
+- `GetSongsFromPlaylist`;
+- `GetSongsNotInPlaylist`;
+- `GetUserData`;
+- `Logout`;
+- `UpdateCustomOrder`;
+- `UploadSong`.
+
+4. *Filters*
+
+- `LoginChecker`: quando l'utente tenta di accedere a `homepage.html`, il filtro controlla che la sessione non sia "nuova", e richiede l'attributo `user`. Se la sessione è nuova o l'`user` è `null`, l'utente viene indirizzato alla pagina di login, altrimenti la servlet procede nel suo compito.
+
+5. *Utils*
+
+- `getConnection(ServletContext context)`: come sopra;
+- `getFileEncoding(String relativeFilePath, ServletContext context)`: metodo che prende il file dal local storage e lo encripta in una stringa "base64". Dal contesto prende il percorso che punta alla cartella con tutte le risorse degli utenti, e il percorso relativo viene aggiunto per puntare al file specifico.
+
+6. *Templates*
+
+- `login.html` (welcome-file);
+- `homepage.html`.
+
+7. *JS*
+
+- `filter`: controlla che l'utente abbia fatto il login;
+- `homepageButton`: quando l'utente clicca l'`homepage_button`, chiama la funzione `showHomepage()`, dato che non è necessario inizializzarla di nuovo;
+- `homepageManager`: si occupa di inizializzare la homepage (`homepageInit()`), aggiornare la lista di playlist dell'utente (`updatePlaylists()`), aggiornare il form per creare una nuova playlist con le canzoni dell'utente (`updateCreatePlaylistForm()`), renderizzare la homepage (`showHomepage()`) e controllare la correttezza dei form prima di chiamare la servlet;
+- `loginManagement`: si occupa di gestire il login dell'utente, controllando che il form sia valido prima di chiamare la servlet;
+- `logout`: quando l'utente clicca il bottone `logout`, fa una chiamata alla relativa servlet e pulisce la session storage;
+- `modalManager`: si occupa di gestire le funzioni del modal, come renderizzarlo, chiuderlo (`closeModal()`), riordinare la playlist con il drag & drop e confermare il nuovo ordine;
+- `playlistPageManager`: si occupa di inizializzare la pagina della playlist (`playlistPageInit()`), renderizzarla (`showPlaylistPage()`), cambiare le canzoni visualizzate tramite i pulsanti "precedenti" e "successive" (`showVisibleSongs()`) e gestire il form `add_songs_to_playlist`;
+- `songPageManager`: si occupa di renderizzare la pagina del brano e il pulsante per tornare alla playlist;
+- `utils.js`: si occupa di gestire le chiamate con le servlet tramite la funzione `makeCall()`.
 
 === Eventi e azioni
 
@@ -264,11 +324,11 @@ Legenda:
 
 === Sequence diagrams
 
-- *Login*
+*Login*
 
 #figure(
   scale(
-    90%,
+    95%,
     diagram({
       _par("a", display-name: "login.html + loginManagement.js")
       _par("b", display-name: "CheckLogin", color: color.aqua)
@@ -310,7 +370,9 @@ Legenda:
   ),
 )
 
-- *Filtro utente*
+Simile alla versione precedente. A lato client, `loginManagement.js` controlla che il form sia valido prima di mandare la richiesta: se la servlet ritorna esito positivo, salva lo `user_id` nel session storage e reindirizza lo user alla homepage; se la servlet ritorna esito negativo, stampa un messaggio di errore.
+
+*Filtro utente*
 
 #figure(
   scale(
@@ -321,19 +383,29 @@ Legenda:
       _par("c", display-name: "Session")
       _par("d", display-name: "login.html")
 
-      _seq("[", "a", enable-dst: true)
+      _seq("[", "a", comment: [load], enable-dst: true)
       _seq("a", "b", enable-dst: true)
       _seq("b", "c", comment: [[`!session.isNew()`] `getAttribute("user")`], enable-dst: true)
       _seq("c", "b", comment: [`user`], disable-src: true)
-      _seq("b", "d", comment: [[`session.isNew() || user == null`] redirect])
-      _seq("b", "a", disable-src: true, disable-dst: true)
+      _alt(
+        "Check failed",
+        {
+          _seq("b", "d", comment: [[`session.isNew() || user == null`] redirect])
+        },
+        "Check succeded",
+        {
+          _seq("b", "a", disable-src: true, disable-dst: true)
+        },
+      )
     }),
   ),
 )
 
+Al caricamento della homepage, il `LoginChecker` controlla che la sessione non sia nuova e che l'utente sia valido: se questi controlli hanno esito positivo, procede col caricamento, altrimenti reindirizza l'utente alla pagina di login.
+
 #pagebreak()
 
-- *Caricare la homepage*
+*Caricare la homepage*
 
 #figure(
   scale(
@@ -347,10 +419,12 @@ Legenda:
       _seq("a", "c", comment: [`getItem("user_id")`], enable-dst: true)
       _seq("c", "a", comment: [`user_id`], disable-src: true)
       _seq("a", "d", comment: [[`user_id === null`] `redirect`])
-      _seq("a", "a", comment: [[`user_id !== null`] `homepageInit()`], disable-dst: true)
+      _seq("a", "]", comment: [[`user_id !== null`] `homepageInit()`], disable-src: true)
     }),
   ),
 )
+
+Al caricamento di `homepage.html`, controlla che l'attributo `user_id` non sia nullo: se lo è, reindirizza l'utente alla pagina di login, altrimenti renderizza la homepage chiamando `homepageInit`;
 
 #pagebreak()
 
@@ -384,9 +458,11 @@ Legenda:
   ),
 )
 
+Quando la homepage viene caricata per la prima volta e passa il filtro, vengono chiamate le servlet `GetUser` e `GetGenres` per inizializzare il "messaggio di benvenuto" e il menu a tendina dei generi. Se queste chiamate hanno esito positivo, vengono poi chiamate le funzioni `updatePlaylists()` e `updateCreatePlaylistForm()` (separate da `homepageInit()` per permettere di chiamare le relative servlet solo quando è necessario); infine, chiama `showHomepage()` per renderizzare la homepage.
+
 #pagebreak()
 
-- *Aggiornare la lista di playlist*
+*Aggiornare la lista di playlist*
 
 #figure(
   scale(
@@ -416,11 +492,13 @@ Legenda:
   ),
 )
 
-- *Aggiornare il form per creare una playlist*
+Quando è necessario aggiornare l'elenco di playlist, chiama la servlet `GetPlaylists` e ritorna le playlist come json. Se la risposta arriva correttamente, viene resettata aggiornato l'elenco.
+
+*Aggiornare il form per creare una playlist*
 
 #figure(
   scale(
-    90%,
+    95%,
     diagram({
       _par("a", display-name: "homepage.thml + homepageManager.js")
       _par("b", display-name: "GetSongsByUserID", color: color.aqua)
@@ -446,9 +524,11 @@ Legenda:
   ),
 )
 
+Quando è necessario aggiornare il form per creare playlist, chiama la servlet `GetSongsByUserID` e ritorna le canzoni come json. Se la risposta arriva correttamente, viene resettata aggiornato il form.
+
 #pagebreak()
 
-- *Andare alla homepage*
+*Andare alla homepage*
 
 #figure(
   scale(
@@ -467,7 +547,7 @@ Legenda:
   ),
 )
 
-- *Caricare una canzone*
+*Caricare una canzone*
 
 #figure(
   scale(
@@ -508,13 +588,13 @@ Legenda:
   ),
 )
 
-#pagebreak()
+Quando l'utente manda l'`upload_song_form`, controlla tutti i campi e, in caso d'errore, mostra un messaggio di errore e annulla l'operazione. Se tutti i campi sono stati compilati correttamente, fa una chiamata alla servlet di `UploadSong`: se la canzone viene caricata correttamente, resetta il form e ricarica il form per creare una playlist (`updateCreatePlaylistForm()`), altrimenti mostra un messaggio d'errore;
 
-- *Creare una playlist*
+*Creare una playlist*
 
 #figure(
   scale(
-    90%,
+    95%,
     diagram({
       _par("a", display-name: "create_playlist_form + homepageManager.js")
       _par("b", display-name: "CreatePlaylist", color: color.aqua)
@@ -554,11 +634,13 @@ Legenda:
   ),
 )
 
+Quando l'utente manda il `create_playlist_form`, controlla il campo del titolo e, in caso d'errore, mostra un messaggio di errore e annulla l'operazione. Altrimenti, fa una chiamata alla servlet `CreatePlaylist`: se la playlist viene creata correttamente, resetta il form e ricarica la lista di playlist (`updatePlaylists()`), altrimenti mostra un messaggio di errore.
+
 #pagebreak()
 
-- *Inizializzare la pagina della playlist*
+*Inizializzare la pagina della playlist*
 
-Parte 1
+- Parte 1
 
 #figure(
   scale(
@@ -598,13 +680,15 @@ Parte 1
   ),
 )
 
+Quando è necessario ricaricare la pagina della playlist, viene chiamata la servlet `GetPlaylist` con il playlistId preso dalla session storage. Se la chiamata ha esito positivo, viene aggiornato la "heading" della pagina con le informazioni della playlist corrente.
+
 #pagebreak()
 
-Parte 2
+- Parte 2
 
 #figure(
   scale(
-    85%,
+    90%,
     diagram({
       _par("a", display-name: "homepage.html + playlistPageManager.js")
       _par("b", display-name: "GetSongsFromPlaylist", color: color.aqua)
@@ -649,13 +733,15 @@ Parte 2
   ),
 )
 
+Se la chiamata precedente ha avuto esito positivo, viene chiamata la servlet `GetSongsFromPlaylist`. Se anche questa chiamata ha esito positivo, le canzoni vengono inserite in una tabella in gruppi di 5, e viene chiamata `showVisibleSongs()` per renderizzare correttamente solo il primo gruppo con i corrispettivi pulsanti. Lo stesso json viene usato anche per aggiornare il modal.
+
 #pagebreak()
 
-Parte 3
+- Parte 3
 
 #figure(
   scale(
-    90%,
+    95%,
     diagram({
       _par("a", display-name: "homepage.html + playlistPageManager.js")
       _par("b", display-name: "GetSongsNotInPlaylist", color: color.aqua)
@@ -692,6 +778,8 @@ Parte 3
     }),
   ),
 )
+
+Dopo i passi precedenti, viene chiamata la servlet `GetSongsNotInPlaylist`: se questa chiamata ha esito positivo, viene inizializzato il form per aggiungere canzoni alla playlist corrente con i valori del json. Infine, vhiene renderizzata la pagina della playlist.
 
 - *Andare alla pagina della playlist*
 
@@ -744,6 +832,8 @@ Parte 3
   ),
 )
 
+Quando viene inizializzata la pagina della playlist o l'utente clicca i pulsanti "precedenti"/"successivi", la funzione calcola l'indice massimo e controlla che l'indice passato sia valido (numero positivo $<=$ indice massimo): se non lo è, gli viene assegnato il valore di default $0$. Il nuovo indice viene poi salvato nella session storage e vengono mascherate tutte le righe il cui indice non coincide con il `songsIndex`, e viene rivelata la riga con lo stesso indice. Infine, in base all'indice, vengono mascherati/rivelati i relativi pulsanti.
+
 #pagebreak()
 
 - *Aggiungere brani alla playlist*
@@ -794,6 +884,8 @@ Parte 3
     }),
   ),
 )
+
+Quando l'utente compila il form, viene controllato che abbia selezionato almeno una canzone: in tal caso, viene chiamata la servlet `AddSongsToPlaylist`. Il resto è simile alla versione precedente.
 
 #pagebreak()
 
@@ -854,9 +946,11 @@ Parte 3
   ),
 )
 
+Simile al diagramma di "Chiudere il modal", con l'aggiunta di controllare che l'utente abbia effettivamente cliccato il modal (cioè lo sfondo trasparente a lato del modal) e non uno dei contenuti del modal.
+
 #pagebreak()
 
-- *Cambiare ordinamento della playlist*
+*Cambiare ordinamento della playlist*
 
 #figure(
   scale(
@@ -906,11 +1000,11 @@ Parte 3
   ),
 )
 
-#pagebreak()
+Quando l'utente è soddisfatto con il nuovo ordinamento, viene chiamata la servlet `UploadCustomOrder`, che controlla che il playlist id sia valido e che l'id referenzi una playlist creata dall'utente corrente. Dato che l'ordine delle canzoni in questo caso è importante, viene controllato anche che ogni singolo id mandato appartenga alla playlist data, e che la dimensione della lista con il nuovo ordine e la lista dei brani della playlist siano uguali. Se tutti questi controlli hanno successo, viene aggiornato l'ordine personalizzato e viene "ricaricata" la pagina della playlist per renderizzarla col nuovo ordine.
 
-- *Andare alla pagina della canzone*
+*Andare alla pagina della canzone*
 
-Parte 1
+- Parte 1
 
 #figure(
   scale(
@@ -930,7 +1024,8 @@ Parte 1
   ),
 )
 
-Parte 2
+- Parte 2
+
 #figure(
   scale(
     100%,
@@ -966,3 +1061,6 @@ Parte 2
     }),
   ),
 )
+
+Quando l'utente clicca sul titolo di un brano, viene chiamata la servlet `GetSong`, che recupera la canzone e renderizza le sue informazioni.
+
