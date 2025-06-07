@@ -1,7 +1,7 @@
 #import "@preview/chronos:0.2.1": *
 
-#let set_colour(colour, name) = {
-  text(colour)[#name]
+#let set_colour(colour, name, bold_weight: 700) = {
+  text(fill: colour, weight: bold_weight, name)
 }
 
 #let cooler_link(anchor, text) = {
@@ -12,12 +12,12 @@
 
 == Analisi requisiti dati
 
-L'applicazione deve consentire all'utente di _riordinare le playlist_ con un criterio personalizzato diverso da quello di default. Dalla HOME con un link associato a ogni playlist si accede a una finestra modale RIORDINO, che mostra la lista completa dei brani della playlist ordinati secondo il criterio corrente (personalizzato o di default). L'utente può trascinare il titolo di un brano nell'elenco e di collocarlo in una _posizione_ diversa per realizzare l'ordinamento che desidera, senza invocare il server. Quando l'utente ha raggiunto l'ordinamento desiderato, usa un bottone "salva ordinamento", per memorizzare la sequenza sul server. Ai successivi accessi, l'ordinamento personalizzato è usato al posto di quello di default. Un brano aggiunto a una playlist con ordinamento personalizzato è inserito nell'ultima posizione.
+L'applicazione deve consentire all'utente di #set_colour(eastern, [riordinare le playlist]) con un criterio personalizzato diverso da quello di default. Dalla HOME con un link associato a ogni playlist si accede a una finestra modale RIORDINO, che mostra la lista completa dei brani della playlist ordinati secondo il criterio corrente (personalizzato o di default). L'utente può trascinare il titolo di un brano nell'elenco e di collocarlo in una #set_colour(eastern, [posizione]) diversa per realizzare l'ordinamento che desidera, senza invocare il server. Quando l'utente ha raggiunto l'ordinamento desiderato, usa un bottone "salva ordinamento", per memorizzare la sequenza sul server. Ai successivi accessi, l'ordinamento personalizzato è usato al posto di quello di default. Un brano aggiunto a una playlist con ordinamento personalizzato è inserito nell'ultima posizione.
 
 Legenda:
-- *Entità*;
-- _Attributi_;
-- #underline[Relazioni].
+- #set_colour(fuchsia, [Entità]);
+- #set_colour(eastern, [Attributi]);
+- #set_colour(orange.darken(5%), [Relazioni]).
 
 #figure(image("ER DIagrams/ER Diagram JS.svg", width: 110%), caption: [Diagramma entità-relazioni]);
 
@@ -134,9 +134,9 @@ Questi due DAO sono uguali alla #cooler_link(<daos_html>, "versione precedente")
 
 #figure(image("UML Diagrams/PlaylistDAO JS.svg"))
 
-- `getPlaylist(int playlistId)`: l'equivalente di `getFullPlaylist` della versione precedente, con la differenza che non recupera direttamente le canzoni della playlist;
+- `getPlaylist(int playlistId)`: l'equivalente di `getFullPlaylist` della #cooler_link(<dao_playlist_html>, "versione precedente"), con la differenza che non recupera direttamente le canzoni della playlist;
 - `updateCustomOrder(int playlistId, List<Integer> songsId)`: data una lista di id di brani e l'id della playlist, aggiorna il suo ordine personalizzato in base all'ordine degli id nella lista (il primo id sarà il primo brano visualizzato, etc...);
-- `hasCustomOrder(int playlistId)`: ritorna verso se la playlist ha un ordine personalizzato, falso altrimenti.
+- `hasCustomOrder(int playlistId)`: ritorna vero se la playlist ha un ordine personalizzato, falso altrimenti.
 
 Il resto dei metodi sono uguali alla #cooler_link(<dao_playlist_html>, "versione precedente").
 

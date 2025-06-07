@@ -1,7 +1,7 @@
 #import "@preview/chronos:0.2.1": *
 
-#let set_colour(colour, name) = {
-  text(colour)[#name]
+#let set_colour(colour, name, bold_weight: 700) = {
+  text(fill: colour, weight: bold_weight, name)
 }
 
 #let cooler_link(anchor, text) = {
@@ -132,7 +132,7 @@ Tutti gli attributi sono riconducibili al diagramma ER del database (tranne per 
 
 #figure(image("UML Diagrams/PlaylistDAO html.svg")) <dao_playlist_html>
 
-- `getPlaylists(int userId)`: ritorna una lista di `Playlist` create dallo user associato all'assegnato `userId`. Gli oggetti `Playlist` hanno l'attributo `songs = null`, dato che questa funzione viene chiamata solo per riempire la lista di playlist nella homepage;
+- `getPlaylists(int userId)`: ritorna una lista di `Playlist` create dallo user associato al dato `userId`. Gli oggetti `Playlist` creati hanno l'attributo `songs = null`, dato che questa funzione viene chiamata solo per riempire la lista di playlist nella homepage;
 - `getFullPlaylist(int playlistId)`: ritorna la `Playlist` con l'id dato con tutte le informazioni associate (compreso l'elenco di canzoni associate);
 - `insertPlaylist(int userId, String title, List<Integer> songsId)`: crea una nuova playlist con le informazioni date e "oggi" come data di creazione;
 - `addSongsToPlaylist(int playlistId, List<Integer> songsId)`: aggiunge la coppia (playlistId, songId) alla tabella `playlist_contents` per ogni id nella lista `songsId`;
@@ -143,7 +143,7 @@ Tutti gli attributi sono riconducibili al diagramma ER del database (tranne per 
 
 - `getAllSongsFromUserId(int userId)`: ritorna una lista di tutte le canzoni associate allo user dato, ordinate per interprete e anno, o `null` se non ne sono state trovate;
 - `getAllSongsFromPlaylist(int playlistId)`: ritorna una lista di tutte le canzoni associate all'id della playlist dato, ordinate per interprete e anno, o `null` se non ne sono state trovate;
-- `getSongListFromResultSet(ResultSet resultSet)`: metodo che estrare le canzoni dal set dato (se vuoto, ritorna `null`);
+- `getSongListFromResultSet(ResultSet resultSet)`: metodo che estrare le canzoni dal set dato (se vuoto o senza canzoni, ritorna `null`);
 - `insertSong(int userId, String title, String imageFileName, String albumTitle, String performer, int year, String genre, String musicFileName)`: aggiunge la canzone alla tabella `songs`;
 - `getSong(int songId)`: ritorna un oggetto `Song` dato l'id della canzone;
 - `getSongsNotInPlaylist(int userId, int playlistId)`: ritorna una lista di tutte le canzoni associate al dato user che non appartengono alla data playlist;
@@ -656,7 +656,7 @@ Quando l'utente invia il form per aggiungere brani alla playlist, viene controll
 )
 
 Quando l'utente clicca sul titolo di una canzone, viene reindirizzato a questa servlet. Se l'id della plalist, l'indice o l'id del brano non sono numeri, l'utente viene reindirizzato alla homepage. `SongDAO` viene chiamato per controllare che una canzone con quell'id esista e che appartenga allo user corrente: in caso negativo, viene reindirizzato alla homepage. Se tutti i controlli vanno bene, vengono salvati i dati nel contesto e caricata `song.html`:
-- Tutte le informazioni della canzone vengono mostrate, insieme alla foto associata e al suo lettore musicale;
+- Tutte le informazioni della canzone vengono mostrate, insieme alla foto associata e al suo lettore musicale (anche questi file vengono recuperati tramite la servlet `GetFile`);
 - L'id della playlist e l'indice servono quando l'utente usa il pulsante per tornare alla playlist: così facendo, ritorna alla pagina dalla quale ha cliccato la canzone.
 
 #pagebreak()
