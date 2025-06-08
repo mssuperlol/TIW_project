@@ -1,6 +1,6 @@
 # TIW Project
 
-HTML version of the TIW Project @ PoliMi, 2025. For the javascript version, see [this](). Original commission and documentation (in Italian) are in the docs folder.
+HTML version of the TIW Project @ PoliMi, 2025. For the javascript version, see [this](https://github.com/mssuperlol/TIW_project_JS). Original commission and documentation (in Italian) are in the docs folder.
 
 ## Tech stack
 
