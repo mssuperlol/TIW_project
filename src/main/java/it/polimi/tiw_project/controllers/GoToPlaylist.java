@@ -88,7 +88,7 @@ public class GoToPlaylist extends HttpServlet {
 
         try {
             currPlaylist = playlistDAO.getFullPlaylist(playlistId);
-            if (currPlaylist.getUserId() != user.getId()) {
+            if (currPlaylist == null || currPlaylist.getUserId() != user.getId()) {
                 response.sendRedirect(homePath);
                 return;
             }
