@@ -56,13 +56,13 @@ public class GoToPlaylist extends HttpServlet {
         String loginPath = getServletContext().getContextPath() + "/login.html";
         String homePath = getServletContext().getContextPath() + "/Homepage";
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        if (session.isNew() || session.getAttribute("user") == null) {
+        if (session.isNew() || user == null) {
             response.sendRedirect(loginPath);
             return;
         }
 
-        User user = (User) session.getAttribute("user");
         int playlistId, songsIndex;
 
         try {
@@ -129,7 +129,7 @@ public class GoToPlaylist extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        String path = "/WEB-INF/playlist.html";
+        String path = "/playlist.html";
         JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
         WebContext webC = new WebContext(webApplication.buildExchange(request, response), request.getLocale());
         webC.setVariable("playlist", currPlaylist);

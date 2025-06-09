@@ -27,13 +27,13 @@ public class GetFile extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String loginPath = getServletContext().getContextPath() + "/login.html";
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        if (session.isNew() || session.getAttribute("user") == null) {
+        if (session.isNew() || user == null) {
             response.sendRedirect(loginPath);
             return;
         }
 
-        User user = (User) session.getAttribute("user");
         String filename = request.getParameter("filename");
 
         File file = new File(folderPath + user.getId() + File.separator, filename);

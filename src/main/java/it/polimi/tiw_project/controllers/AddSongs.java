@@ -34,10 +34,15 @@ public class AddSongs extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        doPost(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        if (user == null) {
+        if (session.isNew() || user == null) {
             response.sendRedirect(getServletContext().getContextPath() + "/login.html");
             return;
         }
@@ -72,10 +77,12 @@ public class AddSongs extends HttpServlet {
             }
         }
 
-        try {
-            playlistDAO.addSongsToPlaylist(playlistId, songs);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if (!songs.isEmpty()) {
+            try {
+                playlistDAO.addSongsToPlaylist(playlistId, songs);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         response.sendRedirect(getServletContext().getContextPath() + "/Playlist?playlistId=" + playlistId);

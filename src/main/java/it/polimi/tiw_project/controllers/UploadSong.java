@@ -35,10 +35,16 @@ public class UploadSong extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        if (user == null) {
+
+        if (session.isNew() || user == null) {
             response.sendRedirect(getServletContext().getContextPath() + "/login.html");
             return;
         }
@@ -48,7 +54,6 @@ public class UploadSong extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing image file");
             return;
         }
-
         if (!imageFilePart.getContentType().startsWith("image")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Image: file format not permitted");
             return;
@@ -59,7 +64,6 @@ public class UploadSong extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing music file");
             return;
         }
-
         if (!musicFilePart.getContentType().startsWith("audio")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Music: file format not permitted");
             return;
@@ -88,7 +92,7 @@ public class UploadSong extends HttpServlet {
                 //if the db update fails, the copying of files is aborted too
                 songDAO.insertSong(userID, title, imageFileName, albumTitle, performer, year, genre, musicFileName);
 
-                //saves the files to /home/mssuperlol/Documents/TIW_project_resources/ID/
+                //saves the files to /home/mssuperlol/Documents/TIW_project_resources/$ID/
                 String outputPath = folderPath + user.getId() + File.separator + imageFileName;
                 File outputFile = new File(outputPath);
                 try (InputStream fileContent = imageFilePart.getInputStream()) {

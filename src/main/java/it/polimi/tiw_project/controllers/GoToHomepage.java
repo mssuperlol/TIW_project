@@ -53,13 +53,13 @@ public class GoToHomepage extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String loginPath = getServletContext().getContextPath() + "/login.html";
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        if (session.isNew() || session.getAttribute("user") == null) {
+        if (session.isNew() || user == null) {
             response.sendRedirect(loginPath);
             return;
         }
 
-        User user = (User) session.getAttribute("user");
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
         GenreDAO genreDAO = new GenreDAO(connection);
         SongDAO songDAO = new SongDAO(connection);
@@ -75,7 +75,7 @@ public class GoToHomepage extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        String path = "/WEB-INF/homepage.html";
+        String path = "/homepage.html";
         JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
         WebContext webC = new WebContext(webApplication.buildExchange(request, response), request.getLocale());
         webC.setVariable("playlists", playlists);

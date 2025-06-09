@@ -51,13 +51,13 @@ public class GoToSong extends HttpServlet {
         String loginPath = getServletContext().getContextPath() + "/login.html";
         String homePath = getServletContext().getContextPath() + "/Homepage";
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        if (session.isNew() || session.getAttribute("user") == null) {
+        if (session.isNew() || user == null) {
             response.sendRedirect(loginPath);
             return;
         }
 
-        User user = (User) session.getAttribute("user");
         int playlistId, songsIndex, songId;
 
         try {
@@ -83,7 +83,7 @@ public class GoToSong extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        String path = "/WEB-INF/song.html";
+        String path = "/song.html";
         JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
         WebContext webC = new WebContext(webApplication.buildExchange(request, response), request.getLocale());
         webC.setVariable("playlistId", playlistId);
