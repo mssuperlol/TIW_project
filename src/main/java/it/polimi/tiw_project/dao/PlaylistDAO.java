@@ -56,7 +56,7 @@ public class PlaylistDAO {
     }
 
     /**
-     * Given a playlist ID, returns all the information of that playlist and a list its songs
+     * Given a playlist ID, returns all the information of that playlist and a list of its songs
      *
      * @param playlistId ID of the playlist
      * @return Playlist object with all the information
@@ -103,7 +103,11 @@ public class PlaylistDAO {
      * @throws SQLException
      */
     public void insertPlaylist(int userId, String title, List<Integer> songsId) throws SQLException {
-        String query = "INSERT INTO playlists (user_id, title) VALUES (?, ?)";
+        //NB: the "today" date is set as default value in the database
+        String query = """
+                INSERT INTO playlists (user_id, title)
+                VALUES (?, ?)
+                """;
         connection.setAutoCommit(false);
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -132,7 +136,8 @@ public class PlaylistDAO {
      */
     public void addSongsToPlaylist(int playlistId, List<Integer> songsId) throws SQLException {
         String query = """
-                INSERT INTO playlist_contents (playlist, song) VALUES (?, ?)
+                INSERT INTO playlist_contents (playlist, song)
+                VALUES (?, ?)
                 """;
         connection.setAutoCommit(false);
 
@@ -186,7 +191,9 @@ public class PlaylistDAO {
      */
     public int getUserId(int playlistId) throws SQLException {
         String query = """
-                SELECT user_id FROM playlists WHERE id = ?
+                SELECT user_id
+                FROM playlists
+                WHERE id = ?
                 """;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
