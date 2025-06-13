@@ -87,6 +87,7 @@ public class GoToPlaylist extends HttpServlet {
         Playlist currPlaylist;
 
         try {
+            //error: not very efficient to get all the songs associated to the playlist everytime the page is loaded, would have been better to only select the 5 songs that are necessary
             currPlaylist = playlistDAO.getFullPlaylist(playlistId);
             if (currPlaylist == null || currPlaylist.getUserId() != user.getId()) {
                 response.sendRedirect(homePath);

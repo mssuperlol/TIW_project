@@ -86,6 +86,7 @@ public class UploadSong extends HttpServlet {
             return;
         }
 
+        //error: if the songs is not uploaded, the site should notify the user
         if (title != null && albumTitle != null && performer != null && genre != null && year > 0 && year <= Year.now().getValue()) {
             //update the db
             try {
